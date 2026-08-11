@@ -7,7 +7,7 @@
     "backend"
   ],
   "scripts": {
-    "prepare": "husky",
+    "prepare": "husky || echo \"Skipping Husky installation in CI\"",
     "test": "echo \"No tests specified yet\" && exit 0"
   },
   "devDependencies": {

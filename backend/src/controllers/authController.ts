@@ -202,10 +202,13 @@ export const resetPassword = catchAsync(async (req: Request, res: Response, next
 });
 
 export const logout = (req: Request, res: Response) => {
+  const isProd = process.env.NODE_ENV === 'production' || !!process.env.VERCEL || !!process.env.VERCEL_ENV;
   res.cookie('jwt', 'loggedout', {
     expires: new Date(Date.now() + 10 * 1000),
     httpOnly: true,
-  });
+    secure: isProd,
+    sameSite: isProd ? 'none' : 'lax'
+  } as any);
   if ((req as any).log) (req as any).log.info({ event: 'auth.logout.success' }, 'User logged out');
   res.status(200).json({ status: 'success' });
 };

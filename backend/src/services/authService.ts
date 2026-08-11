@@ -17,10 +17,12 @@ export const createSendToken = (user: any, statusCode: number, res: Response) =>
 
   const expiresInDays = parseInt(process.env.JWT_COOKIE_EXPIRES_IN || '90');
   
-  const cookieOptions = {
+  const isProd = process.env.NODE_ENV === 'production' || !!process.env.VERCEL || !!process.env.VERCEL_ENV;
+  const cookieOptions: any = {
     expires: new Date(Date.now() + expiresInDays * 24 * 60 * 60 * 1000),
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: isProd,
+    sameSite: isProd ? 'none' : 'lax'
   };
 
   res.cookie('jwt', token, cookieOptions);

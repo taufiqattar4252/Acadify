@@ -35,15 +35,18 @@ export const register = catchAsync(async (req: Request, res: Response, next: Nex
 
   const message = `Welcome to MHT-CET Platform!\nPlease verify your email by clicking on the link below:\n\n${frontendVerifyURL}\n\nIf you did not register, please ignore this email.`;
 
-  // Fire email asynchronously to prevent blocking the registration response
-  sendEmail({
-    email: newUser.email,
-    subject: 'Verify your email address',
-    message,
-  }).catch((err) => {
-    if ((req as any).log) (req as any).log.error({ event: 'auth.email.failed', err }, 'Failed to send verification email asynchronously');
-    // We don't delete the user; they can request a new verification link later.
-  });
+  // In serverless environments (like Vercel), we MUST await async tasks before responding,
+  // otherwise the function is frozen and the email is never sent.
+  try {
+    await sendEmail({
+      email: newUser.email,
+      subject: 'Verify your email address',
+      message,
+    });
+  } catch (err) {
+    if ((req as any).log) (req as any).log.error({ event: 'auth.email.failed', err }, 'Failed to send verification email');
+    // We don't return an error here so the user is still registered; they can request a new link later.
+  }
 
   if ((req as any).log) (req as any).log.info({ event: 'auth.register.success', userId: newUser._id }, 'User registration successful');
 

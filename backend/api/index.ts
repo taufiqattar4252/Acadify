@@ -6,11 +6,20 @@ import connectDB from '../src/config/db';
 let isConnected = false;
 
 export default async (req: any, res: any) => {
-  if (!isConnected) {
-    await connectDB();
-    isConnected = true;
+  try {
+    if (!isConnected) {
+      await connectDB();
+      isConnected = true;
+    }
+    
+    // Hand off to Express
+    app(req, res);
+  } catch (error: any) {
+    console.error("Function Error:", error);
+    res.status(500).json({
+      success: false,
+      message: 'Serverless Function Error',
+      error: error.message || String(error)
+    });
   }
-  
-  // Hand off to Express
-  app(req, res);
 };

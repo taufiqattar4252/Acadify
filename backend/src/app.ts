@@ -40,8 +40,22 @@ app.use(helmet());
 app.use(requestLogger);
 
 // Implement CORS (Must be before rate limiter so 429 responses get CORS headers)
+const allowedOrigins = process.env.FRONTEND_URL 
+  ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
+  : ['http://localhost:3000', 'http://localhost:3001'];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: function (origin, callback) {
+    // allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Check if the origin is explicitly allowed or if it's a Vercel preview URL
+    if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.vercel.app')) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 

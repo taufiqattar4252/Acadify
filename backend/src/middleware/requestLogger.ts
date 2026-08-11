@@ -1,5 +1,5 @@
+import crypto from 'crypto';
 import pinoHttp from 'pino-http';
-import { v4 as uuidv4 } from 'uuid';
 import logger from '../config/logger';
 import { Request, Response } from 'express';
 
@@ -8,7 +8,7 @@ export const requestLogger = pinoHttp({
   genReqId: function (req, res) {
     const existingId = req.id ?? req.headers['x-request-id'];
     if (existingId) return existingId;
-    const id = uuidv4();
+    const id = crypto.randomUUID();
     if (!res.headersSent) {
       res.setHeader('X-Request-Id', id);
     }

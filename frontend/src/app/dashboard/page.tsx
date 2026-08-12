@@ -101,7 +101,7 @@ export default function StudentDashboardPage() {
         <h1 className="text-3xl font-normal text-slate-800">
           Welcome <span className="font-semibold text-slate-900">{overview.studentName}!</span>
         </h1>
-        <Button className="bg-slate-900 hover:bg-slate-800 text-white rounded-full px-6 py-2 h-auto gap-2 text-sm font-medium shadow-md transition-transform active:scale-95" onClick={() => router.push('/dashboard/mock-tests')}>
+        <Button className="!bg-[#10B981] hover:!bg-[#059669] focus:!ring-0 focus:outline-none text-white rounded-full px-6 py-2 h-auto gap-2 text-sm font-medium shadow-md transition-transform active:scale-95" onClick={() => router.push('/dashboard/mock-tests')}>
           <span className="text-lg leading-none mb-0.5">+</span> Buy Mocks
         </Button>
       </div>

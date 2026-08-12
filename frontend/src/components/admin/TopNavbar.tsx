@@ -58,7 +58,7 @@ export const TopNavbar = () => {
       
       {/* LEFT: Brand Logo */}
       <div className="flex items-center gap-2 cursor-pointer">
-        <div className="w-8 h-8 rounded-lg bg-[#00BC7D] flex items-center justify-center transform -rotate-12">
+        <div className="w-8 h-8 rounded-lg bg-[#1D293D] flex items-center justify-center transform -rotate-12">
           <div className="w-3 h-3 bg-white rounded-sm"></div>
         </div>
         <span className="text-xl font-bold text-slate-800 tracking-tight">Acadify</span>

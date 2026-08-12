@@ -67,6 +67,11 @@ const mockRevenueData: RevenueData[] = [
   { month: 'May', revenue: 85000 },
   { month: 'Jun', revenue: 110000 },
   { month: 'Jul', revenue: 105000 },
+  { month: 'Aug', revenue: 115000 },
+  { month: 'Sep', revenue: 130000 },
+  { month: 'Oct', revenue: 125000 },
+  { month: 'Nov', revenue: 140000 },
+  { month: 'Dec', revenue: 155000 },
 ];
 
 const mockSubjectData: SubjectData[] = [

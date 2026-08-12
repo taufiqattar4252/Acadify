@@ -29,7 +29,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="min-h-screen bg-[#f4f7f6] flex flex-col font-sans">
+    <div className="min-h-screen bg-[#f4f7f6] flex flex-col font-sans" style={{
+      '--color-primary-50': '#f1f5f9',
+      '--color-primary-100': '#e2e8f0',
+      '--color-primary-500': '#334155',
+      '--color-primary-600': '#1D293D',
+      '--color-primary-700': '#0f172a',
+    } as React.CSSProperties}>
       <TopNavbar />
       <main className="flex-1 overflow-x-hidden p-6 md:p-8">
         <div className="max-w-[1400px] mx-auto w-full">

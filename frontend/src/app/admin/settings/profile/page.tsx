@@ -103,7 +103,7 @@ export default function ProfileSettingsPage() {
           </span>
           {user?.lastLogin && (
             <p className="text-xs text-slate-500 mt-4">
-              Last login: {new Date(user.lastLogin).toLocaleDateString()}
+              Last login: {user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'N/A'}
             </p>
           )}
         </div>

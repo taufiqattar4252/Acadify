@@ -112,7 +112,7 @@ export default function PurchasesPage() {
     {
       accessorKey: 'amountPaid',
       header: 'Amount',
-      cell: info => <span className="font-bold text-emerald-600">₹{info.getValue().toFixed(2)}</span>,
+      cell: info => <span className="font-bold text-emerald-600">₹{Number(info.getValue() || 0).toFixed(2)}</span>,
     },
     {
       accessorFn: row => row.payment?.status,
@@ -154,7 +154,7 @@ export default function PurchasesPage() {
     {
       accessorKey: 'purchaseDate',
       header: 'Date',
-      cell: info => <span className="text-sm text-slate-600">{new Date(info.getValue()).toLocaleDateString()}</span>,
+      cell: info => <span className="text-sm text-slate-600">{info.getValue() ? new Date(info.getValue()).toLocaleDateString() : 'N/A'}</span>,
     }
   ], [pageIndex, pageSize]);
 

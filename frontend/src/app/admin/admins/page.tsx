@@ -95,7 +95,7 @@ export default function AdminsPage() {
                       )}
                     </td>
                     <td className="px-6 py-4 text-slate-500">
-                      {new Date(admin.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      {admin.createdAt ? new Date(admin.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
                     </td>
                     <td className="px-6 py-4 text-right space-x-2">
                       <button 

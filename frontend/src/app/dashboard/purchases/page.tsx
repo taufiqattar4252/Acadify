@@ -37,7 +37,7 @@ export default function PurchasesPage() {
           </div>
           <h3 className="text-lg font-bold text-slate-900">No purchases found</h3>
           <p className="text-slate-500 mt-1">You haven't purchased any mock tests yet.</p>
-          <Button className="mt-6 rounded-full px-6" onClick={() => router.push('/dashboard/mock-tests')}>
+          <Button variant="secondary" className="mt-6 mx-auto rounded-full px-6" onClick={() => router.push('/dashboard/mock-tests')}>
             Explore Mock Store
           </Button>
         </div>

@@ -52,7 +52,7 @@ export default function AdminAnalyticsPage() {
           </div>
           <div>
             <p className="text-sm font-medium text-slate-500 uppercase">Average Score</p>
-            <p className="text-2xl font-bold text-slate-900">{analytics.averageScore.toFixed(1)}</p>
+            <p className="text-2xl font-bold text-slate-900">{(analytics.averageScore || 0).toFixed(1)}</p>
           </div>
         </div>
 

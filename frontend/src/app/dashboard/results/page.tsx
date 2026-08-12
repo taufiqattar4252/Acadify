@@ -36,7 +36,7 @@ export default function ResultsHistoryPage() {
         <h2 className="text-xl font-bold text-slate-900 mb-2">No Results Found</h2>
         <p className="text-slate-500 mb-6">You haven't completed any mock tests yet.</p>
         <Link href="/dashboard/mock-tests">
-          <Button>Browse Mock Tests</Button>
+          <Button variant="secondary" className="mx-auto rounded-full px-6">Browse Mock Tests</Button>
         </Link>
       </div>
     );

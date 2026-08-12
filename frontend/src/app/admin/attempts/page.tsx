@@ -90,7 +90,7 @@ export default function AdminAttemptsPage() {
                         {accuracy.toFixed(1)}%
                       </td>
                       <td className="px-6 py-4 text-slate-500 text-xs">
-                        {new Date(attempt.submittedAt || attempt.createdAt).toLocaleString()}
+                        {(attempt.submittedAt || attempt.createdAt) ? new Date(attempt.submittedAt || attempt.createdAt).toLocaleString() : 'N/A'}
                       </td>
                       <td className="px-6 py-4 text-slate-500 text-xs font-mono">
                         {attempt.ipAddress || 'Unknown'}

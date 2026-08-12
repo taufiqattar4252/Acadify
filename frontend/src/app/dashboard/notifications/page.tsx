@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { 
-  Bell, Check, Trash2, Loader2, Info, CreditCard, Gift, 
+import {
+  Bell, Check, Trash2, Loader2, Info, CreditCard, Gift,
   MonitorPlay, FileText, Search, Filter, ChevronLeft, ChevronRight
 } from 'lucide-react';
-import { 
-  useGetNotifications, useMarkAsRead, useMarkAllAsRead, 
-  useDeleteNotification, Notification 
+import {
+  useGetNotifications, useMarkAsRead, useMarkAllAsRead,
+  useDeleteNotification, Notification
 } from '@/services/notificationApi';
 import { formatDistanceToNow, format } from 'date-fns';
 import { useRouter } from 'next/navigation';
@@ -16,16 +16,16 @@ export default function NotificationsPage() {
   const [page, setPage] = useState(1);
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
   const [search, setSearch] = useState('');
-  
+
   const limit = 10;
-  
-  const { data, isLoading } = useGetNotifications({ 
-    page, 
-    limit, 
+
+  const { data, isLoading } = useGetNotifications({
+    page,
+    limit,
     ...(filter === 'unread' ? { isRead: false } : {}),
     ...(search ? { search } : {})
   });
-  
+
   const markAsRead = useMarkAsRead();
   const markAllAsRead = useMarkAllAsRead();
   const deleteNotification = useDeleteNotification();
@@ -73,12 +73,12 @@ export default function NotificationsPage() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-            <Bell className="w-6 h-6 text-primary-500" />
+            {/* <Bell className="w-6 h-6 text-primary-500" /> */}
             Notification Center
           </h1>
           <p className="text-slate-500 mt-1">Stay updated with your latest alerts and announcements</p>
         </div>
-        
+
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <button
             onClick={() => markAllAsRead.mutate()}
@@ -100,13 +100,13 @@ export default function NotificationsPage() {
       {/* Filters and Search */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
         <div className="flex items-center gap-2 bg-slate-100 p-1 rounded-lg w-full sm:w-auto">
-          <button 
+          <button
             onClick={() => { setFilter('all'); setPage(1); }}
             className={`flex-1 sm:flex-none px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${filter === 'all' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
           >
             All
           </button>
-          <button 
+          <button
             onClick={() => { setFilter('unread'); setPage(1); }}
             className={`flex-1 sm:flex-none px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${filter === 'unread' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
           >
@@ -115,8 +115,8 @@ export default function NotificationsPage() {
         </div>
 
         <div className="relative w-full sm:w-64">
-          <input 
-            type="text" 
+          <input
+            type="text"
             placeholder="Search notifications..."
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
@@ -144,11 +144,11 @@ export default function NotificationsPage() {
         ) : (
           <div className="divide-y divide-slate-100">
             {notifications.map((notification: Notification) => (
-              <div 
+              <div
                 key={notification._id}
                 className={`p-5 sm:p-6 transition-colors hover:bg-slate-50 group flex flex-col sm:flex-row sm:items-start gap-4 ${!notification.isRead ? 'bg-blue-50/20' : ''}`}
               >
-                <div 
+                <div
                   className="flex-1 flex gap-4 cursor-pointer"
                   onClick={() => handleNotificationClick(notification)}
                 >
@@ -178,7 +178,7 @@ export default function NotificationsPage() {
                 {/* Actions */}
                 <div className="flex items-center sm:opacity-0 group-hover:opacity-100 transition-opacity justify-end gap-2 shrink-0">
                   {!notification.isRead && (
-                    <button 
+                    <button
                       onClick={(e) => {
                         e.stopPropagation();
                         markAsRead.mutate(notification._id);
@@ -189,7 +189,7 @@ export default function NotificationsPage() {
                       <Check className="w-4 h-4" />
                     </button>
                   )}
-                  <button 
+                  <button
                     onClick={(e) => {
                       e.stopPropagation();
                       deleteNotification.mutate(notification._id);
@@ -204,7 +204,7 @@ export default function NotificationsPage() {
             ))}
           </div>
         )}
-        
+
         {/* Pagination */}
         {meta.pages > 1 && (
           <div className="p-4 border-t border-slate-200 flex items-center justify-between bg-slate-50">
@@ -212,14 +212,14 @@ export default function NotificationsPage() {
               Showing page {meta.page} of {meta.pages}
             </span>
             <div className="flex items-center gap-2">
-              <button 
+              <button
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page === 1}
                 className="p-2 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <button 
+              <button
                 onClick={() => setPage(p => Math.min(meta.pages, p + 1))}
                 disabled={page === meta.pages}
                 className="p-2 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"

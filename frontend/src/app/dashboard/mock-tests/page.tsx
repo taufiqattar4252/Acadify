@@ -316,7 +316,7 @@ export default function MockStorePage() {
             </div>
             <h3 className="text-lg font-bold text-slate-900">No available tests found</h3>
             <p className="text-slate-500 mt-1">You may have purchased them all, or try adjusting filters.</p>
-            <Button variant="secondary" className="mt-6 rounded-full px-6" onClick={() => { setSearch(''); setCategory(''); }}>
+            <Button variant="secondary" className="mt-6 mx-auto rounded-full px-6" onClick={() => { setSearch(''); setCategory(''); }}>
               Clear Filters
             </Button>
           </div>

@@ -83,8 +83,6 @@ const PaymentSchema: Schema = new Schema(
 );
 
 PaymentSchema.index({ user: 1 });
-PaymentSchema.index({ orderId: 1 });
-PaymentSchema.index({ paymentId: 1 });
 PaymentSchema.index({ status: 1 });
 PaymentSchema.index({ mockTest: 1 });
 

@@ -125,7 +125,7 @@ export default function AdminInvoicePage() {
                   <span className="text-xs text-slate-500">{purchase.mockTest?.category || 'General'}</span>
                 </td>
                 <td className="px-6 py-4 text-right font-medium">
-                  ₹{(purchase.amountPaid || 0).toFixed(2)}
+                  ₹{Number(purchase.amountPaid?.$numberDecimal || purchase.amountPaid || 0).toFixed(2)}
                 </td>
               </tr>
             </tbody>
@@ -133,7 +133,7 @@ export default function AdminInvoicePage() {
               <tr>
                 <td className="px-6 py-4 font-bold text-slate-900 text-right">Total Paid</td>
                 <td className="px-6 py-4 text-right font-bold text-slate-900 text-lg">
-                  ₹{(purchase.amountPaid || 0).toFixed(2)}
+                  ₹{Number(purchase.amountPaid?.$numberDecimal || purchase.amountPaid || 0).toFixed(2)}
                 </td>
               </tr>
             </tfoot>

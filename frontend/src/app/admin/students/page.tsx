@@ -215,7 +215,7 @@ export default function AdminStudentsPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      {format(new Date(student.createdAt), 'MMM dd, yyyy')}
+                      {student.createdAt ? format(new Date(student.createdAt), 'MMM dd, yyyy') : 'N/A'}
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1">
@@ -229,7 +229,7 @@ export default function AdminStudentsPage() {
                         <span className={`text-xs font-semibold px-2 py-0.5 rounded-full w-fit ${student.purchasedMockTests > 0 ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-600'}`}>
                           {student.purchasedMockTests > 0 ? 'Premium' : 'Free'}
                         </span>
-                        <span className="text-xs text-slate-500">₹{(student.totalAmountSpent || 0).toFixed(2)} spent</span>
+                        <span className="text-xs text-slate-500">₹{Number(student.totalAmountSpent?.$numberDecimal || student.totalAmountSpent || 0).toFixed(2)} spent</span>
                       </div>
                     </td>
                     <td className="px-6 py-4">

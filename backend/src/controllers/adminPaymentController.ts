@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import Payment, { PaymentStatus } from '../models/Payment';
+import Purchase from '../models/Purchase';
 import catchAsync from '../utils/catchAsync';
 
 // @desc    Get all payments for Admin
@@ -30,12 +31,24 @@ export const getAllPayments = catchAsync(async (req: Request, res: Response, nex
     .limit(limit)
     .lean();
 
+  const populatedPayments = await Promise.all(
+    payments.map(async (payment: any) => {
+      if (!payment.mockTest && payment.cart) {
+        const purchases = await Purchase.find({ payment: payment._id }).populate('mockTest', 'title').lean();
+        if (purchases.length > 0) {
+          payment.mockTestTitles = purchases.map((p: any) => p.mockTest?.title).filter(Boolean).join(', ');
+        }
+      }
+      return payment;
+    })
+  );
+
   const total = await Payment.countDocuments(query);
 
   res.status(200).json({
     success: true,
     data: {
-      payments,
+      payments: populatedPayments,
       pagination: {
         total,
         page,

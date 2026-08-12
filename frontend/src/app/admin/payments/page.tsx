@@ -129,19 +129,19 @@ export default function AdminPaymentsPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4 text-slate-600">
-                      {payment.mockTest?.title || 'Unknown Test'}
+                      {payment.mockTestTitles || payment.mockTest?.title || (payment.cart ? 'Cart Checkout' : 'Unknown Test')}
                     </td>
                     <td className="px-6 py-4 font-medium text-slate-900">
-                      ₹{(payment.amount || 0).toFixed(2)}
+                      ₹{Number(payment.amount?.$numberDecimal || payment.amount || 0).toFixed(2)}
                     </td>
                     <td className="px-6 py-4 text-slate-500">
-                      {new Date(payment.createdAt).toLocaleString(undefined, {
+                      {payment.createdAt ? new Date(payment.createdAt).toLocaleString(undefined, {
                         year: 'numeric',
                         month: 'short',
                         day: 'numeric',
                         hour: '2-digit',
                         minute: '2-digit'
-                      })}
+                      }) : 'N/A'}
                     </td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border

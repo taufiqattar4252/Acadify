@@ -38,9 +38,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="min-h-screen bg-[#F4F7F6] flex flex-col font-sans">
+    <div className="h-screen bg-[#F4F7F6] flex flex-col font-sans overflow-hidden">
       <StudentTopNavbar />
-      <main className="flex-1 overflow-x-hidden p-4 lg:px-2 lg:py-6">
+      <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 lg:px-2 lg:py-6">
         <div className="max-w-[1400px] mx-auto w-full">
           {children}
         </div>

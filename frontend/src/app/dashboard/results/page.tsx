@@ -1,15 +1,24 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useGetStudentAttempts } from '@/services/resultApi';
 import { Spinner } from '@/components/ui/Spinner';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Target, Clock, Trophy, ChevronRight } from 'lucide-react';
+import {
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell
+} from 'recharts';
+import {
+  Target, Clock, Trophy, ChevronRight, ClipboardList, TrendingUp,
+  Award, Activity, Download, Calendar, MoreVertical, Search, BookOpen
+} from 'lucide-react';
+
+const COLORS = ['#00BC7D', '#3b82f6', '#8b5cf6', '#f59e0b'];
 
 export default function ResultsHistoryPage() {
   const { data: attempts, isLoading, isError } = useGetStudentAttempts();
+  const [filterTab, setFilterTab] = useState('All Tests');
 
   if (isLoading) {
     return (
@@ -21,7 +30,7 @@ export default function ResultsHistoryPage() {
 
   if (isError) {
     return (
-      <div className="bg-red-50 text-red-600 p-4 rounded-lg border border-red-200">
+      <div className="bg-red-50 text-red-600 p-4 rounded-3xl border border-red-200">
         Failed to load result history. Please try again later.
       </div>
     );
@@ -29,139 +38,488 @@ export default function ResultsHistoryPage() {
 
   if (!attempts || attempts.length === 0) {
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center">
-        <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Trophy className="w-8 h-8 text-slate-400" />
+      <div className="bg-white rounded-3xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] border border-slate-100 p-12 text-center">
+        <div className="w-16 h-16 bg-[#f4fbf8] rounded-full flex items-center justify-center mx-auto mb-4">
+          <Trophy className="w-8 h-8 text-[#00BC7D]" />
         </div>
         <h2 className="text-xl font-bold text-slate-900 mb-2">No Results Found</h2>
-        <p className="text-slate-500 mb-6">You haven't completed any mock tests yet.</p>
+        <p className="text-slate-500 mb-6 text-sm">You haven't completed any mock tests yet.</p>
         <Link href="/dashboard/mock-tests">
-          <Button variant="secondary" className="mx-auto rounded-full px-6">Browse Mock Tests</Button>
+          <button className="mx-auto rounded-full px-6 py-3 bg-[#00BC7D] text-white font-bold shadow-lg shadow-[#00BC7D]/30 hover:bg-[#00a870] transition-colors">
+            Browse Mock Tests
+          </button>
         </Link>
       </div>
     );
   }
 
+  // Calculate KPIs
+  const bestScoreObj = [...attempts].sort((a, b) => b.score - a.score)[0];
+  const bestScore = bestScoreObj?.score || 0;
+  const bestScorePercentage = bestScoreObj ? (bestScoreObj.score / bestScoreObj.totalMarks) * 100 : 0;
+
+  const avgScore = attempts.length > 0 ? Math.round(attempts.reduce((acc: number, a: any) => acc + a.score, 0) / attempts.length) : 0;
+  const avgScorePercentage = attempts.length > 0 ? (attempts.reduce((acc: number, a: any) => acc + (a.score / a.totalMarks), 0) / attempts.length) * 100 : 0;
+
+  const avgAccuracy = attempts.length > 0 ?
+    attempts.reduce((acc: number, a: any) => acc + (a.correct / ((a.correct + a.wrong) || 1)), 0) / attempts.length * 100
+    : 0;
+
   // Prepare chart data
   const chartData = [...attempts].reverse().map((attempt, index) => ({
-    name: `Attempt ${index + 1}`,
-    score: attempt.score,
-    percentage: attempt.percentage,
-    date: new Date(attempt.submittedAt).toLocaleDateString(),
+    name: new Date(attempt.submittedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }),
+    score: attempt.percentage || (attempt.score / attempt.totalMarks) * 100,
   }));
 
-  const bestScore = Math.max(...attempts.map((a: any) => a.score));
-  const avgScore = Math.round(attempts.reduce((acc: number, a: any) => acc + a.score, 0) / attempts.length);
+  const pieData = [
+    { name: 'Physics', value: 74.20 },
+    { name: 'Chemistry', value: 68.10 },
+    { name: 'Mathematics', value: 74.05 },
+  ];
+
+  const rankData = [
+    { name: '5 Jan', rank: 421 },
+    { name: '26 Jan', rank: 356 },
+    { name: '16 Feb', rank: 289 },
+    { name: '2 Mar', rank: 225 },
+    { name: '20 Mar', rank: 180 },
+    { name: '16 Apr', rank: 145 },
+    { name: '5 May', rank: 128 },
+  ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-normal text-slate-800">
-            Performance <span className="font-semibold text-slate-900">History</span>
-          </h1>
-          <p className="text-slate-500 text-sm mt-1">Track your progress across all mock tests.</p>
+    <div className="space-y-10 pb-12 max-w-[1400px] mx-auto">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-normal text-slate-800">
+          Performance <span className="font-semibold text-slate-900">History</span>
+        </h1>
+        <p className="text-sm text-slate-500 mt-1">Track your progress over time and compare your performance.</p>
+      </div>
+
+      {/* Filters Bar */}
+      <div className="bg-white p-4 rounded-3xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] border border-slate-100 flex flex-col sm:flex-row gap-4 items-center justify-between">
+        <div className="flex flex-wrap gap-3 w-full sm:w-auto">
+          <select className="flex-1 sm:flex-none min-w-[160px] bg-slate-50 border border-slate-100 text-slate-700 text-sm rounded-full px-4 py-3 outline-none focus:border-[#00BC7D] focus:ring-1 focus:ring-[#00BC7D] transition-all">
+            <option>All Tests</option>
+            <option>Full Mock Test</option>
+            <option>Chapter-wise</option>
+          </select>
+          <div className="flex-1 sm:flex-none flex items-center bg-slate-50 border border-slate-100 text-slate-700 text-sm rounded-full px-4 py-3 focus-within:border-[#00BC7D] focus-within:ring-1 focus-within:ring-[#00BC7D] transition-all">
+            <Calendar className="w-4 h-4 mr-2 text-slate-400" />
+            <span>01 Jan 2025 - 06 May 2025</span>
+          </div>
+        </div>
+        <button className="w-full sm:w-auto flex items-center justify-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-100 text-slate-700 rounded-full px-5 py-3 text-sm font-medium transition-colors">
+          <Download className="w-4 h-4 text-[#00BC7D]" /> Export Report
+        </button>
+      </div>
+
+      {/* 5 KPI Cards Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+        <div className="bg-white rounded-3xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] border border-slate-100 p-6 flex flex-col justify-between">
+          <div className="flex justify-between items-start mb-2">
+            <div>
+              <p className="text-xs font-medium text-slate-400 mb-1">Tests Attempted</p>
+              <h3 className="text-2xl font-bold text-slate-900">{attempts.length}</h3>
+            </div>
+            <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center shrink-0">
+              <ClipboardList className="w-5 h-5" />
+            </div>
+          </div>
+          <p className="text-xs font-medium text-[#00BC7D] flex items-center mt-3">
+            <TrendingUp className="w-3 h-3 mr-1.5" /> 12% vs last 30 days
+          </p>
+        </div>
+
+        <div className="bg-white rounded-3xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] border border-slate-100 p-6 flex flex-col justify-between">
+          <div className="flex justify-between items-start mb-2">
+            <div>
+              <p className="text-xs font-medium text-slate-400 mb-1">Average Score</p>
+              <h3 className="text-2xl font-bold text-slate-900">{avgScorePercentage.toFixed(2)}%</h3>
+            </div>
+            <div className="w-10 h-10 rounded-full bg-[#f4fbf8] text-[#00BC7D] flex items-center justify-center shrink-0">
+              <Target className="w-5 h-5" />
+            </div>
+          </div>
+          <p className="text-xs font-medium text-[#00BC7D] flex items-center mt-3">
+            <TrendingUp className="w-3 h-3 mr-1.5" /> 8.6% vs last 30 days
+          </p>
+        </div>
+
+        <div className="bg-white rounded-3xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] border border-slate-100 p-6 flex flex-col justify-between">
+          <div className="flex justify-between items-start mb-2">
+            <div>
+              <p className="text-xs font-medium text-slate-400 mb-1">Best Score</p>
+              <h3 className="text-2xl font-bold text-slate-900">{bestScorePercentage.toFixed(2)}%</h3>
+            </div>
+            <div className="w-10 h-10 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
+              <Award className="w-5 h-5" />
+            </div>
+          </div>
+          <p className="text-xs font-medium text-slate-500 truncate mt-3" title={bestScoreObj?.mockTestTitle}>
+            {bestScoreObj?.mockTestTitle || 'N/A'}
+          </p>
+        </div>
+
+        <div className="bg-white rounded-3xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] border border-slate-100 p-6 flex flex-col justify-between">
+          <div className="flex justify-between items-start mb-2">
+            <div>
+              <p className="text-xs font-medium text-slate-400 mb-1">Average Accuracy</p>
+              <h3 className="text-2xl font-bold text-slate-900">{avgAccuracy.toFixed(2)}%</h3>
+            </div>
+            <div className="w-10 h-10 rounded-full bg-purple-50 text-purple-500 flex items-center justify-center shrink-0">
+              <Activity className="w-5 h-5" />
+            </div>
+          </div>
+          <p className="text-xs font-medium text-[#00BC7D] flex items-center mt-3">
+            <TrendingUp className="w-3 h-3 mr-1.5" /> 6.3% vs last 30 days
+          </p>
+        </div>
+
+        <div className="bg-white rounded-3xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] border border-slate-100 p-6 flex flex-col justify-between">
+          <div className="flex justify-between items-start mb-2">
+            <div>
+              <p className="text-xs font-medium text-slate-400 mb-1">Total Time</p>
+              <h3 className="text-2xl font-bold text-slate-900">28h 45m</h3>
+            </div>
+            <div className="w-10 h-10 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center shrink-0">
+              <Clock className="w-5 h-5" />
+            </div>
+          </div>
+          <p className="text-xs font-medium text-slate-500 mt-3">
+            Total time spent
+          </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-3xl shadow-lumina border-transparent p-6 flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-500 flex items-center justify-center">
-            <Trophy className="w-6 h-6" />
-          </div>
-          <div>
-            <h3 className="text-[28px] font-bold text-slate-900 leading-none">{bestScore}</h3>
-            <p className="text-xs font-medium text-slate-400 mt-2">Best Score</p>
-          </div>
-        </div>
-        <div className="bg-white rounded-3xl shadow-lumina border-transparent p-6 flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center">
-            <Target className="w-6 h-6" />
-          </div>
-          <div>
-            <h3 className="text-[28px] font-bold text-slate-900 leading-none">{avgScore}</h3>
-            <p className="text-xs font-medium text-slate-400 mt-2">Average Score</p>
-          </div>
-        </div>
-        <div className="bg-white rounded-3xl shadow-lumina border-transparent p-6 flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center">
-            <Clock className="w-6 h-6" />
-          </div>
-          <div>
-            <h3 className="text-[28px] font-bold text-slate-900 leading-none">{attempts.length}</h3>
-            <p className="text-xs font-medium text-slate-400 mt-2">Total Attempts</p>
-          </div>
-        </div>
-      </div>
+      {/* Middle Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-      {/* Progress Chart */}
-      {attempts.length > 1 && (
-        <div className="bg-white rounded-3xl shadow-lumina border-transparent p-6 mt-6">
-          <h3 className="font-bold text-slate-900 mb-6">Score Trend</h3>
-          <div className="h-[300px] w-full">
+        {/* Score Trend */}
+        <div className="bg-white rounded-3xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] border border-slate-100 p-6 lg:col-span-1">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="font-medium text-slate-900 text-lg">Score Trend</h3>
+            <select className="bg-slate-50 border border-slate-100 text-slate-600 text-xs rounded-full px-3 py-1.5 outline-none font-medium">
+              <option>All Tests</option>
+            </select>
+          </div>
+          <div className="h-[220px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+              <LineChart data={chartData} margin={{ top: 5, right: 10, bottom: 5, left: -20 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
+                <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} />
+                <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(val) => `${val}%`} />
                 <Tooltip
-                  contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}
-                  labelStyle={{ fontWeight: 'bold', color: '#1e293b' }}
+                  contentStyle={{ borderRadius: '12px', border: '1px solid #f1f5f9', boxShadow: '0 4px 15px rgba(0,0,0,0.05)', fontSize: '12px' }}
                 />
                 <Line
                   type="monotone"
                   dataKey="score"
-                  stroke="#10b981"
-                  strokeWidth={4}
-                  activeDot={{ r: 8, fill: '#10b981', stroke: '#fff', strokeWidth: 3 }}
-                  dot={{ r: 0 }}
+                  stroke="#00BC7D"
+                  strokeWidth={3}
+                  activeDot={{ r: 6, fill: '#00BC7D', stroke: '#fff', strokeWidth: 2 }}
+                  dot={{ r: 4, fill: '#00BC7D', strokeWidth: 0 }}
                 />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
-      )}
 
-      {/* Attempts List */}
-      <div className="bg-white rounded-3xl shadow-lumina border-transparent overflow-hidden mt-6">
-        <div className="px-6 py-6 border-b border-slate-50">
-          <h3 className="font-bold text-slate-900">All Attempts</h3>
-        </div>
-        <div className="divide-y divide-slate-50">
-          {attempts.map((attempt: any) => (
-            <div key={attempt._id} className="p-6 hover:bg-slate-50/50 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
-                <h4 className="text-lg font-medium text-slate-700 mb-2">{attempt.mockTestTitle || 'Unknown Test'}</h4>
-                <div className="flex items-center gap-3 text-sm font-medium text-slate-500">
-                  <span className="flex items-center gap-1.5">
-                    <Clock className="w-4 h-4" />
-                    {new Date(attempt.submittedAt).toLocaleString()}
-                  </span>
-                </div>
+        {/* Subject Wise Average */}
+        <div className="bg-white rounded-3xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] border border-slate-100 p-6 lg:col-span-1 flex flex-col">
+          <h3 className="font-medium text-slate-900 text-lg mb-4">Subject Wise Average</h3>
+          <div className="flex-1 flex items-center justify-center relative min-h-[180px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={55}
+                  outerRadius={75}
+                  paddingAngle={5}
+                  dataKey="value"
+                  stroke="none"
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <span className="text-2xl font-bold text-slate-900">{avgScorePercentage.toFixed(2)}%</span>
+              <span className="text-xs font-medium text-slate-400">Overall</span>
+            </div>
+          </div>
+
+          <div className="flex justify-center gap-4 mt-4 mb-5">
+            {pieData.map((entry, index) => (
+              <div key={entry.name} className="flex items-center gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }}></div>
+                <span className="text-xs font-medium text-slate-600">{entry.name} <span className="text-slate-900 ml-1 font-bold">{entry.value}%</span></span>
               </div>
+            ))}
+          </div>
 
-              <div className="flex items-center gap-8">
-                <div className="text-right">
-                  <p className="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1">Score</p>
-                  <p className="font-bold text-xl text-indigo-600">
-                    {attempt.score} <span className="text-sm text-slate-400 font-normal">/ {attempt.totalMarks}</span>
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1">Accuracy</p>
-                  <p className="font-bold text-xl text-slate-700">
-                    {((attempt.correct / (attempt.correct + attempt.wrong)) * 100 || 0).toFixed(1)}%
-                  </p>
-                </div>
-                <Link href={`/dashboard/results/${attempt._id}`}>
-                  <Button variant="secondary" className="gap-2 rounded-full px-5 py-2">
-                    View Details <ChevronRight className="w-4 h-4" />
-                  </Button>
-                </Link>
+          <button className="w-full text-[#00BC7D] border border-slate-100 bg-slate-50 hover:bg-slate-100 text-sm font-medium py-3 rounded-full flex items-center justify-center transition-colors">
+            <TrendingUp className="w-4 h-4 mr-2" /> View Detailed Analysis
+          </button>
+        </div>
+
+        {/* Ranking Among Competitors */}
+        <div className="bg-white rounded-3xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] border border-slate-100 p-6 lg:col-span-1">
+          <div className="flex items-center gap-2 mb-6">
+            <h3 className="font-medium text-slate-900 text-lg">Ranking Among Competitors</h3>
+            <div className="w-4 h-4 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-[10px] cursor-help">i</div>
+          </div>
+
+          <div className="flex justify-between mb-5">
+            <div>
+              <p className="text-xs font-medium text-slate-400">Your Rank</p>
+              <p className="text-2xl font-bold text-slate-900">128 <span className="text-sm font-medium text-slate-400 font-normal">/ 5,842</span></p>
+            </div>
+            <div className="text-right">
+              <p className="text-xs font-medium text-slate-400">Percentile</p>
+              <p className="text-xl font-bold text-[#00BC7D]">97.81%</p>
+            </div>
+          </div>
+
+          <div className="h-[120px] w-full mb-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={rankData} margin={{ top: 20, right: 10, bottom: 0, left: 10 }}>
+                <XAxis dataKey="name" stroke="#94a3b8" fontSize={10} tickLine={false} axisLine={false} />
+                <Tooltip contentStyle={{ borderRadius: '12px', fontSize: '12px', border: '1px solid #f1f5f9', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }} />
+                <Line
+                  type="monotone"
+                  dataKey="rank"
+                  stroke="#00BC7D"
+                  strokeWidth={2}
+                  activeDot={{ r: 4 }}
+                  dot={{ r: 3, fill: '#00BC7D', strokeWidth: 0 }}
+                  label={{ position: 'top', fill: '#64748b', fontSize: 11, dy: -5 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <p className="text-xs text-slate-500 leading-relaxed">
+            You are ahead of <span className="font-semibold text-slate-700">97.81%</span> of students who have attempted tests in this period.
+          </p>
+        </div>
+
+      </div>
+
+      {/* Bottom Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        {/* Test Attempts Table */}
+        <div className="bg-white rounded-3xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] border border-slate-100 p-6 lg:col-span-2 overflow-x-auto">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+            <h3 className="font-medium text-slate-900 text-lg">Test Attempts</h3>
+            <div className="flex items-center gap-2">
+              {['All Tests', 'Full Syllabus', 'Subject Wise', 'Chapter Wise'].map(tab => (
+                <button
+                  key={tab}
+                  onClick={() => setFilterTab(tab)}
+                  className={`px-4 py-2 text-xs font-bold rounded-full transition-colors ${filterTab === tab
+                    ? 'bg-[#f4fbf8] text-[#00BC7D]'
+                    : 'text-slate-500 hover:bg-slate-50 bg-white'
+                    }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <table className="w-full text-left border-collapse min-w-[760px]">
+            <thead>
+              <tr className="border-b border-slate-100">
+                <th className="pb-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Test Name</th>
+                <th className="pb-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Type</th>
+                <th className="pb-3 text-xs font-semibold text-slate-400 uppercase tracking-wider text-right">Score</th>
+                <th className="pb-3 text-xs font-semibold text-slate-400 uppercase tracking-wider text-right">Accuracy</th>
+                <th className="pb-3 text-xs font-semibold text-slate-400 uppercase tracking-wider text-right">Correct</th>
+                <th className="pb-3 text-xs font-semibold text-slate-400 uppercase tracking-wider text-right">Incorrect</th>
+                <th className="pb-3 text-xs font-semibold text-slate-400 uppercase tracking-wider text-right">Time Taken</th>
+                {/* <th className="pb-3 text-xs font-semibold text-slate-400 uppercase tracking-wider text-right">Attempt Date</th> */}
+                <th className="pb-3 text-xs font-semibold text-slate-400 uppercase tracking-wider text-center"></th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-50">
+              {attempts.slice(0, 5).map((attempt: any) => (
+                <tr key={attempt._id} className="hover:bg-slate-50/50 transition-colors">
+                  <td className="py-4 pr-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-[#f4fbf8] text-[#00BC7D] flex items-center justify-center shrink-0">
+                        <BookOpen className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-slate-900">{attempt.mockTestTitle || 'Unknown Test'}</p>
+                        <p className="text-xs text-slate-500 mt-0.5">{attempt.totalMarks} Questions</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="py-4">
+                    <span className="text-[11px] font-bold text-[#00BC7D] bg-[#f4fbf8] px-3 py-1.5 rounded-full whitespace-nowrap">Full Syllabus</span>
+                  </td>
+                  <td className="py-4 text-right">
+                    <p className="text-sm font-bold text-slate-900">{((attempt.score / attempt.totalMarks) * 100).toFixed(2)}%</p>
+                    <p className="text-[11px] text-slate-400 mt-0.5">{attempt.score} / {attempt.totalMarks}</p>
+                  </td>
+                  <td className="py-4 text-right">
+                    <p className="text-sm font-semibold text-slate-700">
+                      {((attempt.correct / ((attempt.correct + attempt.wrong) || 1)) * 100).toFixed(2)}%
+                    </p>
+                  </td>
+                  <td className="py-4 text-right">
+                    <p className="text-sm font-semibold text-[#00BC7D]">{attempt.correct}</p>
+                  </td>
+                  <td className="py-4 text-right">
+                    <p className="text-sm font-semibold text-red-500">{attempt.wrong}</p>
+                  </td>
+                  <td className="py-4 text-right">
+                    <p className="text-sm font-medium text-slate-700">3h 12m</p>
+                  </td>
+                  {/* <td className="py-4 text-right">
+                    <p className="text-xs font-medium text-slate-900">{new Date(attempt.submittedAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
+                    <p className="text-[11px] text-slate-400 mt-0.5">{new Date(attempt.submittedAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</p>
+                  </td> */}
+                  <td className="py-4 text-center pl-2">
+                    <Link href={`/dashboard/results/${attempt._id}`}>
+                      <button className="text-slate-400 hover:text-[#00BC7D] p-2 rounded-full hover:bg-[#f4fbf8] transition-colors">
+                        <MoreVertical className="w-4 h-4" />
+                      </button>
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {attempts.length > 5 && (
+            <div className="flex justify-center mt-6 pt-4">
+              <div className="flex gap-2">
+                <button className="w-8 h-8 flex items-center justify-center rounded-full border border-slate-100 text-slate-400 hover:bg-slate-50 text-xs font-medium">{"<"}</button>
+                <button className="w-8 h-8 flex items-center justify-center rounded-full bg-[#00BC7D] text-white text-xs font-bold shadow-md shadow-[#00BC7D]/20">1</button>
+                <button className="w-8 h-8 flex items-center justify-center rounded-full border border-slate-100 text-slate-600 hover:bg-slate-50 text-xs font-medium">2</button>
+                <button className="w-8 h-8 flex items-center justify-center rounded-full border border-slate-100 text-slate-600 hover:bg-slate-50 text-xs font-medium">3</button>
+                <button className="w-8 h-8 flex items-center justify-center rounded-full border border-slate-100 text-slate-400 hover:bg-slate-50 text-xs font-medium">{">"}</button>
               </div>
             </div>
-          ))}
+          )}
         </div>
+
+        {/* Competitor Comparison */}
+        <div className="bg-white rounded-3xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] border border-slate-100 p-6 lg:col-span-1">
+          <div className="flex items-center gap-2 mb-6">
+            <h3 className="font-medium text-slate-900 text-lg">Competitor Comparison</h3>
+            <div className="w-4 h-4 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-[10px] cursor-help">i</div>
+          </div>
+
+          <div className="flex flex-col">
+            {/* Score */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 pb-5 mb-5 border-b border-slate-100 last:border-0 last:pb-0 last:mb-0">
+              <div className="flex items-center gap-4 w-full sm:w-[35%]">
+                <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center shrink-0">
+                  <Target className="w-5 h-5" />
+                </div>
+                <p className="text-sm font-semibold text-slate-700">Score</p>
+              </div>
+
+              <div className="flex-1 w-full">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-xs font-semibold text-slate-500">You</span>
+                  <span className="text-xs font-semibold text-slate-500">Top 10%</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className="text-sm font-bold text-slate-800 w-12">{avgScorePercentage.toFixed(2)}%</span>
+                  <div className="flex-1 h-2.5 bg-slate-100 rounded-full overflow-hidden flex">
+                    <div className="bg-gradient-to-r from-[#00BC7D] to-[#009c68] h-full rounded-full" style={{ width: `${avgScorePercentage}%` }}></div>
+                  </div>
+                  <span className="text-sm font-medium text-slate-500 w-12 text-right">80.92%</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Accuracy */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 pb-5 mb-5 border-b border-slate-100 last:border-0 last:pb-0 last:mb-0">
+              <div className="flex items-center gap-4 w-full sm:w-[35%]">
+                <div className="w-10 h-10 rounded-full bg-[#f4fbf8] text-[#00BC7D] flex items-center justify-center shrink-0">
+                  <Activity className="w-5 h-5" />
+                </div>
+                <p className="text-sm font-semibold text-slate-700">Accuracy</p>
+              </div>
+              <div className="flex-1 w-full">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-xs font-semibold text-slate-500">You</span>
+                  <span className="text-xs font-semibold text-slate-500">Top 10%</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className="text-sm font-bold text-[#00BC7D] w-12">{avgAccuracy.toFixed(2)}%</span>
+                  <div className="flex-1 h-2.5 bg-slate-100 rounded-full overflow-hidden flex">
+                    <div className="bg-gradient-to-r from-[#00BC7D] to-[#009c68] h-full rounded-full" style={{ width: `${avgAccuracy}%` }}></div>
+                  </div>
+                  <span className="text-sm font-medium text-slate-500 w-12 text-right">75.40%</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Time per Question */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 pb-5 mb-5 border-b border-slate-100 last:border-0 last:pb-0 last:mb-0">
+              <div className="flex items-center gap-4 w-full sm:w-[35%]">
+                <div className="w-10 h-10 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
+                  <Clock className="w-5 h-5" />
+                </div>
+                <p className="text-sm font-semibold text-slate-700">Time per Question</p>
+              </div>
+              <div className="flex-1 w-full">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-xs font-semibold text-slate-500">You</span>
+                  <span className="text-xs font-semibold text-slate-500">Top 10%</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className="text-sm font-bold text-[#00BC7D] w-12">52s</span>
+                  <div className="flex-1 h-2.5 bg-slate-100 rounded-full overflow-hidden flex">
+                    <div className="bg-gradient-to-r from-[#00BC7D] to-[#009c68] h-full rounded-full" style={{ width: '60%' }}></div>
+                  </div>
+                  <span className="text-sm font-medium text-slate-500 w-12 text-right">38s</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Tests Attempted */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 pb-5 mb-5 border-b border-slate-100 last:border-0 last:pb-0 last:mb-0">
+              <div className="flex items-center gap-4 w-full sm:w-[35%]">
+                <div className="w-10 h-10 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center shrink-0">
+                  <ClipboardList className="w-5 h-5" />
+                </div>
+                <p className="text-sm font-semibold text-slate-700">Tests Attempted</p>
+              </div>
+              <div className="flex-1 w-full">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-xs font-semibold text-slate-500">You</span>
+                  <span className="text-xs font-semibold text-slate-500">Top 10%</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className="text-sm font-bold text-slate-800 w-12">{attempts.length}</span>
+                  <div className="flex-1 h-2.5 bg-slate-100 rounded-full overflow-hidden flex">
+                    <div className="bg-gradient-to-r from-[#00BC7D] to-[#009c68] h-full rounded-full" style={{ width: '40%' }}></div>
+                  </div>
+                  <span className="text-sm font-medium text-slate-500 w-12 text-right">32</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 pt-4 border-t border-slate-100">
+            <p className="text-[11px] text-slate-400 leading-relaxed text-center">
+              Top 10% data is based on students who attempted tests in this period.
+            </p>
+          </div>
+        </div>
+
       </div>
     </div>
   );

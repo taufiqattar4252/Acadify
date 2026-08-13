@@ -187,9 +187,9 @@ export default function ExamSessionPage() {
 
       {stage === 'instructions' && (
         <div className="animate-in fade-in duration-500 slide-in-from-right-8">
-          <ExamInstructions 
-            examData={examData} 
-            studentName={studentName} 
+          <ExamInstructions
+            examData={examData}
+            studentName={studentName}
             onReady={() => {
               try {
                 if (document.documentElement.requestFullscreen) {
@@ -199,7 +199,7 @@ export default function ExamSessionPage() {
                 console.error("Fullscreen request failed", e);
               }
               setStage('exam');
-            }} 
+            }}
           />
         </div>
       )}

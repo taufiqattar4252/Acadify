@@ -5,14 +5,14 @@ import { useParams, useRouter } from 'next/navigation';
 import { useGetAttemptDetails } from '@/services/resultApi';
 import { Spinner } from '@/components/ui/Spinner';
 import { Button } from '@/components/ui/Button';
-import { 
-  ChevronLeft, Printer, Trophy, Target, Clock, 
-  BarChart2, CheckCircle2, XCircle, MinusCircle 
+import {
+  ChevronLeft, Printer, Trophy, Target, Clock,
+  BarChart2, CheckCircle2, XCircle, MinusCircle
 } from 'lucide-react';
 import Image from 'next/image';
-import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
-  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar 
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar
 } from 'recharts';
 
 export default function AttemptDetailsPage() {
@@ -21,7 +21,7 @@ export default function AttemptDetailsPage() {
   const router = useRouter();
 
   const { data: result, isLoading, isError } = useGetAttemptDetails(attemptId);
-  
+
   const [reviewFilter, setReviewFilter] = useState<string>('all');
   const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
 
@@ -81,11 +81,11 @@ export default function AttemptDetailsPage() {
 
   return (
     <div className="space-y-8 pb-12 print-container">
-      
+
       {/* HEADER */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 print-hide">
         <div className="flex items-center gap-3">
-          <button 
+          <button
             onClick={() => router.push('/dashboard/results')}
             className="p-2 hover:bg-slate-200 rounded-lg text-slate-500 transition-colors"
           >
@@ -128,7 +128,7 @@ export default function AttemptDetailsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* CHARTS */}
         <div className="lg:col-span-2 space-y-6">
-          
+
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
             <h3 className="font-bold text-slate-900 mb-4">Subject Performance</h3>
             <div className="h-[300px] w-full">
@@ -241,7 +241,7 @@ export default function AttemptDetailsPage() {
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden print-break-before print-hide">
         <div className="p-6 border-b border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
           <h3 className="font-bold text-slate-900 text-lg">Question Review</h3>
-          
+
           <div className="flex flex-wrap gap-2">
             {['all', 'correct', 'wrong', 'skipped'].map(filter => (
               <button
@@ -250,11 +250,10 @@ export default function AttemptDetailsPage() {
                   setReviewFilter(filter);
                   setCurrentReviewIndex(0);
                 }}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium capitalize transition-colors ${
-                  reviewFilter === filter 
-                    ? 'bg-indigo-600 text-white' 
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium capitalize transition-colors ${reviewFilter === filter
+                    ? 'bg-indigo-600 text-white'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }`}
+                  }`}
               >
                 {filter}
               </button>
@@ -309,7 +308,7 @@ export default function AttemptDetailsPage() {
                 {filteredQuestions[currentReviewIndex].options.map((opt: any, idx: number) => {
                   const isStudentAnswer = filteredQuestions[currentReviewIndex].studentAnswer === opt._id;
                   const isCorrectAnswer = opt.isCorrect;
-                  
+
                   let optStyle = 'border-slate-200 bg-white';
                   if (isCorrectAnswer) optStyle = 'border-emerald-500 bg-emerald-50';
                   else if (isStudentAnswer && !isCorrectAnswer) optStyle = 'border-red-500 bg-red-50';
@@ -353,15 +352,15 @@ export default function AttemptDetailsPage() {
 
               {/* Nav */}
               <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-100">
-                <Button 
-                  variant="secondary" 
+                <Button
+                  variant="secondary"
                   disabled={currentReviewIndex === 0}
                   onClick={() => setCurrentReviewIndex(prev => prev - 1)}
                 >
                   Previous
                 </Button>
                 <span className="text-sm font-medium text-slate-400">{currentReviewIndex + 1} of {filteredQuestions.length}</span>
-                <Button 
+                <Button
                   disabled={currentReviewIndex === filteredQuestions.length - 1}
                   onClick={() => setCurrentReviewIndex(prev => prev + 1)}
                 >
@@ -378,7 +377,7 @@ export default function AttemptDetailsPage() {
                   let colorClass = 'bg-white border-slate-300 text-slate-600 hover:bg-slate-100';
                   if (q.isCorrect) colorClass = 'bg-[#00BC7D] border-emerald-600 text-white';
                   else if (q.isWrong) colorClass = 'bg-red-500 border-red-600 text-white';
-                  
+
                   const isCurrent = idx === currentReviewIndex;
 
                   return (
@@ -400,9 +399,10 @@ export default function AttemptDetailsPage() {
           </div>
         )}
       </div>
-      
+
       {/* Print Styles inline */}
-      <style dangerouslySetInnerHTML={{__html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         @media print {
           body { background: white; }
           .print-hide { display: none !important; }

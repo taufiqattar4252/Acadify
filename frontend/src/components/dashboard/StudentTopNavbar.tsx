@@ -59,12 +59,12 @@ export const StudentTopNavbar = () => {
     <header className="sticky top-0 z-50 bg-[#F4F7F6] px-4 lg:px-2 pt-8 pb-4">
       <div className="max-w-[1400px] mx-auto w-full flex items-center justify-between">
         {/* LEFT: Brand Logo */}
-        <div className="flex items-center gap-2 cursor-pointer">
+        <Link href="/dashboard" className="flex items-center gap-2 cursor-pointer">
           <div className="w-10 h-10 rounded-xl bg-[#00BC7D] flex items-center justify-center transform -rotate-12">
             <div className="w-3.5 h-3.5 bg-white rounded-[4px]"></div>
           </div>
           <span className="text-2xl font-bold text-slate-800 tracking-tight ml-1">Acadify</span>
-        </div>
+        </Link>
 
         {/* CENTER: Floating Pill Navigation */}
         <nav className="hidden md:flex items-center bg-white px-2 py-1.5 rounded-full shadow-lumina">

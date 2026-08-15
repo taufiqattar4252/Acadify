@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useGetCart, useRemoveFromCart, useApplyCoupon, useRemoveCoupon, useAddToCart } from '@/services/cartApi';
-import { useGetStudentMockTests } from '@/services/studentApi';
+import { useGetStudentMockTests, useGetStudentPurchases } from '@/services/studentApi';
 import { ShoppingCart, Tag, BookOpen, Star, ArrowRight, CheckCircle2, Sparkles, FileText, Trophy, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -17,7 +17,16 @@ export default function CartPage() {
   const applyCouponMutation = useApplyCoupon();
   const removeCouponMutation = useRemoveCoupon();
   const addToCartMutation = useAddToCart();
-  const { data: storeData, isLoading: isStoreLoading } = useGetStudentMockTests(1, 4, '', '', '-createdAt');
+  const { data: storeData, isLoading: isStoreLoading } = useGetStudentMockTests(1, 10, '', '', '-createdAt');
+  const { data: purchasesData } = useGetStudentPurchases();
+
+  const purchasedTestIds = new Set((purchasesData?.purchases || []).map((p: any) => p.mockTest?._id || p.mockTest));
+
+  const recommendedTests = storeData?.tests
+    ? storeData.tests
+        .filter((test: any) => !cart?.items?.some((i: any) => i.mockTest._id === test._id || i.mockTest === test._id) && !purchasedTestIds.has(test._id))
+        .slice(0, 4)
+    : [];
 
   const [couponCode, setCouponCode] = useState('');
   const [showCouponInput, setShowCouponInput] = useState(false);
@@ -245,13 +254,17 @@ export default function CartPage() {
       )}
 
       {/* Recommended Mock Tests */}
-      {!isStoreLoading && storeData?.tests && storeData.tests.length > 0 && (
+      {!isStoreLoading && storeData?.tests && (
         <div className="mt-16 pt-8">
           <h2 className="text-xl text-slate-800 mb-6">Learners are also viewing</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {storeData.tests.slice(0, 4).map((test: any) => {
-              if (cart?.items?.some((i: any) => i.mockTest._id === test._id)) return null;
-
+          
+          {recommendedTests.length === 0 ? (
+            <div className="bg-white p-8 rounded-3xl border border-slate-100 text-center shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] text-slate-500 italic">
+              You are caught with all
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {recommendedTests.map((test: any) => {
               return (
                 <div
                   key={test._id}
@@ -369,7 +382,8 @@ export default function CartPage() {
                 </div>
               );
             })}
-          </div>
+            </div>
+          )}
         </div>
       )}
     </div>

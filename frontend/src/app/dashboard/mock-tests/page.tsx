@@ -34,7 +34,7 @@ const CustomSelect = ({ value, onChange, options, placeholder }: any) => {
         <span className="truncate">{selectedOption ? selectedOption.label : placeholder}</span>
         <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
-      
+
       {isOpen && (
         <div className="absolute top-full left-0 mt-2 w-full min-w-[180px] bg-white rounded-2xl shadow-lumina-hover border border-slate-100 py-2 z-50 animate-in fade-in slide-in-from-top-2">
           {options.map((opt: any) => (
@@ -44,11 +44,10 @@ const CustomSelect = ({ value, onChange, options, placeholder }: any) => {
                 onChange(opt.value);
                 setIsOpen(false);
               }}
-              className={`w-full text-left px-4 py-2 text-sm transition-colors ${
-                value === opt.value 
-                  ? "bg-[#00BC7D]/10 text-[#00BC7D] font-bold" 
+              className={`w-full text-left px-4 py-2 text-sm transition-colors ${value === opt.value
+                  ? "bg-[#00BC7D]/10 text-[#00BC7D] font-bold"
                   : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
-              }`}
+                }`}
             >
               {opt.label}
             </button>

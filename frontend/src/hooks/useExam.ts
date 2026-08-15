@@ -47,7 +47,7 @@ export const useExamStorage = (sessionId: string) => {
 };
 
 // Main Exam Hook
-export const useExam = (sessionId: string, initialQuestions: any[], durationMinutes: number) => {
+export const useExam = (sessionId: string, initialQuestions: any[], durationMinutes: number, isTimerActive: boolean = false) => {
   const { saveState, loadState, clearState } = useExamStorage(sessionId);
   const isInitialized = useRef(false);
 
@@ -106,7 +106,7 @@ export const useExam = (sessionId: string, initialQuestions: any[], durationMinu
 
   // Timer effect
   useEffect(() => {
-    if (!isInitialized.current) return;
+    if (!isInitialized.current || !isTimerActive) return;
 
     const timer = setInterval(() => {
       setExamState(prev => {
@@ -118,12 +118,15 @@ export const useExam = (sessionId: string, initialQuestions: any[], durationMinu
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [isTimerActive]);
 
   // Sync back state changes immediately to storage
-  const syncState = useCallback((newState: ExamState) => {
-    setExamState(newState);
-    saveState(newState);
+  const syncState = useCallback((updater: ExamState | ((prev: ExamState) => ExamState)) => {
+    setExamState(prev => {
+      const nextState = typeof updater === 'function' ? updater(prev) : updater;
+      saveState(nextState);
+      return nextState;
+    });
   }, [saveState]);
 
   return { 
@@ -138,73 +141,79 @@ export const useExam = (sessionId: string, initialQuestions: any[], durationMinu
 // Answers Hook
 export const useAnswers = (
   examState: ExamState, 
-  syncState: (state: ExamState) => void,
+  syncState: (updater: ExamState | ((prev: ExamState) => ExamState)) => void,
   currentQuestionId: string
 ) => {
   
   const handleSelectOption = useCallback((optionId: string) => {
     if (!currentQuestionId) return;
 
-    const newAnswers = { ...examState.answers, [currentQuestionId]: optionId };
-    
-    let newStatus = examState.statuses[currentQuestionId];
-    if (newStatus === 'Marked for Review' || newStatus === 'Answered & Marked') {
-      newStatus = 'Answered & Marked';
-    } else {
-      newStatus = 'Answered';
-    }
+    syncState(prev => {
+      const newAnswers = { ...prev.answers, [currentQuestionId]: optionId };
+      
+      let newStatus = prev.statuses[currentQuestionId];
+      if (newStatus === 'Marked for Review' || newStatus === 'Answered & Marked') {
+        newStatus = 'Answered & Marked';
+      } else {
+        newStatus = 'Answered';
+      }
 
-    const newStatuses = { ...examState.statuses, [currentQuestionId]: newStatus };
-    
-    syncState({
-      ...examState,
-      answers: newAnswers,
-      statuses: newStatuses,
-      lastUpdated: Date.now()
+      const newStatuses = { ...prev.statuses, [currentQuestionId]: newStatus };
+      
+      return {
+        ...prev,
+        answers: newAnswers,
+        statuses: newStatuses,
+        lastUpdated: Date.now()
+      };
     });
-  }, [examState, syncState, currentQuestionId]);
+  }, [syncState, currentQuestionId]);
 
   const handleClearResponse = useCallback(() => {
     if (!currentQuestionId) return;
 
-    const newAnswers = { ...examState.answers };
-    delete newAnswers[currentQuestionId];
+    syncState(prev => {
+      const newAnswers = { ...prev.answers };
+      delete newAnswers[currentQuestionId];
 
-    let newStatus = examState.statuses[currentQuestionId];
-    if (newStatus === 'Answered & Marked' || newStatus === 'Marked for Review') {
-      newStatus = 'Marked for Review';
-    } else {
-      newStatus = 'Visited';
-    }
+      let newStatus = prev.statuses[currentQuestionId];
+      if (newStatus === 'Answered & Marked' || newStatus === 'Marked for Review') {
+        newStatus = 'Marked for Review';
+      } else {
+        newStatus = 'Visited';
+      }
 
-    const newStatuses = { ...examState.statuses, [currentQuestionId]: newStatus };
+      const newStatuses = { ...prev.statuses, [currentQuestionId]: newStatus };
 
-    syncState({
-      ...examState,
-      answers: newAnswers,
-      statuses: newStatuses,
-      lastUpdated: Date.now()
+      return {
+        ...prev,
+        answers: newAnswers,
+        statuses: newStatuses,
+        lastUpdated: Date.now()
+      };
     });
-  }, [examState, syncState, currentQuestionId]);
+  }, [syncState, currentQuestionId]);
 
   const handleToggleMark = useCallback(() => {
     if (!currentQuestionId) return;
 
-    let newStatus = examState.statuses[currentQuestionId];
-    
-    if (newStatus === 'Answered') newStatus = 'Answered & Marked';
-    else if (newStatus === 'Visited') newStatus = 'Marked for Review';
-    else if (newStatus === 'Answered & Marked') newStatus = 'Answered';
-    else if (newStatus === 'Marked for Review') newStatus = 'Visited';
+    syncState(prev => {
+      let newStatus = prev.statuses[currentQuestionId] || 'Visited';
+      
+      if (newStatus === 'Answered') newStatus = 'Answered & Marked';
+      else if (newStatus === 'Visited') newStatus = 'Marked for Review';
+      else if (newStatus === 'Answered & Marked') newStatus = 'Answered';
+      else if (newStatus === 'Marked for Review') newStatus = 'Visited';
 
-    const newStatuses = { ...examState.statuses, [currentQuestionId]: newStatus };
+      const newStatuses = { ...prev.statuses, [currentQuestionId]: newStatus };
 
-    syncState({
-      ...examState,
-      statuses: newStatuses,
-      lastUpdated: Date.now()
+      return {
+        ...prev,
+        statuses: newStatuses,
+        lastUpdated: Date.now()
+      };
     });
-  }, [examState, syncState, currentQuestionId]);
+  }, [syncState, currentQuestionId]);
 
   return { handleSelectOption, handleClearResponse, handleToggleMark };
 };
@@ -212,7 +221,7 @@ export const useAnswers = (
 // Navigation Hook
 export const useQuestionNavigation = (
   examState: ExamState,
-  syncState: (state: ExamState) => void,
+  syncState: (updater: ExamState | ((prev: ExamState) => ExamState)) => void,
   questions: any[]
 ) => {
   const goToQuestion = useCallback((index: number) => {
@@ -220,19 +229,21 @@ export const useQuestionNavigation = (
 
     const newQId = questions[index]._id;
 
-    // Status transition for new question
-    const newStatuses = { ...examState.statuses };
-    if (newStatuses[newQId] === 'Not Visited' || !newStatuses[newQId]) {
-      newStatuses[newQId] = 'Visited';
-    }
+    syncState(prev => {
+      // Status transition for new question
+      const newStatuses = { ...prev.statuses };
+      if (newStatuses[newQId] === 'Not Visited' || !newStatuses[newQId]) {
+        newStatuses[newQId] = 'Visited';
+      }
 
-    syncState({
-      ...examState,
-      currentIndex: index,
-      statuses: newStatuses,
-      lastUpdated: Date.now()
+      return {
+        ...prev,
+        currentIndex: index,
+        statuses: newStatuses,
+        lastUpdated: Date.now()
+      };
     });
-  }, [examState, syncState, questions]);
+  }, [syncState, questions]);
 
   const handleNext = useCallback(() => {
     if (questions && examState.currentIndex < questions.length - 1) {

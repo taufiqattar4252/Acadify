@@ -26,16 +26,16 @@ export default function ExamSessionPage() {
   const duration = examData?.duration || 120;
   const questions = examData?.questions || [];
 
+  // New State: Exam Stage
+  const [stage, setStage] = useState<'summary' | 'instructions' | 'exam'>('summary');
+  const [showSubmitModal, setShowSubmitModal] = useState(false);
+
   // Initialize Exam Hooks
-  const { examState, syncState, clearState, isReady, isTimeUp } = useExam(sessionId, questions, duration);
+  const { examState, syncState, clearState, isReady, isTimeUp } = useExam(sessionId, questions, duration, stage === 'exam');
 
   const currentQuestionId = questions[examState.currentIndex]?._id || '';
   const { handleSelectOption, handleClearResponse, handleToggleMark } = useAnswers(examState, syncState, currentQuestionId);
   const { goToQuestion, handleNext, handlePrev } = useQuestionNavigation(examState, syncState, questions);
-
-  // New State: Exam Stage
-  const [stage, setStage] = useState<'summary' | 'instructions' | 'exam'>('summary');
-  const [showSubmitModal, setShowSubmitModal] = useState(false);
 
   const submitExamMutation = useSubmitExam();
 

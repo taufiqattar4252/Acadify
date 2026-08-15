@@ -66,6 +66,37 @@ export default function ResultsHistoryPage() {
     attempts.reduce((acc: number, a: any) => acc + (a.correct / ((a.correct + a.wrong) || 1)), 0) / attempts.length * 100
     : 0;
 
+  const totalDurationSeconds = attempts.reduce((acc: number, a: any) => acc + (a.duration || 0), 0);
+  const totalHours = Math.floor(totalDurationSeconds / 3600);
+  const totalMinutes = Math.floor((totalDurationSeconds % 3600) / 60);
+  const formattedTime = totalHours > 0 ? `${totalHours}h ${totalMinutes}m` : `${totalMinutes}m`;
+
+  // Calculate Trends
+  const now = new Date();
+  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+  const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
+
+  const attemptsLast30Days = attempts.filter((a: any) => new Date(a.submittedAt || a.createdAt) >= thirtyDaysAgo);
+  const attemptsPrevious30Days = attempts.filter((a: any) => {
+    const d = new Date(a.submittedAt || a.createdAt);
+    return d >= sixtyDaysAgo && d < thirtyDaysAgo;
+  });
+
+  const calcTrend = (current: number, previous: number) => {
+    if (previous === 0) return current > 0 ? 100 : 0;
+    return ((current - previous) / previous) * 100;
+  };
+
+  const testsAttemptedTrend = calcTrend(attemptsLast30Days.length, attemptsPrevious30Days.length);
+
+  const avgScoreLast30 = attemptsLast30Days.length > 0 ? (attemptsLast30Days.reduce((acc: number, a: any) => acc + (a.score / a.totalMarks), 0) / attemptsLast30Days.length) * 100 : 0;
+  const avgScorePrev30 = attemptsPrevious30Days.length > 0 ? (attemptsPrevious30Days.reduce((acc: number, a: any) => acc + (a.score / a.totalMarks), 0) / attemptsPrevious30Days.length) * 100 : 0;
+  const avgScoreTrend = calcTrend(avgScoreLast30, avgScorePrev30);
+
+  const accLast30 = attemptsLast30Days.length > 0 ? attemptsLast30Days.reduce((acc: number, a: any) => acc + (a.correct / ((a.correct + a.wrong) || 1)), 0) / attemptsLast30Days.length * 100 : 0;
+  const accPrev30 = attemptsPrevious30Days.length > 0 ? attemptsPrevious30Days.reduce((acc: number, a: any) => acc + (a.correct / ((a.correct + a.wrong) || 1)), 0) / attemptsPrevious30Days.length * 100 : 0;
+  const accTrend = calcTrend(accLast30, accPrev30);
+
   // Prepare chart data
   const chartData = [...attempts].reverse().map((attempt, index) => ({
     name: new Date(attempt.submittedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }),
@@ -128,8 +159,8 @@ export default function ResultsHistoryPage() {
               <ClipboardList className="w-5 h-5" />
             </div>
           </div>
-          <p className="text-xs font-medium text-[#00BC7D] flex items-center mt-3">
-            <TrendingUp className="w-3 h-3 mr-1.5" /> 12% vs last 30 days
+          <p className={`text-xs font-medium flex items-center mt-3 ${testsAttemptedTrend >= 0 ? 'text-[#00BC7D]' : 'text-red-500'}`}>
+            <TrendingUp className={`w-3 h-3 mr-1.5 ${testsAttemptedTrend < 0 ? 'rotate-180 text-red-500' : ''}`} /> {Math.abs(testsAttemptedTrend).toFixed(1)}% vs last 30 days
           </p>
         </div>
 
@@ -137,14 +168,14 @@ export default function ResultsHistoryPage() {
           <div className="flex justify-between items-start mb-2">
             <div>
               <p className="text-xs font-medium text-slate-400 mb-1">Average Score</p>
-              <h3 className="text-2xl font-bold text-slate-900">{avgScorePercentage.toFixed(2)}%</h3>
+              <h3 className="text-2xl font-bold text-slate-900">{avgScore}</h3>
             </div>
             <div className="w-10 h-10 rounded-full bg-[#f4fbf8] text-[#00BC7D] flex items-center justify-center shrink-0">
               <Target className="w-5 h-5" />
             </div>
           </div>
-          <p className="text-xs font-medium text-[#00BC7D] flex items-center mt-3">
-            <TrendingUp className="w-3 h-3 mr-1.5" /> 8.6% vs last 30 days
+          <p className={`text-xs font-medium flex items-center mt-3 ${avgScoreTrend >= 0 ? 'text-[#00BC7D]' : 'text-red-500'}`}>
+            <TrendingUp className={`w-3 h-3 mr-1.5 ${avgScoreTrend < 0 ? 'rotate-180 text-red-500' : ''}`} /> {Math.abs(avgScoreTrend).toFixed(1)}% vs last 30 days
           </p>
         </div>
 
@@ -152,7 +183,7 @@ export default function ResultsHistoryPage() {
           <div className="flex justify-between items-start mb-2">
             <div>
               <p className="text-xs font-medium text-slate-400 mb-1">Best Score</p>
-              <h3 className="text-2xl font-bold text-slate-900">{bestScorePercentage.toFixed(2)}%</h3>
+              <h3 className="text-2xl font-bold text-slate-900">{bestScore}</h3>
             </div>
             <div className="w-10 h-10 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
               <Award className="w-5 h-5" />
@@ -173,8 +204,8 @@ export default function ResultsHistoryPage() {
               <Activity className="w-5 h-5" />
             </div>
           </div>
-          <p className="text-xs font-medium text-[#00BC7D] flex items-center mt-3">
-            <TrendingUp className="w-3 h-3 mr-1.5" /> 6.3% vs last 30 days
+          <p className={`text-xs font-medium flex items-center mt-3 ${accTrend >= 0 ? 'text-[#00BC7D]' : 'text-red-500'}`}>
+            <TrendingUp className={`w-3 h-3 mr-1.5 ${accTrend < 0 ? 'rotate-180 text-red-500' : ''}`} /> {Math.abs(accTrend).toFixed(1)}% vs last 30 days
           </p>
         </div>
 
@@ -182,7 +213,7 @@ export default function ResultsHistoryPage() {
           <div className="flex justify-between items-start mb-2">
             <div>
               <p className="text-xs font-medium text-slate-400 mb-1">Total Time</p>
-              <h3 className="text-2xl font-bold text-slate-900">28h 45m</h3>
+              <h3 className="text-2xl font-bold text-slate-900">{formattedTime}</h3>
             </div>
             <div className="w-10 h-10 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center shrink-0">
               <Clock className="w-5 h-5" />
@@ -316,7 +347,7 @@ export default function ResultsHistoryPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         {/* Test Attempts Table */}
-        <div className="bg-white rounded-3xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] border border-slate-100 p-6 lg:col-span-2 overflow-x-auto">
+        <div id="test-attempts" className="bg-white rounded-3xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] border border-slate-100 p-6 lg:col-span-2 overflow-x-auto scroll-mt-24">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
             <h3 className="font-medium text-slate-900 text-lg">Test Attempts</h3>
             <div className="flex items-center gap-2">

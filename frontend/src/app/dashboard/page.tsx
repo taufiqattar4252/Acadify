@@ -67,7 +67,6 @@ export default function StudentDashboardPage() {
     { name: 'Physics', value: displaySubject.physics.accuracy || 1, color: '#10b981' }, // Green
     { name: 'Chemistry', value: displaySubject.chemistry.accuracy || 1, color: '#8b5cf6' }, // Purple
     { name: 'Mathematics', value: displaySubject.mathematics.accuracy || 1, color: '#3b82f6' }, // Blue
-    { name: 'Biology', value: 40, color: '#f59e0b' }, // Yellow (dummy for 4th color)
   ];
 
   // Question Stats
@@ -75,8 +74,11 @@ export default function StudentDashboardPage() {
   const totalQuestions = (displayQuestions.correct + displayQuestions.wrong + displayQuestions.skipped) || 1;
 
   // Custom Card Component
-  const MetricCard = ({ value, label, icon: Icon, iconColor, iconBg, bottomText, bottomLabel }: any) => (
-    <div className="bg-white rounded-[24px] p-6 shadow-sm border border-slate-100 flex flex-col justify-between h-full">
+  const MetricCard = ({ value, label, icon: Icon, iconColor, iconBg, bottomText, bottomLabel, onClick }: any) => (
+    <div 
+      onClick={onClick}
+      className={`bg-white rounded-[24px] p-6 shadow-sm border border-slate-100 flex flex-col justify-between h-full ${onClick ? 'cursor-pointer hover:shadow-md hover:border-slate-200 transition-all hover:-translate-y-1' : ''}`}
+    >
       <div className="flex justify-between items-start mb-4">
         <div>
           <h3 className="text-[28px] font-bold text-slate-900 leading-none">{value}</h3>
@@ -131,11 +133,13 @@ export default function StudentDashboardPage() {
               value={displayOverview.purchasedMocks} label="Total Purchased"
               icon={BookOpen} iconColor="text-emerald-500" iconBg="bg-emerald-50"
               bottomText={`${displayOverview.purchasedMocks} Tests`} bottomLabel="Available"
+              onClick={() => router.push('/dashboard/mock-tests')}
             />
             <MetricCard
               value={displayOverview.attemptedMocks} label="Tests Attempted"
               icon={Users} iconColor="text-blue-500" iconBg="bg-blue-50"
               bottomText={`${displayOverview.attemptedMocks} Attended`} bottomLabel=""
+              onClick={() => router.push('/dashboard/results#test-attempts')}
             />
           </div>
         </div>
@@ -148,16 +152,19 @@ export default function StudentDashboardPage() {
               value={displayOverview.averageScore} label="Average Score"
               icon={BookMarked} iconColor="text-emerald-500" iconBg="bg-emerald-50"
               bottomText="" bottomLabel=""
+              onClick={() => router.push('/dashboard/results')}
             />
             <MetricCard
               value={`${displayOverview.accuracy}%`} label="Overall Accuracy"
               icon={GraduationCap} iconColor="text-blue-500" iconBg="bg-blue-50"
               bottomText="" bottomLabel=""
+              onClick={() => router.push('/dashboard/results')}
             />
             <MetricCard
               value={displayOverview.bestScore} label="Best Score"
               icon={GraduationCap} iconColor="text-amber-500" iconBg="bg-amber-50"
               bottomText={`${displayOverview.percentile}th`} bottomLabel="Percentile"
+              onClick={() => router.push('/dashboard/results')}
             />
           </div>
         </div>
@@ -280,14 +287,14 @@ export default function StudentDashboardPage() {
           <h3 className="text-lg font-medium text-slate-700 mb-6">Study Progress</h3>
           <div className="flex justify-between gap-4 h-full items-end">
             <div className="border border-slate-100 rounded-[16px] p-4 flex-1 flex flex-col justify-between h-24">
-              <span className="text-xl font-bold text-slate-900">{isNewUser ? 3 : overview.attemptedMocks}</span>
+              <span className="text-xl font-bold text-slate-900">{isNewUser ? 3 : data.studyProgress.strongChapters.length}</span>
               <div className="flex justify-between items-end">
                 <span className="text-[10px] font-medium text-slate-400">Chapters Strong</span>
                 <div className="w-1 h-6 bg-[#10b981] rounded-full"></div>
               </div>
             </div>
             <div className="border border-slate-100 rounded-[16px] p-4 flex-1 flex flex-col justify-between h-24">
-              <span className="text-xl font-bold text-slate-900">{isNewUser ? 5 : 2}</span>
+              <span className="text-xl font-bold text-slate-900">{isNewUser ? 5 : data.studyProgress.needsRevision}</span>
               <div className="flex justify-between items-end">
                 <span className="text-[10px] font-medium text-slate-400">Needs Practice</span>
                 <div className="w-1 h-4 bg-[#8b5cf6] rounded-full"></div>
@@ -300,7 +307,10 @@ export default function StudentDashboardPage() {
         <div className="bg-white rounded-[24px] p-6 shadow-sm border border-slate-100 flex flex-col justify-between">
           <h3 className="text-lg font-medium text-slate-700 mb-6">Activity</h3>
           <div className="flex justify-between gap-4 h-full items-end">
-            <div className="border border-slate-100 rounded-[16px] p-4 flex-1 flex items-center justify-between h-24">
+            <div 
+              onClick={() => router.push('/dashboard/mock-tests')}
+              className="border border-slate-100 rounded-[16px] p-4 flex-1 flex items-center justify-between h-24 cursor-pointer hover:shadow-md hover:border-slate-200 transition-all hover:-translate-y-1"
+            >
               <div>
                 <div className="text-xl font-bold text-slate-900 mb-1">{displayOverview.purchasedMocks}</div>
                 <div className="text-[10px] font-medium text-slate-400">Total Mocks</div>
@@ -309,7 +319,10 @@ export default function StudentDashboardPage() {
                 <BookOpen className="w-4 h-4" />
               </div>
             </div>
-            <div className="border border-slate-100 rounded-[16px] p-4 flex-1 flex items-center justify-between h-24">
+            <div 
+              onClick={() => router.push('/dashboard/results#test-attempts')}
+              className="border border-slate-100 rounded-[16px] p-4 flex-1 flex items-center justify-between h-24 cursor-pointer hover:shadow-md hover:border-slate-200 transition-all hover:-translate-y-1"
+            >
               <div>
                 <div className="text-xl font-bold text-slate-900 mb-1">{displayOverview.attemptedMocks}</div>
                 <div className="text-[10px] font-medium text-slate-400">Completed</div>

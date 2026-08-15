@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
 import MockTest from '../models/MockTest';
 import Purchase from '../models/Purchase';
-import User from '../models/User';
+import User, { UserRole } from '../models/User';
 import catchAsync from '../utils/catchAsync';
 import AppError from '../utils/AppError';
 import Attempt from '../models/Attempt';
@@ -322,8 +322,15 @@ export const getStudentDashboard = catchAsync(async (req: Request, res: Response
     ? Math.round((totalCorrect / totalQuestionsAttempted) * 100) 
     : 0;
 
-  // Mocking Percentile for now
-  const percentile = attemptedMocks > 0 ? 85 + Math.floor(Math.random() * 10) : 0;
+  // Calculate Real Percentile
+  let percentile = 0;
+  let totalStudents = 0;
+  if (attemptedMocks > 0) {
+    const allAttemptsCount = await Attempt.countDocuments();
+    const attemptsBelow = await Attempt.countDocuments({ score: { $lt: bestScore } });
+    percentile = allAttemptsCount > 0 ? Math.round((attemptsBelow / allAttemptsCount) * 100) : 0;
+    totalStudents = await User.countDocuments({ role: UserRole.STUDENT });
+  }
 
   // Score Trend
   const scoreTrend = attempts.slice(-10).map((a, i) => ({
@@ -334,9 +341,9 @@ export const getStudentDashboard = catchAsync(async (req: Request, res: Response
 
   // Subject Performance (Mocked for now as we don't have full subject tagging per answer yet)
   const subjectPerformance = {
-    physics: { accuracy: accuracy > 0 ? accuracy + 2 : 0, averageScore: averageScore > 0 ? Math.round(averageScore / 3) : 0, solved: Math.round(totalCorrect / 3) },
-    chemistry: { accuracy: accuracy > 0 ? accuracy - 5 : 0, averageScore: averageScore > 0 ? Math.round(averageScore / 3) : 0, solved: Math.round(totalCorrect / 3) },
-    mathematics: { accuracy: accuracy > 0 ? accuracy + 5 : 0, averageScore: averageScore > 0 ? Math.round(averageScore / 3) : 0, solved: Math.round(totalCorrect / 3) }
+    physics: { accuracy: accuracy > 0 ? Math.min(100, accuracy + 2) : 0, averageScore: averageScore > 0 ? Math.round(averageScore / 3) : 0, solved: Math.round(totalCorrect / 3) },
+    chemistry: { accuracy: accuracy > 0 ? Math.max(0, accuracy - 5) : 0, averageScore: averageScore > 0 ? Math.round(averageScore / 3) : 0, solved: Math.round(totalCorrect / 3) },
+    mathematics: { accuracy: accuracy > 0 ? Math.min(100, accuracy + 5) : 0, averageScore: averageScore > 0 ? Math.round(averageScore / 3) : 0, solved: Math.round(totalCorrect / 3) }
   };
 
   const questionStats = {
@@ -355,11 +362,11 @@ export const getStudentDashboard = catchAsync(async (req: Request, res: Response
   };
 
   const leaderboard = {
-    currentRank: attemptedMocks > 0 ? 425 : '-',
+    currentRank: attemptedMocks > 0 ? Math.round(totalStudents * (1 - percentile / 100)) || 1 : '-',
     percentile: percentile,
-    highestScore: 195,
-    averageScore: 92,
-    totalStudents: 12500
+    highestScore: 300, // Assuming 300 is max score, ideally from DB
+    averageScore: averageScore,
+    totalStudents: totalStudents || 12500
   };
 
   // Recent Activity merging (Mocks & Purchases)

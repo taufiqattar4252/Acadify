@@ -19,6 +19,7 @@ const COLORS = ['#00BC7D', '#3b82f6', '#8b5cf6', '#f59e0b'];
 export default function ResultsHistoryPage() {
   const { data: attempts, isLoading, isError } = useGetStudentAttempts();
   const [filterTab, setFilterTab] = useState('All Tests');
+  const [currentPage, setCurrentPage] = useState(1);
 
   if (isLoading) {
     return (
@@ -349,13 +350,13 @@ export default function ResultsHistoryPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              {attempts.slice(0, 5).map((attempt: any) => (
+              {attempts.slice((currentPage - 1) * 5, currentPage * 5).map((attempt: any) => (
                 <tr key={attempt._id} className="hover:bg-slate-50/50 transition-colors">
                   <td className="py-4 pr-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-[#f4fbf8] text-[#00BC7D] flex items-center justify-center shrink-0">
-                        <BookOpen className="w-4 h-4" />
-                      </div>
+                      {/* <div className="w-10 h-10 rounded-full bg-[#f4fbf8] text-[#00BC7D] flex items-center justify-center shrink-0"> */}
+                      {/* <BookOpen className="w-4 h-4" /> */}
+                      {/* </div> */}
                       <div>
                         <p className="text-sm font-semibold text-slate-900">{attempt.mockTestTitle || 'Unknown Test'}</p>
                         <p className="text-xs text-slate-500 mt-0.5">{attempt.totalMarks} Questions</p>
@@ -396,16 +397,50 @@ export default function ResultsHistoryPage() {
                   </td>
                 </tr>
               ))}
+              {/* Empty rows to maintain table height */}
+              {Array.from({ length: Math.max(0, 5 - attempts.slice((currentPage - 1) * 5, currentPage * 5).length) }).map((_, idx) => (
+                <tr key={`empty-${idx}`} className="opacity-0 pointer-events-none" aria-hidden="true">
+                  <td className="py-4 pr-4">
+                    <div className="flex items-center gap-3">
+                      <div>
+                        <p className="text-sm">_</p>
+                        <p className="text-xs mt-0.5">_</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td colSpan={7}></td>
+                </tr>
+              ))}
             </tbody>
           </table>
           {attempts.length > 5 && (
             <div className="flex justify-center mt-6 pt-4">
               <div className="flex gap-2">
-                <button className="w-8 h-8 flex items-center justify-center rounded-full border border-slate-100 text-slate-400 hover:bg-slate-50 text-xs font-medium">{"<"}</button>
-                <button className="w-8 h-8 flex items-center justify-center rounded-full bg-[#00BC7D] text-white text-xs font-bold shadow-md shadow-[#00BC7D]/20">1</button>
-                <button className="w-8 h-8 flex items-center justify-center rounded-full border border-slate-100 text-slate-600 hover:bg-slate-50 text-xs font-medium">2</button>
-                <button className="w-8 h-8 flex items-center justify-center rounded-full border border-slate-100 text-slate-600 hover:bg-slate-50 text-xs font-medium">3</button>
-                <button className="w-8 h-8 flex items-center justify-center rounded-full border border-slate-100 text-slate-400 hover:bg-slate-50 text-xs font-medium">{">"}</button>
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="w-8 h-8 flex items-center justify-center rounded-full border border-slate-100 text-slate-400 hover:bg-slate-50 disabled:opacity-50 text-xs font-medium"
+                >
+                  {"<"}
+                </button>
+
+                {Array.from({ length: Math.ceil(attempts.length / 5) }).map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentPage(idx + 1)}
+                    className={`w-8 h-8 flex items-center justify-center rounded-full border ${currentPage === idx + 1 ? 'bg-[#00BC7D] text-white font-bold border-transparent shadow-md shadow-[#00BC7D]/20' : 'border-slate-100 text-slate-600 hover:bg-slate-50 font-medium'} text-xs`}
+                  >
+                    {idx + 1}
+                  </button>
+                ))}
+
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(attempts.length / 5)))}
+                  disabled={currentPage === Math.ceil(attempts.length / 5)}
+                  className="w-8 h-8 flex items-center justify-center rounded-full border border-slate-100 text-slate-400 hover:bg-slate-50 disabled:opacity-50 text-xs font-medium"
+                >
+                  {">"}
+                </button>
               </div>
             </div>
           )}

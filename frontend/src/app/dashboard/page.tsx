@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useGetDashboardData } from '@/services/studentDashboardApi';
 import { Button } from '@/components/ui/Button';
@@ -15,6 +15,21 @@ import {
 
 export default function StudentDashboardPage() {
   const router = useRouter();
+  const [pageIndex, setPageIndex] = useState(0);
+  const [subjectFilter, setSubjectFilter] = useState('Overall');
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: any) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const { data: response, isLoading } = useGetDashboardData();
   const data = response?.data;
 
@@ -52,30 +67,76 @@ export default function StudentDashboardPage() {
     { name: 'Jan', score: 0 }, { name: 'Feb', score: 0 } // Fallback empty
   ];
 
-  const displayScoreTrend = baseTrend.map((item: any) => ({
+  let startIndex = baseTrend.length - (pageIndex + 1) * 10;
+  let endIndex = baseTrend.length - pageIndex * 10;
+
+  // Always show exactly 10 if we have at least 10 tests
+  if (startIndex < 0) {
+    startIndex = 0;
+    endIndex = Math.min(10, baseTrend.length);
+  }
+
+  const filteredTrend = baseTrend.slice(startIndex, endIndex);
+
+  const displayScoreTrend = filteredTrend.map((item: any) => ({
     name: item.name,
-    score: item.score || item.percentage,
+    fullTestName: item.fullTestName,
+    score: item.score !== undefined ? item.score : item.percentage,
+    totalMarks: item.totalMarks || 100, // fallback to 100 if missing
+    correct: item.correct || 0,
+    wrong: item.wrong || 0,
+    skipped: item.skipped || 0,
     remaining: 100 - (item.score || item.percentage || 0)
   }));
 
   // Donut Chart Data (Exam style)
   const displaySubject = isNewUser ? {
-    physics: { accuracy: 70 }, chemistry: { accuracy: 85 }, mathematics: { accuracy: 80 }
+    physics: { accuracy: 70, correct: 10, wrong: 2, skipped: 3 },
+    chemistry: { accuracy: 85, correct: 15, wrong: 1, skipped: 1 },
+    mathematics: { accuracy: 80, correct: 12, wrong: 2, skipped: 2 }
   } : subjectPerformance;
 
-  const subjectData = [
-    { name: 'Physics', value: displaySubject.physics.accuracy || 1, color: '#10b981' }, // Green
-    { name: 'Chemistry', value: displaySubject.chemistry.accuracy || 1, color: '#8b5cf6' }, // Purple
-    { name: 'Mathematics', value: displaySubject.mathematics.accuracy || 1, color: '#3b82f6' }, // Blue
-  ];
+  let subjectData = [];
+  let currentSubjectAccuracy = 0;
+
+  if (subjectFilter === 'Overall') {
+    subjectData = [
+      { name: 'Physics', value: displaySubject?.physics?.accuracy || 1, color: '#10b981' }, // Green
+      { name: 'Chemistry', value: displaySubject?.chemistry?.accuracy || 1, color: '#8b5cf6' }, // Purple
+      { name: 'Mathematics', value: displaySubject?.mathematics?.accuracy || 1, color: '#3b82f6' }, // Blue
+    ];
+  } else {
+    const selectedSubject: any = subjectFilter === 'Physics' ? displaySubject?.physics :
+      subjectFilter === 'Chemistry' ? displaySubject?.chemistry :
+        displaySubject?.mathematics;
+
+    const c = selectedSubject?.correct || 0;
+    const w = selectedSubject?.wrong || 0;
+    const s = selectedSubject?.skipped || 0;
+    const total = c + w + s;
+    currentSubjectAccuracy = total > 0 ? Math.round((c / total) * 100) : 0;
+
+    subjectData = [
+      { name: 'Correct', value: c, color: '#10b981' },
+      { name: 'Wrong', value: w, color: '#ef4444' },
+      { name: 'Unattempted', value: s, color: '#cbd5e1' },
+    ].filter(item => item.value > 0); // Hide empty slices
+
+    if (subjectData.length === 0) {
+      subjectData = [{ name: 'No Data', value: 1, color: '#f1f5f9' }];
+    }
+  }
 
   // Question Stats
   const displayQuestions = isNewUser ? { correct: 85, wrong: 40, skipped: 12 } : questionStats;
   const totalQuestions = (displayQuestions.correct + displayQuestions.wrong + displayQuestions.skipped) || 1;
 
+  const strongChaptersList = isNewUser ? ['Kinematics', 'Laws of Motion', 'Work Energy & Power'] : data?.studyProgress?.strongChapters || [];
+  const weakChaptersList = isNewUser ? ['Thermodynamics', 'Optics', 'Electrostatics', 'Magnetism'] : data?.studyProgress?.weakChapters || [];
+
   // Custom Card Component
   const MetricCard = ({ value, label, icon: Icon, iconColor, iconBg, bottomText, bottomLabel, onClick }: any) => (
-    <div 
+    <div
       onClick={onClick}
       className={`bg-white rounded-[24px] p-6 shadow-sm border border-slate-100 flex flex-col justify-between h-full ${onClick ? 'cursor-pointer hover:shadow-md hover:border-slate-200 transition-all hover:-translate-y-1' : ''}`}
     >
@@ -177,10 +238,28 @@ export default function StudentDashboardPage() {
         <div className="lg:col-span-2 bg-white rounded-[32px] p-6 pb-2 shadow-sm border border-slate-100 flex flex-col">
           <div className="flex justify-between items-center mb-6 px-2">
             <h3 className="text-lg font-medium text-slate-700">Score Trend</h3>
-            <div className="flex items-center gap-4 text-xs font-medium">
-              <span className="flex items-center gap-1.5 text-slate-700"><span className="w-2 h-2 rounded-full bg-[#10b981]"></span> Completed</span>
-              <span className="flex items-center gap-1.5 text-slate-400"><span className="w-2 h-2 rounded-full bg-[#10b981] opacity-30"></span> In progress</span>
-            </div>
+
+            {baseTrend.length > 10 && (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setPageIndex(p => p + 1)}
+                  disabled={startIndex <= 0}
+                  className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-xs font-bold"
+                >
+                  &lt;
+                </button>
+                <span className="text-[10px] font-medium text-slate-500 w-12 text-center">
+                  {startIndex + 1}-{endIndex}
+                </span>
+                <button
+                  onClick={() => setPageIndex(p => p - 1)}
+                  disabled={pageIndex === 0}
+                  className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-xs font-bold"
+                >
+                  &gt;
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="flex-1 w-full min-h-[220px]">
@@ -195,7 +274,39 @@ export default function StudentDashboardPage() {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} dy={10} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} dx={-10} />
-                <RechartsTooltip cursor={{ fill: 'transparent' }} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }} />
+                <RechartsTooltip
+                  cursor={{ fill: 'transparent' }}
+                  content={({ active, payload, label }) => {
+                    if (active && payload && payload.length) {
+                      const data = payload[0].payload;
+                      return (
+                        <div className="bg-white p-3.5 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-slate-100 min-w-[150px]">
+                          <p className="font-bold text-slate-800 text-sm mb-2">{data.fullTestName || label}</p>
+                          <div className="space-y-1.5">
+                            <div className="flex justify-between items-center text-xs">
+                              <span className="text-slate-500 font-medium">Score</span>
+                              <span className="text-[#10b981] font-bold">{data.score}/{data.totalMarks}</span>
+                            </div>
+                            <div className="h-px w-full bg-slate-50 my-1"></div>
+                            <div className="flex justify-between items-center text-xs">
+                              <span className="flex items-center gap-1.5 text-slate-500"><span className="w-1.5 h-1.5 rounded-full bg-[#10b981]"></span> Correct</span>
+                              <span className="font-semibold text-slate-700">{data.correct}</span>
+                            </div>
+                            <div className="flex justify-between items-center text-xs">
+                              <span className="flex items-center gap-1.5 text-slate-500"><span className="w-1.5 h-1.5 rounded-full bg-[#ef4444]"></span> Wrong</span>
+                              <span className="font-semibold text-slate-700">{data.wrong}</span>
+                            </div>
+                            <div className="flex justify-between items-center text-xs">
+                              <span className="flex items-center gap-1.5 text-slate-500"><span className="w-1.5 h-1.5 rounded-full bg-slate-300"></span> Unattempted</span>
+                              <span className="font-semibold text-slate-700">{data.skipped}</span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                />
                 <Bar dataKey="score" stackId="a" fill="#10b981" radius={[0, 0, 8, 8]} />
                 <Bar dataKey="remaining" stackId="a" fill="url(#diagonalHatch)" radius={[8, 8, 0, 0]} />
               </BarChart>
@@ -207,8 +318,31 @@ export default function StudentDashboardPage() {
         <div className="lg:col-span-1 bg-white rounded-[32px] p-6 shadow-sm border border-slate-100 flex flex-col">
           <div className="flex justify-between items-center mb-2 px-2">
             <h3 className="text-lg font-medium text-slate-700">Subject Accuracy</h3>
-            <div className="flex items-center gap-1 text-xs font-medium text-slate-600 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-200 cursor-pointer">
-              Overall <ChevronDown className="w-3 h-3 ml-1" />
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className={`flex items-center justify-between min-w-[130px] text-[13px] font-medium px-4 py-2 rounded-full border transition-all ${dropdownOpen ? 'border-[#10b981] text-[#10b981] bg-white shadow-sm' : 'border-slate-200 text-slate-700 bg-white hover:bg-slate-50'}`}
+              >
+                {subjectFilter}
+                <ChevronDown className={`w-4 h-4 ml-2 transition-transform duration-200 ${dropdownOpen ? 'rotate-180 text-[#10b981]' : 'text-slate-400'}`} />
+              </button>
+
+              {dropdownOpen && (
+                <div className="absolute top-full mt-2 right-0 w-[150px] bg-white rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] border border-slate-100 overflow-hidden z-20 py-1.5 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
+                  {['Overall', 'Physics', 'Chemistry', 'Mathematics'].map((option) => (
+                    <div
+                      key={option}
+                      onClick={() => {
+                        setSubjectFilter(option);
+                        setDropdownOpen(false);
+                      }}
+                      className={`px-4 py-2.5 text-[13px] font-medium cursor-pointer transition-colors ${subjectFilter === option ? 'text-[#10b981] bg-[#ecfdf5]' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
+                    >
+                      {option}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
@@ -233,12 +367,19 @@ export default function StudentDashboardPage() {
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
-                  <RechartsTooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }} />
+                  <RechartsTooltip 
+                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }} 
+                    wrapperStyle={{ zIndex: 50 }} 
+                  />
                 </PieChart>
               </ResponsiveContainer>
-              <div className="absolute bottom-2 flex flex-col items-center pointer-events-none">
-                <span className="text-3xl font-bold text-slate-900">{displayOverview.accuracy}%</span>
-                <span className="text-[10px] text-slate-400 font-medium uppercase tracking-wider mt-0.5">Overall</span>
+              <div className="absolute bottom-2 flex flex-col items-center pointer-events-none z-0">
+                <span className="text-3xl font-bold text-slate-900">
+                  {subjectFilter === 'Overall' ? displayOverview.accuracy : currentSubjectAccuracy}%
+                </span>
+                <span className="text-[10px] text-slate-400 font-medium uppercase tracking-wider mt-0.5">
+                  {subjectFilter}
+                </span>
               </div>
             </div>
           </div>
@@ -247,7 +388,7 @@ export default function StudentDashboardPage() {
             {subjectData.map((s, i) => (
               <div key={i} className="flex items-center gap-2 text-[11px] font-medium text-slate-600">
                 <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: s.color }}></span>
-                {s.name} ({s.value}%)
+                {s.name} {subjectFilter === 'Overall' ? `(${s.value}%)` : `(${s.value})`}
               </div>
             ))}
           </div>
@@ -286,18 +427,25 @@ export default function StudentDashboardPage() {
         <div className="bg-white rounded-[24px] p-6 shadow-sm border border-slate-100 flex flex-col justify-between">
           <h3 className="text-lg font-medium text-slate-700 mb-6">Study Progress</h3>
           <div className="flex justify-between gap-4 h-full items-end">
-            <div className="border border-slate-100 rounded-[16px] p-4 flex-1 flex flex-col justify-between h-24">
-              <span className="text-xl font-bold text-slate-900">{isNewUser ? 3 : data.studyProgress.strongChapters.length}</span>
+            <div 
+              onClick={() => router.push('/dashboard/study-progress?tab=strong')}
+              className="border border-slate-100 rounded-[16px] p-4 flex-1 flex flex-col justify-between h-24 cursor-pointer hover:bg-slate-50 transition-colors"
+            >
+              <span className="text-xl font-bold text-slate-900">{strongChaptersList.length}</span>
               <div className="flex justify-between items-end">
                 <span className="text-[10px] font-medium text-slate-400">Chapters Strong</span>
-                <div className="w-1 h-6 bg-[#10b981] rounded-full"></div>
+                <div className="w-1.5 h-4 bg-[#10b981] rounded-full"></div>
               </div>
             </div>
-            <div className="border border-slate-100 rounded-[16px] p-4 flex-1 flex flex-col justify-between h-24">
-              <span className="text-xl font-bold text-slate-900">{isNewUser ? 5 : data.studyProgress.needsRevision}</span>
+
+            <div 
+              onClick={() => router.push('/dashboard/study-progress?tab=weak')}
+              className="border border-slate-100 rounded-[16px] p-4 flex-1 flex flex-col justify-between h-24 cursor-pointer hover:bg-slate-50 transition-colors"
+            >
+              <span className="text-xl font-bold text-slate-900">{weakChaptersList.length}</span>
               <div className="flex justify-between items-end">
                 <span className="text-[10px] font-medium text-slate-400">Needs Practice</span>
-                <div className="w-1 h-4 bg-[#8b5cf6] rounded-full"></div>
+                <div className="w-1.5 h-4 bg-[#8b5cf6] rounded-full"></div>
               </div>
             </div>
           </div>
@@ -307,7 +455,7 @@ export default function StudentDashboardPage() {
         <div className="bg-white rounded-[24px] p-6 shadow-sm border border-slate-100 flex flex-col justify-between">
           <h3 className="text-lg font-medium text-slate-700 mb-6">Activity</h3>
           <div className="flex justify-between gap-4 h-full items-end">
-            <div 
+            <div
               onClick={() => router.push('/dashboard/mock-tests')}
               className="border border-slate-100 rounded-[16px] p-4 flex-1 flex items-center justify-between h-24 cursor-pointer hover:shadow-md hover:border-slate-200 transition-all hover:-translate-y-1"
             >
@@ -319,7 +467,7 @@ export default function StudentDashboardPage() {
                 <BookOpen className="w-4 h-4" />
               </div>
             </div>
-            <div 
+            <div
               onClick={() => router.push('/dashboard/results#test-attempts')}
               className="border border-slate-100 rounded-[16px] p-4 flex-1 flex items-center justify-between h-24 cursor-pointer hover:shadow-md hover:border-slate-200 transition-all hover:-translate-y-1"
             >
@@ -335,6 +483,7 @@ export default function StudentDashboardPage() {
         </div>
 
       </div>
+
     </div>
   );
 }

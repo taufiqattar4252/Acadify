@@ -13,6 +13,8 @@ import {
   Target, Clock, Trophy, ChevronRight, ClipboardList, TrendingUp,
   Award, Activity, Download, Calendar, MoreVertical, Search, BookOpen
 } from 'lucide-react';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const COLORS = ['#00BC7D', '#3b82f6', '#8b5cf6', '#f59e0b'];
 
@@ -20,6 +22,93 @@ export default function ResultsHistoryPage() {
   const { data: attempts, isLoading, isError } = useGetStudentAttempts();
   const [filterTab, setFilterTab] = useState('All Tests');
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedCategory, setSelectedCategory] = useState('All Tests');
+  const [dateRange, setDateRange] = useState('All Time');
+
+  const filteredAttempts = React.useMemo(() => {
+    if (!attempts) return [];
+    let filtered = [...attempts];
+    
+    if (selectedCategory !== 'All Tests') {
+      filtered = filtered.filter(a => {
+        const cat = (a.mockTest?.category || a.category || 'Full Syllabus').toLowerCase();
+        const searchCat = selectedCategory.toLowerCase().replace(' test', '');
+        return cat.includes(searchCat);
+      });
+    }
+
+    if (dateRange !== 'All Time') {
+      const cutoff = new Date();
+      if (dateRange === 'Last 30 Days') cutoff.setDate(cutoff.getDate() - 30);
+      else if (dateRange === 'Last 3 Months') cutoff.setMonth(cutoff.getMonth() - 3);
+      else if (dateRange === 'Last 6 Months') cutoff.setMonth(cutoff.getMonth() - 6);
+      else if (dateRange === 'This Year') cutoff.setMonth(0, 1);
+      
+      filtered = filtered.filter(a => new Date(a.submittedAt || a.createdAt) >= cutoff);
+    }
+    
+    return filtered;
+  }, [attempts, selectedCategory, dateRange]);
+
+  const tableAttempts = React.useMemo(() => {
+    return filteredAttempts.filter(a => {
+      if (filterTab === 'All Tests') return true;
+      const cat = (a.mockTest?.category || a.category || 'Full Syllabus').toLowerCase();
+      if (filterTab === 'Full Syllabus') return cat.includes('full');
+      if (filterTab === 'Subject Wise') return cat.includes('subject');
+      if (filterTab === 'Chapter Wise') return cat.includes('chapter');
+      return true;
+    });
+  }, [filteredAttempts, filterTab]);
+
+  const handleExport = () => {
+    if (!filteredAttempts.length) return;
+    
+    const doc = new jsPDF();
+    
+    // Add Report Title
+    doc.setFontSize(18);
+    doc.setTextColor(15, 23, 42); // slate-900
+    doc.text('Results History Report', 14, 22);
+    
+    // Add Metadata (Date and Filters)
+    doc.setFontSize(11);
+    doc.setTextColor(100, 116, 139); // slate-500
+    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 30);
+    
+    doc.setFontSize(10);
+    doc.text(`Category Filter: ${selectedCategory} | Date Filter: ${dateRange}`, 14, 36);
+
+    // Table Headers
+    const headers = [['Test Name', 'Date', 'Score', 'Total Marks', 'Accuracy (%)', 'Correct', 'Incorrect']];
+    
+    // Table Data
+    const data = filteredAttempts.map(a => {
+      const title = a.mockTestTitle || 'Unknown Test';
+      const dateVal = a.submittedAt || a.createdAt;
+      const d = dateVal ? new Date(dateVal) : new Date();
+      const dateStr = isNaN(d.getTime()) ? 'Unknown' : d.toLocaleDateString();
+      const score = a.score || 0;
+      const totalMarks = a.totalMarks || 1;
+      const accuracy = ((a.correct / ((a.correct + a.wrong) || 1)) * 100).toFixed(2);
+      
+      return [title, dateStr, score, totalMarks, accuracy, a.correct || 0, a.wrong || 0];
+    });
+    
+    // Generate Table
+    autoTable(doc, {
+      startY: 45,
+      head: headers,
+      body: data,
+      theme: 'grid',
+      headStyles: { fillColor: [0, 188, 125], textColor: 255, fontStyle: 'bold' },
+      styles: { fontSize: 9, cellPadding: 4 },
+      alternateRowStyles: { fillColor: [248, 250, 252] }, // slate-50
+    });
+    
+    // Save PDF
+    doc.save(`Results_Report_${new Date().toISOString().split('T')[0]}.pdf`);
+  };
 
   if (isLoading) {
     return (
@@ -55,18 +144,18 @@ export default function ResultsHistoryPage() {
   }
 
   // Calculate KPIs
-  const bestScoreObj = [...attempts].sort((a, b) => b.score - a.score)[0];
+  const bestScoreObj = [...filteredAttempts].sort((a, b) => b.score - a.score)[0];
   const bestScore = bestScoreObj?.score || 0;
   const bestScorePercentage = bestScoreObj ? (bestScoreObj.score / bestScoreObj.totalMarks) * 100 : 0;
 
-  const avgScore = attempts.length > 0 ? Math.round(attempts.reduce((acc: number, a: any) => acc + a.score, 0) / attempts.length) : 0;
-  const avgScorePercentage = attempts.length > 0 ? (attempts.reduce((acc: number, a: any) => acc + (a.score / a.totalMarks), 0) / attempts.length) * 100 : 0;
+  const avgScore = filteredAttempts.length > 0 ? Math.round(filteredAttempts.reduce((acc: number, a: any) => acc + a.score, 0) / filteredAttempts.length) : 0;
+  const avgScorePercentage = filteredAttempts.length > 0 ? (filteredAttempts.reduce((acc: number, a: any) => acc + (a.score / a.totalMarks), 0) / filteredAttempts.length) * 100 : 0;
 
-  const avgAccuracy = attempts.length > 0 ?
-    attempts.reduce((acc: number, a: any) => acc + (a.correct / ((a.correct + a.wrong) || 1)), 0) / attempts.length * 100
+  const avgAccuracy = filteredAttempts.length > 0 ?
+    filteredAttempts.reduce((acc: number, a: any) => acc + (a.correct / ((a.correct + a.wrong) || 1)), 0) / filteredAttempts.length * 100
     : 0;
 
-  const totalDurationSeconds = attempts.reduce((acc: number, a: any) => acc + (a.duration || 0), 0);
+  const totalDurationSeconds = filteredAttempts.reduce((acc: number, a: any) => acc + (a.duration || 0), 0);
   const totalHours = Math.floor(totalDurationSeconds / 3600);
   const totalMinutes = Math.floor((totalDurationSeconds % 3600) / 60);
   const formattedTime = totalHours > 0 ? `${totalHours}h ${totalMinutes}m` : `${totalMinutes}m`;
@@ -76,8 +165,8 @@ export default function ResultsHistoryPage() {
   const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
   const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
 
-  const attemptsLast30Days = attempts.filter((a: any) => new Date(a.submittedAt || a.createdAt) >= thirtyDaysAgo);
-  const attemptsPrevious30Days = attempts.filter((a: any) => {
+  const attemptsLast30Days = filteredAttempts.filter((a: any) => new Date(a.submittedAt || a.createdAt) >= thirtyDaysAgo);
+  const attemptsPrevious30Days = filteredAttempts.filter((a: any) => {
     const d = new Date(a.submittedAt || a.createdAt);
     return d >= sixtyDaysAgo && d < thirtyDaysAgo;
   });
@@ -89,19 +178,25 @@ export default function ResultsHistoryPage() {
 
   const testsAttemptedTrend = calcTrend(attemptsLast30Days.length, attemptsPrevious30Days.length);
 
-  const avgScoreLast30 = attemptsLast30Days.length > 0 ? (attemptsLast30Days.reduce((acc: number, a: any) => acc + (a.score / a.totalMarks), 0) / attemptsLast30Days.length) * 100 : 0;
-  const avgScorePrev30 = attemptsPrevious30Days.length > 0 ? (attemptsPrevious30Days.reduce((acc: number, a: any) => acc + (a.score / a.totalMarks), 0) / attemptsPrevious30Days.length) * 100 : 0;
+  const avgScoreLast30 = attemptsLast30Days.length > 0 ? (attemptsLast30Days.reduce((acc: number, a: any) => acc + (a.score / (a.totalMarks || 1)), 0) / attemptsLast30Days.length) * 100 : 0;
+  const avgScorePrev30 = attemptsPrevious30Days.length > 0 ? (attemptsPrevious30Days.reduce((acc: number, a: any) => acc + (a.score / (a.totalMarks || 1)), 0) / attemptsPrevious30Days.length) * 100 : 0;
   const avgScoreTrend = calcTrend(avgScoreLast30, avgScorePrev30);
 
   const accLast30 = attemptsLast30Days.length > 0 ? attemptsLast30Days.reduce((acc: number, a: any) => acc + (a.correct / ((a.correct + a.wrong) || 1)), 0) / attemptsLast30Days.length * 100 : 0;
   const accPrev30 = attemptsPrevious30Days.length > 0 ? attemptsPrevious30Days.reduce((acc: number, a: any) => acc + (a.correct / ((a.correct + a.wrong) || 1)), 0) / attemptsPrevious30Days.length * 100 : 0;
   const accTrend = calcTrend(accLast30, accPrev30);
 
-  // Prepare chart data
-  const chartData = [...attempts].reverse().map((attempt, index) => ({
-    name: new Date(attempt.submittedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }),
-    score: attempt.percentage || (attempt.score / attempt.totalMarks) * 100,
-  }));
+  // Prepare chart data safely
+  const chartData = [...filteredAttempts].reverse().map((attempt, index) => {
+    const dateVal = attempt.submittedAt || attempt.createdAt;
+    const d = dateVal ? new Date(dateVal) : new Date();
+    const dateStr = isNaN(d.getTime()) ? 'Unknown' : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+    
+    return {
+      name: dateStr,
+      score: attempt.percentage || (attempt.score / (attempt.totalMarks || 1)) * 100,
+    };
+  });
 
   const pieData = [
     { name: 'Physics', value: 74.20 },
@@ -119,6 +214,8 @@ export default function ResultsHistoryPage() {
     { name: '5 May', rank: 128 },
   ];
 
+
+
   return (
     <div className="space-y-10 pb-12 max-w-[1400px] mx-auto">
       {/* Header */}
@@ -132,17 +229,36 @@ export default function ResultsHistoryPage() {
       {/* Filters Bar */}
       <div className="bg-white p-4 rounded-3xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] border border-slate-100 flex flex-col sm:flex-row gap-4 items-center justify-between">
         <div className="flex flex-wrap gap-3 w-full sm:w-auto">
-          <select className="flex-1 sm:flex-none min-w-[160px] bg-slate-50 border border-slate-100 text-slate-700 text-sm rounded-full px-4 py-3 outline-none focus:border-[#00BC7D] focus:ring-1 focus:ring-[#00BC7D] transition-all">
+          <select 
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="flex-1 sm:flex-none min-w-[160px] bg-slate-50 border border-slate-100 text-slate-700 text-sm rounded-full px-4 py-3 outline-none focus:border-[#00BC7D] focus:ring-1 focus:ring-[#00BC7D] transition-all cursor-pointer"
+          >
             <option>All Tests</option>
             <option>Full Mock Test</option>
             <option>Chapter-wise</option>
+            <option>Subject Test</option>
+            <option>Previous Year Paper</option>
           </select>
-          <div className="flex-1 sm:flex-none flex items-center bg-slate-50 border border-slate-100 text-slate-700 text-sm rounded-full px-4 py-3 focus-within:border-[#00BC7D] focus-within:ring-1 focus-within:ring-[#00BC7D] transition-all">
-            <Calendar className="w-4 h-4 mr-2 text-slate-400" />
-            <span>01 Jan 2025 - 06 May 2025</span>
+          <div className="flex-1 sm:flex-none flex items-center bg-slate-50 border border-slate-100 text-slate-700 text-sm rounded-full px-4 py-3 focus-within:border-[#00BC7D] focus-within:ring-1 focus-within:ring-[#00BC7D] transition-all relative">
+            <Calendar className="w-4 h-4 mr-2 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <select 
+              value={dateRange}
+              onChange={(e) => setDateRange(e.target.value)}
+              className="pl-6 bg-transparent outline-none cursor-pointer w-full appearance-none"
+            >
+              <option>All Time</option>
+              <option>Last 30 Days</option>
+              <option>Last 3 Months</option>
+              <option>Last 6 Months</option>
+              <option>This Year</option>
+            </select>
           </div>
         </div>
-        <button className="w-full sm:w-auto flex items-center justify-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-100 text-slate-700 rounded-full px-5 py-3 text-sm font-medium transition-colors">
+        <button 
+          onClick={handleExport}
+          className="w-full sm:w-auto flex items-center justify-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-100 text-slate-700 rounded-full px-5 py-3 text-sm font-medium transition-colors"
+        >
           <Download className="w-4 h-4 text-[#00BC7D]" /> Export Report
         </button>
       </div>
@@ -153,7 +269,7 @@ export default function ResultsHistoryPage() {
           <div className="flex justify-between items-start mb-2">
             <div>
               <p className="text-xs font-medium text-slate-400 mb-1">Tests Attempted</p>
-              <h3 className="text-2xl font-bold text-slate-900">{attempts.length}</h3>
+              <h3 className="text-2xl font-bold text-slate-900">{filteredAttempts.length}</h3>
             </div>
             <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center shrink-0">
               <ClipboardList className="w-5 h-5" />
@@ -381,7 +497,7 @@ export default function ResultsHistoryPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              {attempts.slice((currentPage - 1) * 5, currentPage * 5).map((attempt: any) => (
+              {tableAttempts.slice((currentPage - 1) * 5, currentPage * 5).map((attempt: any) => (
                 <tr key={attempt._id} className="hover:bg-slate-50/50 transition-colors">
                   <td className="py-4 pr-4">
                     <div className="flex items-center gap-3">
@@ -429,7 +545,7 @@ export default function ResultsHistoryPage() {
                 </tr>
               ))}
               {/* Empty rows to maintain table height */}
-              {Array.from({ length: Math.max(0, 5 - attempts.slice((currentPage - 1) * 5, currentPage * 5).length) }).map((_, idx) => (
+              {Array.from({ length: Math.max(0, 5 - tableAttempts.slice((currentPage - 1) * 5, currentPage * 5).length) }).map((_, idx) => (
                 <tr key={`empty-${idx}`} className="opacity-0 pointer-events-none" aria-hidden="true">
                   <td className="py-4 pr-4">
                     <div className="flex items-center gap-3">
@@ -444,7 +560,7 @@ export default function ResultsHistoryPage() {
               ))}
             </tbody>
           </table>
-          {attempts.length > 5 && (
+          {tableAttempts.length > 5 && (
             <div className="flex justify-center mt-6 pt-4">
               <div className="flex gap-2">
                 <button
@@ -455,7 +571,7 @@ export default function ResultsHistoryPage() {
                   {"<"}
                 </button>
 
-                {Array.from({ length: Math.ceil(attempts.length / 5) }).map((_, idx) => (
+                {Array.from({ length: Math.ceil(tableAttempts.length / 5) }).map((_, idx) => (
                   <button
                     key={idx}
                     onClick={() => setCurrentPage(idx + 1)}
@@ -466,8 +582,8 @@ export default function ResultsHistoryPage() {
                 ))}
 
                 <button
-                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(attempts.length / 5)))}
-                  disabled={currentPage === Math.ceil(attempts.length / 5)}
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(tableAttempts.length / 5)))}
+                  disabled={currentPage === Math.ceil(tableAttempts.length / 5)}
                   className="w-8 h-8 flex items-center justify-center rounded-full border border-slate-100 text-slate-400 hover:bg-slate-50 disabled:opacity-50 text-xs font-medium"
                 >
                   {">"}

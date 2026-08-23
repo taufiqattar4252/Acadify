@@ -91,9 +91,9 @@ export const getMockTestDetails = catchAsync(async (req: Request, res: Response,
 
   res.status(200).json({
     success: true,
-    data: { 
+    data: {
       test,
-      isPurchased: !!purchase 
+      isPurchased: !!purchase
     },
   });
 });
@@ -122,7 +122,7 @@ export const getPurchases = catchAsync(async (req: Request, res: Response, next:
 export const getStudentProfile = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const userId = req.user._id;
   const user = await User.findById(userId).lean();
-  
+
   if (!user) {
     return next(new AppError('User not found', 404));
   }
@@ -135,7 +135,7 @@ export const getStudentProfile = catchAsync(async (req: Request, res: Response, 
 
   const purchasedMocks = purchases.length;
   const totalAmountSpent = purchases.reduce((acc, p: any) => acc + (p.amountPaid || 0), 0);
-  
+
   const attemptedMocks = attempts.length;
   let averageScore = 0;
   let accuracy = 0;
@@ -143,10 +143,10 @@ export const getStudentProfile = catchAsync(async (req: Request, res: Response, 
   if (attemptedMocks > 0) {
     const totalScore = attempts.reduce((acc, a: any) => acc + (a.score || 0), 0);
     averageScore = Math.round(totalScore / attemptedMocks);
-    
+
     const totalCorrect = attempts.reduce((acc, a: any) => acc + (a.correct || 0), 0);
     const totalQuestions = attempts.reduce((acc, a: any) => acc + ((a.correct || 0) + (a.wrong || 0) + (a.skipped || 0)), 0);
-    
+
     accuracy = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
   }
 
@@ -155,7 +155,7 @@ export const getStudentProfile = catchAsync(async (req: Request, res: Response, 
 
   // Recent Activity
   const recentActivity: any[] = [];
-  
+
   if (user.lastLogin) {
     recentActivity.push({
       id: 'login-' + new Date(user.lastLogin).getTime(),
@@ -193,7 +193,7 @@ export const getStudentProfile = catchAsync(async (req: Request, res: Response, 
 
   res.status(200).json({
     success: true,
-    data: { 
+    data: {
       user,
       stats: {
         purchasedMocks,
@@ -216,7 +216,7 @@ export const updateStudentProfile = catchAsync(async (req: Request, res: Respons
   const { fullName, phone, avatar, goals } = req.body;
 
   const user = await User.findById(req.user._id);
-  
+
   if (!user) {
     return next(new AppError('User not found', 404));
   }
@@ -239,6 +239,73 @@ export const updateStudentProfile = catchAsync(async (req: Request, res: Respons
   });
 });
 
+// Helper to calculate dynamic chapter stats from attempts
+const calculateChapterStats = async (userId: any) => {
+  const attempts = await Attempt.find({ user: userId })
+    .populate({
+      path: 'answers.questionId',
+      select: 'chapter subject options',
+      populate: [
+        { path: 'chapter', select: 'name' },
+        { path: 'subject', select: 'name' }
+      ]
+    })
+    .lean();
+
+  const chapterMap = new Map<string, any>();
+
+  attempts.forEach((attempt: any) => {
+    if (!attempt.answers) return;
+    attempt.answers.forEach((ans: any) => {
+      const q = ans.questionId;
+      if (!q || !q.chapter) return;
+      
+      const chapterId = q.chapter._id.toString();
+      const chapterName = q.chapter.name;
+      const subjectName = q.subject?.name || 'Unknown';
+      
+      if (!chapterMap.has(chapterId)) {
+        chapterMap.set(chapterId, {
+          id: chapterId,
+          name: chapterName,
+          subject: subjectName,
+          attempts: 0,
+          correct: 0,
+          wrong: 0,
+          skipped: 0
+        });
+      }
+      
+      const stats = chapterMap.get(chapterId);
+      stats.attempts++;
+      
+      if (!ans.selectedOptionId) {
+        stats.skipped++;
+      } else {
+        const selectedOpt = q.options?.find((o: any) => o._id.toString() === ans.selectedOptionId.toString());
+        if (selectedOpt?.isCorrect) {
+          stats.correct++;
+        } else {
+          stats.wrong++;
+        }
+      }
+    });
+  });
+
+  const chaptersData = Array.from(chapterMap.values()).map(c => {
+    const accuracy = c.attempts > 0 ? Math.round((c.correct / c.attempts) * 100) : 0;
+    return {
+      ...c,
+      accuracy,
+      score: c.correct,
+      isStrong: accuracy >= 75
+    };
+  });
+
+  chaptersData.sort((a, b) => b.accuracy - a.accuracy);
+  return chaptersData;
+};
+
 // @desc    Get student dashboard overview data
 // @route   GET /api/student/dashboard
 // @access  Private (Student)
@@ -260,7 +327,8 @@ export const getStudentDashboard = catchAsync(async (req: Request, res: Response
     attempts,
     activeSession,
     recentPurchases,
-    recommendations
+    recommendations,
+    chapterStats
   ] = await Promise.all([
     // Purchases count
     Purchase.countDocuments({ user: userId, status: 'completed' } as any),
@@ -268,7 +336,8 @@ export const getStudentDashboard = catchAsync(async (req: Request, res: Response
     // All attempts for analytics (sorted chronologically)
     Attempt.find({ user: userId } as any)
       .sort({ createdAt: 1 })
-      .select('score totalMarks correct wrong skipped percentage createdAt')
+      .select('score correct wrong skipped percentage createdAt mockTest')
+      .populate('mockTest', 'title totalMarks')
       .lean(),
 
     // Active exam session
@@ -285,17 +354,20 @@ export const getStudentDashboard = catchAsync(async (req: Request, res: Response
 
     // Recommended tests (excluding purchased)
     Purchase.find({ user: userId, status: 'completed' } as any).distinct('mockTest')
-      .then(purchasedTestIds => 
-        MockTest.find({ 
+      .then(purchasedTestIds =>
+        MockTest.find({
           _id: { $nin: purchasedTestIds },
           status: 'Published',
           isDeleted: false
         } as any)
-        .sort({ createdAt: -1 })
-        .limit(3)
-        .select('title slug thumbnail category duration price')
-        .lean()
-      )
+          .sort({ createdAt: -1 })
+          .limit(3)
+          .select('title slug thumbnail category duration price')
+          .lean()
+      ),
+
+    // Calculate Dynamic Chapter Stats
+    calculateChapterStats(userId)
   ]);
 
   // 4. Calculate Derived Stats
@@ -311,15 +383,15 @@ export const getStudentDashboard = catchAsync(async (req: Request, res: Response
     const totalScore = attempts.reduce((acc, a) => acc + (a.score || 0), 0);
     averageScore = Math.round(totalScore / attemptedMocks);
     bestScore = Math.max(...attempts.map(a => a.score || 0));
-    
+
     totalCorrect = attempts.reduce((acc, a) => acc + (a.correct || 0), 0);
     totalWrong = attempts.reduce((acc, a) => acc + (a.wrong || 0), 0);
     totalSkipped = attempts.reduce((acc, a) => acc + (a.skipped || 0), 0);
     totalQuestionsAttempted = totalCorrect + totalWrong + totalSkipped;
   }
 
-  const accuracy = totalQuestionsAttempted > 0 
-    ? Math.round((totalCorrect / totalQuestionsAttempted) * 100) 
+  const accuracy = totalQuestionsAttempted > 0
+    ? Math.round((totalCorrect / totalQuestionsAttempted) * 100)
     : 0;
 
   // Calculate Real Percentile
@@ -333,17 +405,43 @@ export const getStudentDashboard = catchAsync(async (req: Request, res: Response
   }
 
   // Score Trend
-  const scoreTrend = attempts.slice(-10).map((a, i) => ({
+  const scoreTrend = attempts.map((a, i) => ({
     name: `Test ${i + 1}`,
-    score: a.score,
-    percentage: a.percentage
+    fullTestName: (a.mockTest as any)?.title || `Test ${i + 1}`,
+    score: a.score || 0,
+    totalMarks: (a.mockTest as any)?.totalMarks || 0,
+    percentage: a.percentage || 0,
+    correct: a.correct || 0,
+    wrong: a.wrong || 0,
+    skipped: a.skipped || 0
   }));
 
   // Subject Performance (Mocked for now as we don't have full subject tagging per answer yet)
   const subjectPerformance = {
-    physics: { accuracy: accuracy > 0 ? Math.min(100, accuracy + 2) : 0, averageScore: averageScore > 0 ? Math.round(averageScore / 3) : 0, solved: Math.round(totalCorrect / 3) },
-    chemistry: { accuracy: accuracy > 0 ? Math.max(0, accuracy - 5) : 0, averageScore: averageScore > 0 ? Math.round(averageScore / 3) : 0, solved: Math.round(totalCorrect / 3) },
-    mathematics: { accuracy: accuracy > 0 ? Math.min(100, accuracy + 5) : 0, averageScore: averageScore > 0 ? Math.round(averageScore / 3) : 0, solved: Math.round(totalCorrect / 3) }
+    physics: { 
+      accuracy: accuracy > 0 ? Math.min(100, accuracy + 2) : 0, 
+      averageScore: averageScore > 0 ? Math.round(averageScore / 3) : 0, 
+      solved: Math.round(totalCorrect / 3),
+      correct: Math.round(totalCorrect / 3),
+      wrong: Math.round(totalWrong / 3),
+      skipped: Math.round(totalSkipped / 3)
+    },
+    chemistry: { 
+      accuracy: accuracy > 0 ? Math.max(0, accuracy - 5) : 0, 
+      averageScore: averageScore > 0 ? Math.round(averageScore / 3) : 0, 
+      solved: Math.round(totalCorrect / 3),
+      correct: Math.round(totalCorrect / 3),
+      wrong: Math.round(totalWrong / 3),
+      skipped: Math.round(totalSkipped / 3)
+    },
+    mathematics: { 
+      accuracy: accuracy > 0 ? Math.min(100, accuracy + 5) : 0, 
+      averageScore: averageScore > 0 ? Math.round(averageScore / 3) : 0, 
+      solved: totalCorrect - 2 * Math.round(totalCorrect / 3), // remainder
+      correct: totalCorrect - 2 * Math.round(totalCorrect / 3),
+      wrong: totalWrong - 2 * Math.round(totalWrong / 3),
+      skipped: totalSkipped - 2 * Math.round(totalSkipped / 3)
+    }
   };
 
   const questionStats = {
@@ -354,11 +452,14 @@ export const getStudentDashboard = catchAsync(async (req: Request, res: Response
     bookmarked: 0
   };
 
+  const strongChapters = chapterStats.filter(c => c.isStrong).map(c => c.name);
+  const weakChapters = chapterStats.filter(c => !c.isStrong).map(c => c.name);
+
   const studyProgress = {
-    strongChapters: ['Rotational Dynamics', 'Electrochemistry', 'Calculus'],
-    weakChapters: ['Wave Optics', 'P-Block Elements', 'Probability'],
-    needsRevision: 4,
-    practicePending: 12
+    strongChapters: strongChapters.slice(0, 3), // Top 3
+    weakChapters: weakChapters.slice(-3).reverse(), // Bottom 3
+    needsRevision: weakChapters.length,
+    practicePending: Math.max(0, 15 - attempts.length)
   };
 
   const leaderboard = {
@@ -371,7 +472,7 @@ export const getStudentDashboard = catchAsync(async (req: Request, res: Response
 
   // Recent Activity merging (Mocks & Purchases)
   const recentActivity: any[] = [];
-  
+
   recentPurchases.forEach(p => {
     recentActivity.push({
       id: `purchase-${p._id}`,
@@ -487,5 +588,72 @@ export const updateNotificationPreferences = catchAsync(async (req: Request, res
     data: {
       notificationPreferences: user.notificationPreferences
     }
+  });
+});
+// @desc    Get detailed study progress chapters
+// @route   GET /api/student/study-progress
+// @access  Private (Student)
+export const getStudentStudyProgress = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const userId = req.user._id;
+  const chapterStats = await calculateChapterStats(userId);
+
+  res.status(200).json({
+    success: true,
+    data: chapterStats
+  });
+});
+// @desc    Get incorrect questions for a specific chapter
+// @route   GET /api/student/dashboard/study-progress/:chapterId/incorrect
+// @access  Private (Student)
+export const getChapterIncorrectQuestions = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const userId = req.user._id;
+  const chapterId = req.params.chapterId;
+
+  const attempts = await Attempt.find({ user: userId })
+    .populate({
+      path: 'answers.questionId',
+      select: 'questionText questionImage options explanation explanationImage chapter subject',
+      match: { chapter: chapterId } 
+    })
+    .lean();
+
+  const incorrectQuestions: any[] = [];
+  const seenQuestionIds = new Set<string>();
+
+  attempts.forEach((attempt: any) => {
+    if (!attempt.answers) return;
+    
+    attempt.answers.forEach((ans: any) => {
+      const q = ans.questionId;
+      if (!q) return; 
+      
+      const qIdStr = q._id.toString();
+      
+      if (seenQuestionIds.has(qIdStr)) return;
+
+      let isCorrect = false;
+      const selectedOpt = q.options?.find((o: any) => o._id.toString() === ans.selectedOptionId?.toString());
+      if (selectedOpt && selectedOpt.isCorrect) {
+        isCorrect = true;
+      }
+
+      if (!isCorrect) {
+        seenQuestionIds.add(qIdStr);
+        incorrectQuestions.push({
+          attemptId: attempt._id,
+          date: attempt.createdAt,
+          question: q,
+          selectedOptionId: ans.selectedOptionId || null,
+          timeSpent: ans.timeSpent
+        });
+      }
+    });
+  });
+
+  incorrectQuestions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  res.status(200).json({
+    success: true,
+    data: incorrectQuestions
   });
 });

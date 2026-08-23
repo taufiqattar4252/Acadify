@@ -49,6 +49,27 @@ export interface DashboardData {
   };
 }
 
+export interface ChapterStats {
+  id: string;
+  name: string;
+  subject: string;
+  attempts: number;
+  correct: number;
+  wrong: number;
+  skipped: number;
+  accuracy: number;
+  score: number;
+  isStrong: boolean;
+}
+
+export interface IncorrectQuestion {
+  attemptId: string;
+  date: string;
+  question: any;
+  selectedOptionId: string | null;
+  timeSpent: number;
+}
+
 export const useGetDashboardData = () => {
   return useQuery<{ data: DashboardData }>({
     queryKey: ['student-dashboard'],
@@ -56,5 +77,26 @@ export const useGetDashboardData = () => {
       const response = await api.get('/student/dashboard');
       return response.data;
     },
+  });
+};
+
+export const useGetStudyProgress = () => {
+  return useQuery<{ data: ChapterStats[] }>({
+    queryKey: ['student-study-progress'],
+    queryFn: async () => {
+      const response = await api.get('/student/dashboard/study-progress');
+      return response.data;
+    },
+  });
+};
+
+export const useGetIncorrectQuestions = (chapterId: string | null) => {
+  return useQuery<{ data: IncorrectQuestion[] }>({
+    queryKey: ['student-incorrect-questions', chapterId],
+    queryFn: async () => {
+      const response = await api.get(`/student/dashboard/study-progress/${chapterId}/incorrect`);
+      return response.data;
+    },
+    enabled: !!chapterId, // Only fetch if chapterId is truthy
   });
 };

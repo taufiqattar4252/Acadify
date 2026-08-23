@@ -9,6 +9,8 @@ import {
   changePassword,
   updateNotificationPreferences,
   getStudentDashboard,
+  getStudentStudyProgress,
+  getChapterIncorrectQuestions,
 } from '../controllers/studentController';
 import {
   getCart,
@@ -27,6 +29,8 @@ router.use(requireAuth);
 
 // Dashboard
 router.get('/dashboard', getStudentDashboard);
+router.get('/dashboard/study-progress', getStudentStudyProgress);
+router.get('/dashboard/study-progress/:chapterId/incorrect', getChapterIncorrectQuestions);
 
 // Mock Tests (Store)
 router.get('/mock-tests', getAvailableMockTests);

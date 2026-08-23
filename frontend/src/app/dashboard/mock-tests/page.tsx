@@ -220,8 +220,30 @@ export default function MockStorePage() {
   }, [search]);
 
   // Derived state for purchased vs unpurchased
-  const purchasedTests = purchasesData?.purchases?.map((p: any) => p.mockTest) || [];
-  const purchasedTestIds = new Set(purchasedTests.map((t: any) => t._id));
+  const rawPurchasedTests = purchasesData?.purchases?.map((p: any) => p.mockTest) || [];
+  
+  // Apply filters to purchased tests client-side
+  let purchasedTests = [...rawPurchasedTests];
+  if (debouncedSearch) {
+    purchasedTests = purchasedTests.filter(t => 
+      t.title.toLowerCase().includes(debouncedSearch.toLowerCase()) || 
+      (t.description && t.description.toLowerCase().includes(debouncedSearch.toLowerCase()))
+    );
+  }
+  if (category) {
+    purchasedTests = purchasedTests.filter(t => t.category === category);
+  }
+  if (sort) {
+    purchasedTests.sort((a, b) => {
+      if (sort === '-createdAt') return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+      if (sort === 'createdAt') return new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
+      if (sort === '-price') return (b.price || 0) - (a.price || 0);
+      if (sort === 'price') return (a.price || 0) - (b.price || 0);
+      return 0;
+    });
+  }
+
+  const purchasedTestIds = new Set(rawPurchasedTests.map((t: any) => t._id));
 
   // Filter the paginated store tests to exclude ones already purchased
   const storeTests = data?.tests?.filter((t: any) => !purchasedTestIds.has(t._id)) || [];
@@ -278,7 +300,7 @@ export default function MockStorePage() {
       </div>
 
       {/* My Mock Tests Section */}
-      {(!search && page === 1 && purchasedTests.length > 0) && (
+      {(page === 1 && purchasedTests.length > 0) && (
         <div className="space-y-4">
           <div className="flex items-center gap-2">
             <h2 className="text-xl font-bold text-slate-900">My Mock Tests</h2>

@@ -11,38 +11,38 @@ export const Topbar = () => {
   const { data: user } = useUser();
 
   return (
-    <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 lg:px-8 z-10 sticky top-0">
+    <header className="h-16 bg-white border-b border-border flex items-center justify-between px-4 lg:px-8 z-10 sticky top-0">
       <div className="flex items-center gap-4 flex-1">
         <button
           onClick={toggleSidebar}
-          className="p-2 -ml-2 rounded-lg text-slate-500 hover:bg-slate-100 lg:hidden"
+          className="p-2 -ml-2 rounded-lg text-muted-foreground hover:bg-muted lg:hidden"
         >
           <Menu className="w-5 h-5" />
         </button>
 
         <div className="hidden sm:flex items-center w-full max-w-md relative">
-          <Search className="w-4 h-4 absolute left-3 text-slate-400" />
+          <Search className="w-4 h-4 absolute left-3 text-muted-foreground" />
           <input
             type="text"
             placeholder="Search anything..."
-            className="w-full pl-9 pr-4 py-2 bg-slate-100/50 border border-transparent rounded-lg text-sm focus:bg-white focus:border-primary-300 focus:ring-2 focus:ring-primary-100 outline-none transition-all"
+            className="w-full pl-9 pr-4 py-2 bg-muted/50 border border-transparent rounded-lg text-sm focus:bg-white focus:border-primary-300 focus:ring-2 focus:ring-primary-100 outline-none transition-all"
           />
         </div>
       </div>
 
       <div className="flex items-center gap-4">
-        <button className="relative p-2 rounded-full text-slate-500 hover:bg-slate-100 transition-colors">
+        <button className="relative p-2 rounded-full text-muted-foreground hover:bg-muted transition-colors">
           <Bell className="w-5 h-5" />
           {notificationsCount > 0 && (
             <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
           )}
         </button>
 
-        <div className="h-8 w-px bg-slate-200 mx-1 hidden sm:block" />
+        <div className="h-8 w-px bg-muted-hover mx-1 hidden sm:block" />
 
-        <div className="flex items-center gap-3 cursor-pointer p-1 rounded-lg hover:bg-slate-50 transition-colors">
+        <div className="flex items-center gap-3 cursor-pointer p-1 rounded-lg hover:bg-muted transition-colors">
           <div className="hidden sm:flex flex-col items-end">
-            <span className="text-sm font-medium text-slate-700">
+            <span className="text-sm font-medium text-muted-foreground">
               {user?.fullName || 'Admin User'}
             </span>
             <Badge variant="info" className="text-[10px] px-1.5 py-0">

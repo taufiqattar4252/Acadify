@@ -80,31 +80,31 @@ export default function CartPage() {
 
   return (
     <div className="pb-12 max-w-[1200px] mx-auto px-4 mt-10">
-      <h1 className="text-4xl font-bold text-slate-900 mb-6">Shopping Cart</h1>
+      <h1 className="text-4xl font-bold text-foreground mb-6">Shopping Cart</h1>
 
       {isEmpty ? (
         <div className="py-6">
-          <span className="font-bold italic text-slate-700">Your cart is empty</span>
-          <span className="italic text-slate-500"> – let's change that. Time to learn some new skills!</span>
+          <span className="font-bold italic text-muted-foreground">Your cart is empty</span>
+          <span className="italic text-muted-foreground"> – let's change that. Time to learn some new skills!</span>
         </div>
       ) : (
         <>
-          <div className="font-bold text-slate-800 text-lg mb-2">
+          <div className="font-bold text-foreground text-lg mb-2">
             {cart.items.length} Course{cart.items.length > 1 ? 's' : ''} in Cart
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
 
             {/* Cart Items List */}
-            <div className="lg:col-span-3 border border-slate-200 rounded-sm">
+            <div className="lg:col-span-3 border border-border rounded-sm">
               {cart.items.map((item: any, idx: number) => {
                 const originalPrice = Math.round(item.price * 1.2);
 
                 return (
-                  <div key={item.mockTest._id} className={`bg-white p-4 flex flex-col sm:flex-row gap-4 ${idx !== cart.items.length - 1 ? 'border-b border-slate-200' : ''}`}>
+                  <div key={item.mockTest._id} className={`bg-white p-4 flex flex-col sm:flex-row gap-4 ${idx !== cart.items.length - 1 ? 'border-b border-border' : ''}`}>
 
                     {/* Thumbnail */}
-                    <div className="w-full sm:w-[120px] h-[68px] bg-slate-100 relative overflow-hidden flex-shrink-0 cursor-pointer border border-slate-200" onClick={() => router.push(`/dashboard/mock-tests/${item.mockTest.slug}`)}>
+                    <div className="w-full sm:w-[120px] h-[68px] bg-muted relative overflow-hidden flex-shrink-0 cursor-pointer border border-border" onClick={() => router.push(`/dashboard/mock-tests/${item.mockTest.slug}`)}>
                       {item.mockTest.thumbnail ? (
                         <Image src={item.mockTest.thumbnail} alt={item.mockTest.title} fill className="object-cover" />
                       ) : (
@@ -117,20 +117,20 @@ export default function CartPage() {
                     {/* Details */}
                     <div className="flex-1 flex flex-col sm:flex-row gap-4">
                       <div className="flex-1">
-                        <h3 className="font-bold text-base text-slate-900 line-clamp-2 leading-snug cursor-pointer hover:text-emerald-600 transition-colors" onClick={() => router.push(`/dashboard/mock-tests/${item.mockTest.slug}`)}>
+                        <h3 className="font-bold text-base text-foreground line-clamp-2 leading-snug cursor-pointer hover:text-success transition-colors" onClick={() => router.push(`/dashboard/mock-tests/${item.mockTest.slug}`)}>
                           {item.mockTest.title}
                         </h3>
-                        <p className="text-[13px] text-slate-500 mt-0.5">By Acadify • {item.mockTest.category}</p>
+                        <p className="text-[13px] text-muted-foreground mt-0.5">By Acadify • {item.mockTest.category}</p>
 
                         <div className="flex items-center gap-2 mt-1 flex-wrap">
-                          <span className="bg-[#eceb98] text-slate-800 text-[11px] font-bold px-1.5 py-0.5 rounded-sm">Bestseller</span>
-                          <div className="flex items-center text-amber-600 text-[13px] font-bold">
+                          <span className="bg-[#eceb98] text-foreground text-[11px] font-bold px-1.5 py-0.5 rounded-sm">Bestseller</span>
+                          <div className="flex items-center text-warning text-[13px] font-bold">
                             4.7 <Star className="w-3.5 h-3.5 fill-current ml-0.5 mr-1" />
-                            <span className="text-slate-400 font-normal text-xs">(194,717 ratings)</span>
+                            <span className="text-muted-foreground font-normal text-xs">(194,717 ratings)</span>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-2 mt-1 text-[12px] text-slate-500">
+                        <div className="flex items-center gap-2 mt-1 text-[12px] text-muted-foreground">
                           <span>{item.mockTest.duration} total mins</span>
                           <span className="w-1 h-1 rounded-full bg-slate-400"></span>
                           <span>{item.mockTest.totalQuestions} questions</span>
@@ -147,17 +147,17 @@ export default function CartPage() {
 
                       {/* Actions */}
                       <div className="flex sm:flex-col gap-4 sm:gap-2 text-[13px] font-medium items-start sm:items-end justify-start sm:justify-start pt-1 sm:ml-4 sm:min-w-[100px]">
-                        <button onClick={() => confirmRemove(item.mockTest._id)} className="text-emerald-600 hover:text-emerald-800">Remove</button>
-                        <button className="text-emerald-600 hover:text-emerald-800">Save for Later</button>
+                        <button onClick={() => confirmRemove(item.mockTest._id)} className="text-success hover:text-emerald-800">Remove</button>
+                        <button className="text-success hover:text-emerald-800">Save for Later</button>
                       </div>
 
                       {/* Pricing */}
                       <div className="flex sm:flex-col items-center sm:items-end gap-2 sm:gap-0 pt-1 sm:ml-4 sm:min-w-[100px]">
-                        <div className="font-bold text-lg text-emerald-600 flex items-center gap-1">
+                        <div className="font-bold text-lg text-success flex items-center gap-1">
                           {item.price === 0 ? <span className="bg-[#00BC7D] text-white text-[10px] md:text-[11px] uppercase tracking-wider font-bold px-2 py-0.5 rounded shadow-sm">FREE</span> : <>₹{(item.price || 0).toFixed(2)} <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4 fill-current"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z" /><circle cx="7" cy="7" r="1.5" fill="white" /></svg></>}
                         </div>
                         {item.price > 0 && (
-                          <div className="text-[13px] text-slate-400 line-through">
+                          <div className="text-[13px] text-muted-foreground line-through">
                             ₹{(originalPrice || 0).toFixed(2)}
                           </div>
                         )}
@@ -170,13 +170,13 @@ export default function CartPage() {
 
             {/* Sticky Order Summary */}
             <div className="lg:sticky lg:top-24 space-y-4">
-              <div className="text-slate-500 font-bold text-lg">Total:</div>
-              <div className="text-4xl font-bold text-slate-900 tracking-tight">₹{(cart.finalTotal || 0).toFixed(2)}</div>
+              <div className="text-muted-foreground font-bold text-lg">Total:</div>
+              <div className="text-4xl font-bold text-foreground tracking-tight">₹{(cart.finalTotal || 0).toFixed(2)}</div>
 
               {(cart.subtotal > cart.finalTotal || cart.discount > 0) && (
                 <div className="flex items-center gap-2">
-                  <div className="text-base text-slate-400 line-through">₹{(cart.subtotal || 0).toFixed(2)}</div>
-                  <div className="text-base text-slate-600">
+                  <div className="text-base text-muted-foreground line-through">₹{(cart.subtotal || 0).toFixed(2)}</div>
+                  <div className="text-base text-muted-foreground">
                     {Math.round(((cart.subtotal - cart.finalTotal) / cart.subtotal) * 100)}% off
                   </div>
                 </div>
@@ -188,33 +188,33 @@ export default function CartPage() {
               >
                 Proceed to Checkout <ArrowRight className="w-5 h-5" />
               </button>
-              <div className="text-[11px] text-center text-slate-500 mt-2">
+              <div className="text-[11px] text-center text-muted-foreground mt-2">
                 You won't be charged yet
               </div>
 
               {/* Coupon Section */}
-              <div className="pt-6 border-t border-slate-200 mt-6">
+              <div className="pt-6 border-t border-border mt-6">
                 {!showCouponInput && !cart.coupon ? (
                   <button
                     onClick={() => setShowCouponInput(true)}
-                    className="w-full border border-emerald-500 text-emerald-500 rounded-md py-2.5 font-bold hover:bg-emerald-50 transition-colors"
+                    className="w-full border border-emerald-500 text-success rounded-md py-2.5 font-bold hover:bg-success-light transition-colors"
                   >
                     Apply Coupon
                   </button>
                 ) : (
                   <>
-                    <div className="font-bold text-sm text-slate-900 mb-2">Promotions</div>
+                    <div className="font-bold text-sm text-foreground mb-2">Promotions</div>
 
                     {cart.coupon ? (
-                      <div className="bg-slate-50 border border-slate-200 p-2 rounded-sm flex items-center justify-between text-sm">
-                        <div className="flex items-center gap-2 text-slate-700 font-bold">
-                          <Tag className="w-3.5 h-3.5 text-slate-400" />
+                      <div className="bg-muted border border-border p-2 rounded-sm flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-2 text-muted-foreground font-bold">
+                          <Tag className="w-3.5 h-3.5 text-muted-foreground" />
                           {cart.coupon.code} is applied
                         </div>
                         <button
                           onClick={handleRemoveCoupon}
                           disabled={removeCouponMutation.isPending}
-                          className="text-emerald-600 hover:text-emerald-800"
+                          className="text-success hover:text-emerald-800"
                         >
                           <span className="text-xl leading-none px-1">&times;</span>
                         </button>
@@ -225,7 +225,7 @@ export default function CartPage() {
                           <input
                             type="text"
                             placeholder="Enter Coupon"
-                            className={`flex-1 px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-1 placeholder-slate-400 ${couponError ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-slate-300 focus:border-emerald-600 focus:ring-emerald-600'}`}
+                            className={`flex-1 px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-1 placeholder-slate-400 ${couponError ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-border focus:border-emerald-600 focus:ring-emerald-600'}`}
                             value={couponCode}
                             onChange={(e) => {
                               setCouponCode(e.target.value.toUpperCase());
@@ -241,7 +241,7 @@ export default function CartPage() {
                           </button>
                         </form>
                         {couponError && (
-                          <div className="text-red-600 text-[13px] mt-1.5">{couponError}</div>
+                          <div className="text-destructive text-[13px] mt-1.5">{couponError}</div>
                         )}
                       </div>
                     )}
@@ -256,10 +256,10 @@ export default function CartPage() {
       {/* Recommended Mock Tests */}
       {!isStoreLoading && storeData?.tests && (
         <div className="mt-16 pt-8">
-          <h2 className="text-xl text-slate-800 mb-6">Learners are also viewing</h2>
+          <h2 className="text-xl text-foreground mb-6">Learners are also viewing</h2>
           
           {recommendedTests.length === 0 ? (
-            <div className="bg-white p-8 rounded-3xl border border-slate-100 text-center shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] text-slate-500 italic">
+            <div className="bg-white p-8 rounded-3xl border border-border text-center shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] text-muted-foreground italic">
               You are caught with all
             </div>
           ) : (
@@ -269,7 +269,7 @@ export default function CartPage() {
                 <div
                   key={test._id}
                   onClick={() => router.push(`/dashboard/mock-tests/${test.slug}`)}
-                  className="bg-white rounded-3xl p-3 pb-5 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] border border-slate-100 hover:shadow-lg transition-all cursor-pointer group flex flex-col h-full min-h-[380px]"
+                  className="bg-white rounded-3xl p-3 pb-5 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] border border-border hover:shadow-lg transition-all cursor-pointer group flex flex-col h-full min-h-[380px]"
                 >
                   {/* Top Image Area */}
                   <div className="h-44 bg-[#f4fbf8] rounded-2xl relative overflow-hidden flex-shrink-0 flex items-center justify-center">
@@ -303,44 +303,44 @@ export default function CartPage() {
 
                   {/* Content Area */}
                   <div className="px-3 pt-4 flex flex-col flex-1">
-                    <h3 className="font-bold text-[22px] text-slate-900 line-clamp-1 leading-tight transition-colors mb-3">
+                    <h3 className="font-bold text-[22px] text-foreground line-clamp-1 leading-tight transition-colors mb-3">
                       {test.title}
                     </h3>
 
                     {/* Category */}
-                    <div className="flex items-center gap-2 text-slate-500 text-[14px] mb-4">
+                    <div className="flex items-center gap-2 text-muted-foreground text-[14px] mb-4">
                       <FileText className="w-4 h-4 text-[#00BC7D]" />
                       {test.category || 'Full Mock Test'}
                     </div>
 
                     {/* Stats Row */}
-                    <div className="flex items-center gap-4 text-slate-500 text-[13px] mb-5 whitespace-nowrap overflow-hidden">
+                    <div className="flex items-center gap-4 text-muted-foreground text-[13px] mb-5 whitespace-nowrap overflow-hidden">
                       <div className="flex items-center gap-1.5">
                         <Clock className="w-4 h-4 text-[#00BC7D]" /> Duration: {test.duration} mins
                       </div>
-                      <div className="w-px h-4 bg-slate-200"></div>
+                      <div className="w-px h-4 bg-muted-hover"></div>
                       <div className="flex items-center gap-1.5">
                         <Trophy className="w-4 h-4 text-[#00BC7D]" /> Total Questions: {test.totalQuestions}
                       </div>
                     </div>
 
                     {/* Rating */}
-                    <div className="flex items-center gap-2 text-[15px] font-bold text-amber-500 mb-4 mt-auto">
+                    <div className="flex items-center gap-2 text-[15px] font-bold text-warning mb-4 mt-auto">
                       <span className="text-[18px]">4.7</span>
-                      <div className="flex items-center space-x-1 text-amber-500">
+                      <div className="flex items-center space-x-1 text-warning">
                         <Star className="w-4 h-4 fill-current" />
                         <Star className="w-4 h-4 fill-current" />
                         <Star className="w-4 h-4 fill-current" />
                         <Star className="w-4 h-4 fill-current" />
                         <Star className="w-4 h-4 text-slate-200 fill-slate-200" />
                       </div>
-                      <span className="text-[13px] text-slate-400 font-normal ml-1">(1,241)</span>
+                      <span className="text-[13px] text-muted-foreground font-normal ml-1">(1,241)</span>
                     </div>
 
                     {/* Bottom Actions/Price */}
                     <div className="flex items-end justify-between mt-auto">
                       <div className="flex flex-col gap-1">
-                        <div className="font-bold text-lg text-slate-900 flex items-center leading-none">
+                        <div className="font-bold text-lg text-foreground flex items-center leading-none">
                           {test.price === 0 ? (
                             <div className="bg-[#e8f7f0] text-[#00BC7D] text-[13px] uppercase tracking-wider font-bold px-4 py-2 rounded-full flex items-center gap-1.5 shadow-sm">
                               <Tag className="w-4 h-4 fill-current" /> FREE
@@ -350,7 +350,7 @@ export default function CartPage() {
                           )}
                         </div>
                         {test.price > 0 && (
-                          <div className="text-[13px] text-slate-400 line-through leading-none pb-[2px]">
+                          <div className="text-[13px] text-muted-foreground line-through leading-none pb-[2px]">
                             ₹{(test.price * 1.2).toFixed(2)}
                           </div>
                         )}

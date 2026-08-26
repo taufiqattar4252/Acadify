@@ -211,20 +211,20 @@ export default function MockTestBuilder({ initialData, isEdit }: MockTestBuilder
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-border">
         <div className="flex items-center gap-4">
-          <button onClick={() => router.push('/admin/mock-tests')} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+          <button onClick={() => router.push('/admin/mock-tests')} className="p-2 text-muted-foreground hover:text-muted-foreground hover:bg-muted rounded-lg transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
-            <h1 className="text-xl font-bold text-slate-900">{isEdit ? 'Edit Mock Test' : 'Create Mock Test'}</h1>
+            <h1 className="text-xl font-bold text-foreground">{isEdit ? 'Edit Mock Test' : 'Create Mock Test'}</h1>
             <div className="flex items-center gap-2 mt-1">
               <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border
-                ${formData.status === 'Published' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-slate-100 text-slate-700 border-slate-200'}`}>
+                ${formData.status === 'Published' ? 'bg-success-light text-success border-green-200' : 'bg-muted text-muted-foreground border-border'}`}>
                 {formData.status}
               </span>
               {lastSaved && (
-                <span className="text-xs text-slate-500">
+                <span className="text-xs text-muted-foreground">
                   Last saved: {lastSaved.toLocaleTimeString()}
                 </span>
               )}
@@ -251,11 +251,11 @@ export default function MockTestBuilder({ initialData, isEdit }: MockTestBuilder
         {/* Main Content */}
         <div className="lg:col-span-3 space-y-6">
           {/* Tabs */}
-          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+          <div className="flex items-center gap-1 bg-muted p-1 rounded-xl">
             <button
               onClick={() => setActiveTab('settings')}
               className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
-                activeTab === 'settings' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'
+                activeTab === 'settings' ? 'bg-white text-foreground shadow-sm' : 'text-muted-foreground hover:text-muted-foreground hover:bg-muted-hover/50'
               }`}
             >
               Mock Details
@@ -263,14 +263,14 @@ export default function MockTestBuilder({ initialData, isEdit }: MockTestBuilder
             <button
               onClick={() => setActiveTab('questions')}
               className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
-                activeTab === 'questions' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'
+                activeTab === 'questions' ? 'bg-white text-foreground shadow-sm' : 'text-muted-foreground hover:text-muted-foreground hover:bg-muted-hover/50'
               }`}
             >
               Questions ({questions.length})
             </button>
           </div>
 
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-border">
             {activeTab === 'settings' ? (
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -282,20 +282,20 @@ export default function MockTestBuilder({ initialData, isEdit }: MockTestBuilder
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">Description</label>
                   <textarea
                     {...register('description')}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors resize-none outline-none text-sm"
+                    className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors resize-none outline-none text-sm"
                     rows={4}
                     placeholder="Brief description of the test..."
                   />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Category *</label>
+                    <label className="block text-sm font-medium text-muted-foreground mb-1">Category *</label>
                     <select
                       {...register('category')}
-                      className="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors outline-none text-sm"
+                      className="w-full px-4 py-2 bg-white border border-border rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors outline-none text-sm"
                     >
                       <option value="Full Mock Test">Full Mock Test</option>
                       <option value="Physics Test">Physics Test</option>
@@ -305,20 +305,20 @@ export default function MockTestBuilder({ initialData, isEdit }: MockTestBuilder
                       <option value="Previous Year Paper">Previous Year Paper</option>
                       <option value="Custom Practice Test">Custom Practice Test</option>
                     </select>
-                    {errors.category && <p className="text-red-500 text-xs mt-1">{errors.category.message}</p>}
+                    {errors.category && <p className="text-destructive text-xs mt-1">{errors.category.message}</p>}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Status *</label>
+                    <label className="block text-sm font-medium text-muted-foreground mb-1">Status *</label>
                     <select
                       {...register('status')}
-                      className="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors outline-none text-sm"
+                      className="w-full px-4 py-2 bg-white border border-border rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors outline-none text-sm"
                     >
                       <option value="Draft">Draft</option>
                       <option value="Published">Published</option>
                       <option value="Hidden">Hidden</option>
                       <option value="Archived">Archived</option>
                     </select>
-                    {errors.status && <p className="text-red-500 text-xs mt-1">{errors.status.message}</p>}
+                    {errors.status && <p className="text-destructive text-xs mt-1">{errors.status.message}</p>}
                   </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
@@ -327,7 +327,7 @@ export default function MockTestBuilder({ initialData, isEdit }: MockTestBuilder
                   </div>
                   <div>
                     <Input label="Total Marks" type="number" {...register('totalMarks', { valueAsNumber: true })} />
-                    <p className="text-xs text-slate-500 mt-1">Calculated: {dynamicTotalMarks}</p>
+                    <p className="text-xs text-muted-foreground mt-1">Calculated: {dynamicTotalMarks}</p>
                   </div>
                   <div>
                     <Input label="Passing Marks" type="number" {...register('passingMarks', { valueAsNumber: true })} />
@@ -340,19 +340,19 @@ export default function MockTestBuilder({ initialData, isEdit }: MockTestBuilder
             ) : (
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-bold text-slate-900">Question List</h3>
+                  <h3 className="text-lg font-bold text-foreground">Question List</h3>
                   <Button onClick={() => setIsSelectorOpen(true)} className="py-1.5 h-auto text-sm">
                     <Plus className="w-4 h-4 mr-2" /> Add Questions
                   </Button>
                 </div>
 
                 {questions.length === 0 ? (
-                  <div className="text-center py-16 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
+                  <div className="text-center py-16 bg-muted rounded-xl border-2 border-dashed border-border">
                     <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm">
-                      <Plus className="w-6 h-6 text-slate-400" />
+                      <Plus className="w-6 h-6 text-muted-foreground" />
                     </div>
-                    <h4 className="text-slate-900 font-medium">No questions added</h4>
-                    <p className="text-sm text-slate-500 mt-1 max-w-sm mx-auto">Click the button above to open the Question Bank and select questions for this mock test.</p>
+                    <h4 className="text-foreground font-medium">No questions added</h4>
+                    <p className="text-sm text-muted-foreground mt-1 max-w-sm mx-auto">Click the button above to open the Question Bank and select questions for this mock test.</p>
                   </div>
                 ) : (
                   <DndContext 

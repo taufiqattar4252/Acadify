@@ -61,7 +61,7 @@ export const TopNavbar = () => {
         <div className="w-8 h-8 rounded-lg bg-[#1D293D] flex items-center justify-center transform -rotate-12">
           <div className="w-3 h-3 bg-white rounded-sm"></div>
         </div>
-        <span className="text-xl font-bold text-slate-800 tracking-tight">Acadify</span>
+        <span className="text-xl font-bold text-foreground tracking-tight">Acadify</span>
       </div>
 
       {/* CENTER: Floating Pill Navigation */}
@@ -77,8 +77,8 @@ export const TopNavbar = () => {
               className={cn(
                 'px-5 py-2 rounded-full text-sm font-medium transition-all duration-300',
                 isActive
-                  ? 'bg-slate-100 text-slate-900 shadow-sm'
-                  : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
+                  ? 'bg-muted text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted'
               )}
             >
               {item.name}
@@ -90,23 +90,23 @@ export const TopNavbar = () => {
         <div className="relative" ref={dropdownRef}>
           <button 
             onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="px-5 py-2 rounded-full text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-50 flex items-center gap-1 transition-all duration-300"
+            className="px-5 py-2 rounded-full text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted flex items-center gap-1 transition-all duration-300"
           >
             More <ChevronDown className="w-4 h-4" />
           </button>
 
           {dropdownOpen && (
-            <div className="absolute right-0 mt-4 w-48 bg-white rounded-2xl shadow-lumina-hover border border-slate-100 py-2 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
-              <Link href="/admin/subjects" className="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900">Subjects</Link>
-              <Link href="/admin/chapters" className="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900">Chapters</Link>
-              <Link href="/admin/purchases" className="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900">Purchases</Link>
-              <Link href="/admin/payments" className="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900">Payments</Link>
-              <Link href="/admin/attempts" className="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900">Attempts</Link>
-              <Link href="/admin/partners" className="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900">Partners</Link>
-              <div className="h-px bg-slate-100 my-1"></div>
+            <div className="absolute right-0 mt-4 w-48 bg-white rounded-2xl shadow-lumina-hover border border-border py-2 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
+              <Link href="/admin/subjects" className="block px-4 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground">Subjects</Link>
+              <Link href="/admin/chapters" className="block px-4 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground">Chapters</Link>
+              <Link href="/admin/purchases" className="block px-4 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground">Purchases</Link>
+              <Link href="/admin/payments" className="block px-4 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground">Payments</Link>
+              <Link href="/admin/attempts" className="block px-4 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground">Attempts</Link>
+              <Link href="/admin/partners" className="block px-4 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground">Partners</Link>
+              <div className="h-px bg-muted my-1"></div>
               <button 
                 onClick={handleLogout}
-                className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                className="w-full text-left px-4 py-2 text-sm text-destructive hover:bg-destructive-light flex items-center gap-2"
               >
                 <LogOut className="w-4 h-4" /> Logout
               </button>
@@ -119,19 +119,19 @@ export const TopNavbar = () => {
       <div className="flex items-center gap-3">
         <Link 
           href="/admin/settings"
-          className="w-10 h-10 rounded-full bg-white shadow-lumina flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors"
+          className="w-10 h-10 rounded-full bg-white shadow-lumina flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
         >
           <Settings className="w-5 h-5" />
         </Link>
         <Link 
           href="/admin/notifications"
-          className="w-10 h-10 rounded-full bg-white shadow-lumina flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors relative"
+          className="w-10 h-10 rounded-full bg-white shadow-lumina flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors relative"
         >
           <Bell className="w-5 h-5" />
         </Link>
         
-        <Link href="/admin/settings/profile" className="w-10 h-10 rounded-full bg-slate-200 border-2 border-white shadow-sm overflow-hidden flex items-center justify-center cursor-pointer">
-          <User className="w-5 h-5 text-slate-500" />
+        <Link href="/admin/settings/profile" className="w-10 h-10 rounded-full bg-muted-hover border-2 border-white shadow-sm overflow-hidden flex items-center justify-center cursor-pointer">
+          <User className="w-5 h-5 text-muted-foreground" />
         </Link>
       </div>
     </header>

@@ -30,11 +30,11 @@ export default function ForgotPasswordPage() {
   if (forgotPasswordMutation.isSuccess) {
     return (
       <div className="text-center py-4">
-        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
-          <Mail className="h-6 w-6 text-green-600" />
+        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-success-light mb-4">
+          <Mail className="h-6 w-6 text-success" />
         </div>
-        <h3 className="text-xl font-bold text-slate-900 mb-2">Check your email</h3>
-        <p className="text-slate-600 mb-6">
+        <h3 className="text-xl font-bold text-foreground mb-2">Check your email</h3>
+        <p className="text-muted-foreground mb-6">
           We've sent a password reset link to your email address. Please check your inbox.
         </p>
         <Link href="/login" className="font-medium text-primary-600 hover:text-primary-500 transition-colors">
@@ -46,8 +46,8 @@ export default function ForgotPasswordPage() {
 
   return (
     <>
-      <h3 className="text-xl font-bold text-slate-900 mb-2 text-center">Reset your password</h3>
-      <p className="text-center text-sm text-slate-600 mb-6">
+      <h3 className="text-xl font-bold text-foreground mb-2 text-center">Reset your password</h3>
+      <p className="text-center text-sm text-muted-foreground mb-6">
         Enter your email address and we will send you a link to reset your password.
       </p>
       
@@ -71,7 +71,7 @@ export default function ForgotPasswordPage() {
         </div>
       </form>
 
-      <div className="mt-6 text-center text-sm text-slate-600">
+      <div className="mt-6 text-center text-sm text-muted-foreground">
         Remember your password?{' '}
         <Link href="/login" className="font-medium text-primary-600 hover:text-primary-500 transition-colors">
           Back to login

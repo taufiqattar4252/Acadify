@@ -83,20 +83,20 @@ export default function PurchasesPage() {
     {
       id: 'srNo',
       header: 'Sr No',
-      cell: info => <span className="text-slate-500">{pageIndex * pageSize + info.row.index + 1}</span>,
+      cell: info => <span className="text-muted-foreground">{pageIndex * pageSize + info.row.index + 1}</span>,
       enableSorting: false,
     },
     {
       accessorKey: '_id',
       header: 'Purchase ID',
-      cell: info => <span className="font-mono text-xs text-slate-500">{info.getValue().toString().slice(-8)}</span>,
+      cell: info => <span className="font-mono text-xs text-muted-foreground">{info.getValue().toString().slice(-8)}</span>,
       enableSorting: false,
     },
     {
       accessorFn: row => row.user?.fullName,
       id: 'studentName',
       header: 'Student Name',
-      cell: info => <span className="font-medium text-slate-900">{info.getValue() || 'N/A'}</span>,
+      cell: info => <span className="font-medium text-foreground">{info.getValue() || 'N/A'}</span>,
     },
     {
       accessorFn: row => row.mockTest?.title,
@@ -104,15 +104,15 @@ export default function PurchasesPage() {
       header: 'Mock Test',
       cell: info => (
         <div>
-          <span className="font-medium text-slate-900 block">{info.getValue() || 'N/A'}</span>
-          <span className="text-xs text-slate-500">{info.row.original.mockTest?.category || 'N/A'}</span>
+          <span className="font-medium text-foreground block">{info.getValue() || 'N/A'}</span>
+          <span className="text-xs text-muted-foreground">{info.row.original.mockTest?.category || 'N/A'}</span>
         </div>
       ),
     },
     {
       accessorKey: 'amountPaid',
       header: 'Amount',
-      cell: info => <span className="font-bold text-emerald-600">₹{Number(info.getValue() || 0).toFixed(2)}</span>,
+      cell: info => <span className="font-bold text-success">₹{Number(info.getValue() || 0).toFixed(2)}</span>,
     },
     {
       accessorFn: row => row.payment?.status,
@@ -123,10 +123,10 @@ export default function PurchasesPage() {
         return (
           <span className={clsx(
             "text-xs font-bold px-2 py-0.5 rounded-md uppercase",
-            status === 'success' ? "bg-emerald-100 text-emerald-700" :
-            status === 'refunded' ? "bg-amber-100 text-amber-700" :
-            status === 'failed' ? "bg-red-100 text-red-700" :
-            "bg-slate-100 text-slate-700"
+            status === 'success' ? "bg-success-light text-success" :
+            status === 'refunded' ? "bg-warning-light text-warning" :
+            status === 'failed' ? "bg-destructive-light text-destructive" :
+            "bg-muted text-muted-foreground"
           )}>
             {status}
           </span>
@@ -142,9 +142,9 @@ export default function PurchasesPage() {
         return (
           <span className={clsx(
             "text-xs font-bold px-2 py-0.5 rounded-md uppercase",
-            status === 'completed' ? "bg-emerald-100 text-emerald-700" :
-            status === 'revoked' ? "bg-red-100 text-red-700" :
-            "bg-slate-200 text-slate-700"
+            status === 'completed' ? "bg-success-light text-success" :
+            status === 'revoked' ? "bg-destructive-light text-destructive" :
+            "bg-muted-hover text-muted-foreground"
           )}>
             {status}
           </span>
@@ -154,7 +154,7 @@ export default function PurchasesPage() {
     {
       accessorKey: 'purchaseDate',
       header: 'Date',
-      cell: info => <span className="text-sm text-slate-600">{info.getValue() ? new Date(info.getValue()).toLocaleDateString() : 'N/A'}</span>,
+      cell: info => <span className="text-sm text-muted-foreground">{info.getValue() ? new Date(info.getValue()).toLocaleDateString() : 'N/A'}</span>,
     }
   ], [pageIndex, pageSize]);
 
@@ -176,8 +176,8 @@ export default function PurchasesPage() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Purchases</h1>
-          <p className="text-slate-500 mt-1">Manage and inspect all student purchases.</p>
+          <h1 className="text-2xl font-bold text-foreground tracking-tight">Purchases</h1>
+          <p className="text-muted-foreground mt-1">Manage and inspect all student purchases.</p>
         </div>
         
         {(isSuperAdmin || isFinanceAdmin) && (
@@ -190,19 +190,19 @@ export default function PurchasesPage() {
       </div>
 
       {/* Toolbar */}
-      <div className="flex flex-col md:flex-row gap-4 justify-between bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col md:flex-row gap-4 justify-between bg-white p-4 rounded-2xl border border-border shadow-sm">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
             placeholder="Search by ID, name, email, mock test..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
+            className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
           />
         </div>
         <div className="flex gap-2">
-          <Button variant="secondary" onClick={() => setShowFilters(!showFilters)} className={clsx(showFilters && "bg-slate-100")}>
+          <Button variant="secondary" onClick={() => setShowFilters(!showFilters)} className={clsx(showFilters && "bg-muted")}>
             <Filter className="w-4 h-4 mr-2" /> Filters
           </Button>
         </div>
@@ -210,13 +210,13 @@ export default function PurchasesPage() {
 
       {/* Filters Panel */}
       {showFilters && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-white rounded-2xl border border-slate-200 shadow-sm animate-in slide-in-from-top-2">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-white rounded-2xl border border-border shadow-sm animate-in slide-in-from-top-2">
           <div>
-            <label className="block text-xs font-medium text-slate-500 mb-1">Payment Status</label>
+            <label className="block text-xs font-medium text-muted-foreground mb-1">Payment Status</label>
             <select
               value={paymentStatus}
               onChange={(e) => { setPaymentStatus(e.target.value); setPageIndex(0); }}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+              className="w-full bg-muted border border-border rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20"
             >
               <option value="">All Statuses</option>
               <option value="success">Success</option>
@@ -225,11 +225,11 @@ export default function PurchasesPage() {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 mb-1">Category</label>
+            <label className="block text-xs font-medium text-muted-foreground mb-1">Category</label>
             <select
               value={category}
               onChange={(e) => { setCategory(e.target.value); setPageIndex(0); }}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+              className="w-full bg-muted border border-border rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20"
             >
               <option value="">All Categories</option>
               <option value="Full Mock Test">Full Mock Test</option>
@@ -240,7 +240,7 @@ export default function PurchasesPage() {
             </select>
           </div>
           <div className="flex items-end md:col-span-2 justify-end">
-            <Button variant="secondary" onClick={() => { setPaymentStatus(''); setCategory(''); setSearch(''); setPageIndex(0); }} className="text-slate-500">
+            <Button variant="secondary" onClick={() => { setPaymentStatus(''); setCategory(''); setSearch(''); setPageIndex(0); }} className="text-muted-foreground">
               Clear Filters
             </Button>
           </div>

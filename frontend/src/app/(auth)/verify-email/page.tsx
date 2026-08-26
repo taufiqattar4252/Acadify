@@ -25,11 +25,11 @@ function VerifyEmailContent() {
   if (!token) {
     return (
       <div className="text-center py-4">
-        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
-          <AlertCircle className="h-6 w-6 text-red-600" />
+        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-destructive-light mb-4">
+          <AlertCircle className="h-6 w-6 text-destructive" />
         </div>
-        <h3 className="text-xl font-bold text-slate-900 mb-2">Invalid Link</h3>
-        <p className="text-slate-600 mb-6">
+        <h3 className="text-xl font-bold text-foreground mb-2">Invalid Link</h3>
+        <p className="text-muted-foreground mb-6">
           The verification link is missing or invalid. Please check your email and try again.
         </p>
         <Link href="/login" className="font-medium text-primary-600 hover:text-primary-500 transition-colors">
@@ -43,8 +43,8 @@ function VerifyEmailContent() {
     return (
       <div className="text-center py-8">
         <Spinner size="lg" className="mx-auto mb-6 text-primary-600" />
-        <h3 className="text-xl font-bold text-slate-900 mb-2">Verifying your email</h3>
-        <p className="text-slate-600">
+        <h3 className="text-xl font-bold text-foreground mb-2">Verifying your email</h3>
+        <p className="text-muted-foreground">
           Please wait a moment while we verify your account...
         </p>
       </div>
@@ -54,11 +54,11 @@ function VerifyEmailContent() {
   if (verifyEmailMutation.isError) {
     return (
       <div className="text-center py-4">
-        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
-          <AlertCircle className="h-6 w-6 text-red-600" />
+        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-destructive-light mb-4">
+          <AlertCircle className="h-6 w-6 text-destructive" />
         </div>
-        <h3 className="text-xl font-bold text-slate-900 mb-2">Verification Failed</h3>
-        <p className="text-slate-600 mb-6">
+        <h3 className="text-xl font-bold text-foreground mb-2">Verification Failed</h3>
+        <p className="text-muted-foreground mb-6">
           The link has expired or is invalid. Please request a new verification link.
         </p>
         <Link href="/login" className="font-medium text-primary-600 hover:text-primary-500 transition-colors">
@@ -71,11 +71,11 @@ function VerifyEmailContent() {
   // isSuccess
   return (
     <div className="text-center py-4">
-      <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
-        <CheckCircle2 className="h-6 w-6 text-green-600" />
+      <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-success-light mb-4">
+        <CheckCircle2 className="h-6 w-6 text-success" />
       </div>
-      <h3 className="text-xl font-bold text-slate-900 mb-2">Email Verified!</h3>
-      <p className="text-slate-600 mb-6">
+      <h3 className="text-xl font-bold text-foreground mb-2">Email Verified!</h3>
+      <p className="text-muted-foreground mb-6">
         Your email has been successfully verified. You are being redirected to the dashboard.
       </p>
     </div>
@@ -84,7 +84,7 @@ function VerifyEmailContent() {
 
 export default function VerifyEmailPage() {
   return (
-    <Suspense fallback={<div className="text-center py-8 text-slate-500">Loading...</div>}>
+    <Suspense fallback={<div className="text-center py-8 text-muted-foreground">Loading...</div>}>
       <VerifyEmailContent />
     </Suspense>
   );

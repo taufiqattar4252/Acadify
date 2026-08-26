@@ -19,7 +19,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({
   const baseStyles = 'px-5 py-2.5 rounded-full font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 flex items-center justify-center text-sm shadow-sm';
   const variants = {
     primary: 'bg-slate-900 text-white hover:bg-slate-800 focus:ring-slate-900',
-    secondary: 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 focus:ring-slate-200 shadow-lumina',
+    secondary: 'bg-white border border-border text-muted-foreground hover:bg-muted focus:ring-ring shadow-lumina',
     danger: 'bg-red-500 text-white hover:bg-red-600 focus:ring-red-500',
   };
   

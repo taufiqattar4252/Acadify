@@ -13,7 +13,7 @@ export default function PartnerDashboard() {
   });
 
   if (isLoading) {
-    return <div className="p-8 text-center text-gray-500">Loading Dashboard...</div>;
+    return <div className="p-8 text-center text-muted-foreground">Loading Dashboard...</div>;
   }
 
   const stats = data?.stats || {};
@@ -34,38 +34,38 @@ export default function PartnerDashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-card p-6 rounded-xl shadow-sm border border-border dark:border-border">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Total Referrals</p>
-              <h3 className="text-2xl font-bold text-gray-800 dark:text-white mt-1">{stats.studentsReferred || 0}</h3>
+              <p className="text-sm text-muted-foreground dark:text-muted-foreground">Total Referrals</p>
+              <h3 className="text-2xl font-bold text-foreground dark:text-white mt-1">{stats.studentsReferred || 0}</h3>
             </div>
-            <div className="p-3 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg">
+            <div className="p-3 bg-primary-light dark:bg-blue-900/30 text-primary dark:text-blue-400 rounded-lg">
               <Users size={20} />
             </div>
           </div>
         </div>
 
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-card p-6 rounded-xl shadow-sm border border-border dark:border-border">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Total Commission</p>
-              <h3 className="text-2xl font-bold text-gray-800 dark:text-white mt-1">{formatCurrency(stats.commissionEarned || 0)}</h3>
+              <p className="text-sm text-muted-foreground dark:text-muted-foreground">Total Commission</p>
+              <h3 className="text-2xl font-bold text-foreground dark:text-white mt-1">{formatCurrency(stats.commissionEarned || 0)}</h3>
             </div>
-            <div className="p-3 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-lg">
+            <div className="p-3 bg-primary-light dark:bg-indigo-900/30 text-primary dark:text-indigo-400 rounded-lg">
               <Banknote size={20} />
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-card p-6 rounded-xl shadow-sm border border-border dark:border-border">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Pending Payout</p>
-              <h3 className="text-2xl font-bold text-gray-800 dark:text-white mt-1">{formatCurrency(stats.pendingCommission || 0)}</h3>
+              <p className="text-sm text-muted-foreground dark:text-muted-foreground">Pending Payout</p>
+              <h3 className="text-2xl font-bold text-foreground dark:text-white mt-1">{formatCurrency(stats.pendingCommission || 0)}</h3>
             </div>
-            <div className="p-3 bg-yellow-50 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 rounded-lg">
+            <div className="p-3 bg-warning-light dark:bg-yellow-900/30 text-warning dark:text-yellow-400 rounded-lg">
               <Banknote size={20} />
             </div>
           </div>
@@ -73,16 +73,16 @@ export default function PartnerDashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col justify-center items-center text-center">
-           <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-2">Monthly Earnings</h3>
-           <p className="text-4xl font-bold text-green-600 mb-2">{formatCurrency(stats.monthlyEarnings || 0)}</p>
-           <p className="text-sm text-gray-500 dark:text-gray-400">Earned so far this month</p>
+        <div className="bg-white dark:bg-card p-6 rounded-xl shadow-sm border border-border dark:border-border flex flex-col justify-center items-center text-center">
+           <h3 className="text-lg font-bold text-foreground dark:text-white mb-2">Monthly Earnings</h3>
+           <p className="text-4xl font-bold text-success mb-2">{formatCurrency(stats.monthlyEarnings || 0)}</p>
+           <p className="text-sm text-muted-foreground dark:text-muted-foreground">Earned so far this month</p>
         </div>
         
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col justify-center items-center text-center">
-           <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-2">Total Paid Out</h3>
-           <p className="text-4xl font-bold text-indigo-600 mb-2">{formatCurrency(stats.paidCommission || 0)}</p>
-           <p className="text-sm text-gray-500 dark:text-gray-400">Total amount transferred to your account</p>
+        <div className="bg-white dark:bg-card p-6 rounded-xl shadow-sm border border-border dark:border-border flex flex-col justify-center items-center text-center">
+           <h3 className="text-lg font-bold text-foreground dark:text-white mb-2">Total Paid Out</h3>
+           <p className="text-4xl font-bold text-primary mb-2">{formatCurrency(stats.paidCommission || 0)}</p>
+           <p className="text-sm text-muted-foreground dark:text-muted-foreground">Total amount transferred to your account</p>
         </div>
       </div>
     </div>

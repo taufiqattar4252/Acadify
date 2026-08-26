@@ -45,8 +45,8 @@ export default function PartnerLoginPage() {
 
   return (
     <>
-      <h3 className="text-xl font-bold text-slate-900 mb-2 text-center">Partner Portal Login</h3>
-      <p className="text-center text-sm text-slate-500 mb-6">
+      <h3 className="text-xl font-bold text-foreground mb-2 text-center">Partner Portal Login</h3>
+      <p className="text-center text-sm text-muted-foreground mb-6">
         Manage your affiliates, coupons, and commissions.
       </p>
       
@@ -80,7 +80,7 @@ export default function PartnerLoginPage() {
         </div>
       </form>
 
-      <div className="mt-6 text-center text-sm text-slate-600">
+      <div className="mt-6 text-center text-sm text-muted-foreground">
         Are you a student?{' '}
         <Link href="/login" className="font-medium text-primary-600 hover:text-primary-500 transition-colors">
           Student Login

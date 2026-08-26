@@ -49,7 +49,7 @@ export default function StudentDashboardPage() {
     );
   }
 
-  if (!data) return <div className="text-center py-20 text-slate-500">Failed to load dashboard data.</div>;
+  if (!data) return <div className="text-center py-20 text-muted-foreground">Failed to load dashboard data.</div>;
 
   const { overview, scoreTrend, subjectPerformance, questionStats } = data;
   const isNewUser = overview.attemptedMocks === 0;
@@ -138,31 +138,31 @@ export default function StudentDashboardPage() {
   const MetricCard = ({ value, label, icon: Icon, iconColor, iconBg, bottomText, bottomLabel, onClick }: any) => (
     <div
       onClick={onClick}
-      className={`bg-white rounded-[24px] p-6 shadow-sm border border-slate-100 flex flex-col justify-between h-full ${onClick ? 'cursor-pointer hover:shadow-md hover:border-slate-200 transition-all hover:-translate-y-1' : ''}`}
+      className={`bg-white rounded-[24px] p-6 shadow-sm border border-border flex flex-col justify-between h-full ${onClick ? 'cursor-pointer hover:shadow-md hover:border-border transition-all hover:-translate-y-1' : ''}`}
     >
       <div className="flex justify-between items-start mb-4">
         <div>
-          <h3 className="text-[28px] font-bold text-slate-900 leading-none">{value}</h3>
-          <p className="text-xs font-medium text-slate-400 mt-2">{label}</p>
+          <h3 className="text-[28px] font-bold text-foreground leading-none">{value}</h3>
+          <p className="text-xs font-medium text-muted-foreground mt-2">{label}</p>
         </div>
         <div className={`w-10 h-10 rounded-[12px] flex items-center justify-center ${iconBg}`}>
           <Icon className={`w-5 h-5 ${iconColor}`} />
         </div>
       </div>
       <div className="flex items-center gap-2 mt-auto pt-2">
-        {bottomText && <span className="text-xs font-bold text-slate-700">{bottomText}</span>}
-        {bottomLabel && <span className="text-xs font-medium text-slate-400">{bottomLabel}</span>}
+        {bottomText && <span className="text-xs font-bold text-muted-foreground">{bottomText}</span>}
+        {bottomLabel && <span className="text-xs font-medium text-muted-foreground">{bottomLabel}</span>}
       </div>
     </div>
   );
 
   return (
-    <div className="font-sans text-slate-800">
+    <div className="font-sans text-foreground">
 
       {/* 1. WELCOME HEADER */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-        <h1 className="text-3xl font-normal text-slate-800">
-          Welcome <span className="font-semibold text-slate-900">{overview.studentName}!</span>
+        <h1 className="text-3xl font-normal text-foreground">
+          Welcome <span className="font-semibold text-foreground">{overview.studentName}!</span>
         </h1>
         <Button className="!bg-[#10B981] hover:!bg-[#059669] focus:!ring-0 focus:outline-none text-white rounded-full px-6 py-2 h-auto gap-2 text-sm font-medium shadow-md transition-transform active:scale-95" onClick={() => router.push('/dashboard/mock-tests')}>
           <span className="text-lg leading-none mb-0.5">+</span> Buy Mocks
@@ -177,7 +177,7 @@ export default function StudentDashboardPage() {
         >
           <AlertCircle className="w-6 h-6 shrink-0 text-indigo-900" />
           <p className="text-sm font-medium text-indigo-900">
-            You are viewing <strong className="text-indigo-700">Sample Analytics</strong>.
+            You are viewing <strong className="text-primary">Sample Analytics</strong>.
             Complete a mock test to see your personalized performance data here!
           </p>
         </div>
@@ -188,17 +188,17 @@ export default function StudentDashboardPage() {
 
         {/* Supervisor Group (Mocks Overview) */}
         <div className="lg:col-span-5 flex flex-col gap-3">
-          <h2 className="text-lg font-medium text-slate-700 ml-1">Mocks Overview</h2>
+          <h2 className="text-lg font-medium text-muted-foreground ml-1">Mocks Overview</h2>
           <div className="grid grid-cols-2 gap-4 h-full">
             <MetricCard
               value={displayOverview.purchasedMocks} label="Total Purchased"
-              icon={BookOpen} iconColor="text-emerald-500" iconBg="bg-emerald-50"
+              icon={BookOpen} iconColor="text-success" iconBg="bg-success-light"
               bottomText={`${displayOverview.purchasedMocks} Tests`} bottomLabel="Available"
               onClick={() => router.push('/dashboard/mock-tests')}
             />
             <MetricCard
               value={displayOverview.attemptedMocks} label="Tests Attempted"
-              icon={Users} iconColor="text-blue-500" iconBg="bg-blue-50"
+              icon={Users} iconColor="text-primary" iconBg="bg-primary-light"
               bottomText={`${displayOverview.attemptedMocks} Attended`} bottomLabel=""
               onClick={() => router.push('/dashboard/results#test-attempts')}
             />
@@ -207,23 +207,23 @@ export default function StudentDashboardPage() {
 
         {/* Student Overview Group (Performance) */}
         <div className="lg:col-span-7 flex flex-col gap-3">
-          <h2 className="text-lg font-medium text-slate-700 ml-1">Performance Overview</h2>
+          <h2 className="text-lg font-medium text-muted-foreground ml-1">Performance Overview</h2>
           <div className="grid grid-cols-3 gap-4 h-full">
             <MetricCard
               value={displayOverview.averageScore} label="Average Score"
-              icon={BookMarked} iconColor="text-emerald-500" iconBg="bg-emerald-50"
+              icon={BookMarked} iconColor="text-success" iconBg="bg-success-light"
               bottomText="" bottomLabel=""
               onClick={() => router.push('/dashboard/results')}
             />
             <MetricCard
               value={`${displayOverview.accuracy}%`} label="Overall Accuracy"
-              icon={GraduationCap} iconColor="text-blue-500" iconBg="bg-blue-50"
+              icon={GraduationCap} iconColor="text-primary" iconBg="bg-primary-light"
               bottomText="" bottomLabel=""
               onClick={() => router.push('/dashboard/results')}
             />
             <MetricCard
               value={displayOverview.bestScore} label="Best Score"
-              icon={GraduationCap} iconColor="text-amber-500" iconBg="bg-amber-50"
+              icon={GraduationCap} iconColor="text-warning" iconBg="bg-warning-light"
               bottomText={`${displayOverview.percentile}th`} bottomLabel="Percentile"
               onClick={() => router.push('/dashboard/results')}
             />
@@ -235,26 +235,26 @@ export default function StudentDashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
 
         {/* Course (Score Trend) Chart */}
-        <div className="lg:col-span-2 bg-white rounded-[32px] p-6 pb-2 shadow-sm border border-slate-100 flex flex-col">
+        <div className="lg:col-span-2 bg-white rounded-[32px] p-6 pb-2 shadow-sm border border-border flex flex-col">
           <div className="flex justify-between items-center mb-6 px-2">
-            <h3 className="text-lg font-medium text-slate-700">Score Trend</h3>
+            <h3 className="text-lg font-medium text-muted-foreground">Score Trend</h3>
 
             {baseTrend.length > 10 && (
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setPageIndex(p => p + 1)}
                   disabled={startIndex <= 0}
-                  className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-xs font-bold"
+                  className="w-6 h-6 flex items-center justify-center rounded-full bg-muted text-muted-foreground hover:bg-muted-hover disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-xs font-bold"
                 >
                   &lt;
                 </button>
-                <span className="text-[10px] font-medium text-slate-500 w-12 text-center">
+                <span className="text-[10px] font-medium text-muted-foreground w-12 text-center">
                   {startIndex + 1}-{endIndex}
                 </span>
                 <button
                   onClick={() => setPageIndex(p => p - 1)}
                   disabled={pageIndex === 0}
-                  className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-xs font-bold"
+                  className="w-6 h-6 flex items-center justify-center rounded-full bg-muted text-muted-foreground hover:bg-muted-hover disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-xs font-bold"
                 >
                   &gt;
                 </button>
@@ -280,25 +280,25 @@ export default function StudentDashboardPage() {
                     if (active && payload && payload.length) {
                       const data = payload[0].payload;
                       return (
-                        <div className="bg-white p-3.5 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-slate-100 min-w-[150px]">
-                          <p className="font-bold text-slate-800 text-sm mb-2">{data.fullTestName || label}</p>
+                        <div className="bg-white p-3.5 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-border min-w-[150px]">
+                          <p className="font-bold text-foreground text-sm mb-2">{data.fullTestName || label}</p>
                           <div className="space-y-1.5">
                             <div className="flex justify-between items-center text-xs">
-                              <span className="text-slate-500 font-medium">Score</span>
+                              <span className="text-muted-foreground font-medium">Score</span>
                               <span className="text-[#10b981] font-bold">{data.score}/{data.totalMarks}</span>
                             </div>
-                            <div className="h-px w-full bg-slate-50 my-1"></div>
+                            <div className="h-px w-full bg-muted my-1"></div>
                             <div className="flex justify-between items-center text-xs">
-                              <span className="flex items-center gap-1.5 text-slate-500"><span className="w-1.5 h-1.5 rounded-full bg-[#10b981]"></span> Correct</span>
-                              <span className="font-semibold text-slate-700">{data.correct}</span>
+                              <span className="flex items-center gap-1.5 text-muted-foreground"><span className="w-1.5 h-1.5 rounded-full bg-[#10b981]"></span> Correct</span>
+                              <span className="font-semibold text-muted-foreground">{data.correct}</span>
                             </div>
                             <div className="flex justify-between items-center text-xs">
-                              <span className="flex items-center gap-1.5 text-slate-500"><span className="w-1.5 h-1.5 rounded-full bg-[#ef4444]"></span> Wrong</span>
-                              <span className="font-semibold text-slate-700">{data.wrong}</span>
+                              <span className="flex items-center gap-1.5 text-muted-foreground"><span className="w-1.5 h-1.5 rounded-full bg-[#ef4444]"></span> Wrong</span>
+                              <span className="font-semibold text-muted-foreground">{data.wrong}</span>
                             </div>
                             <div className="flex justify-between items-center text-xs">
-                              <span className="flex items-center gap-1.5 text-slate-500"><span className="w-1.5 h-1.5 rounded-full bg-slate-300"></span> Unattempted</span>
-                              <span className="font-semibold text-slate-700">{data.skipped}</span>
+                              <span className="flex items-center gap-1.5 text-muted-foreground"><span className="w-1.5 h-1.5 rounded-full bg-muted-hover"></span> Unattempted</span>
+                              <span className="font-semibold text-muted-foreground">{data.skipped}</span>
                             </div>
                           </div>
                         </div>
@@ -315,20 +315,20 @@ export default function StudentDashboardPage() {
         </div>
 
         {/* Exam (Subject Donut) Chart */}
-        <div className="lg:col-span-1 bg-white rounded-[32px] p-6 shadow-sm border border-slate-100 flex flex-col">
+        <div className="lg:col-span-1 bg-white rounded-[32px] p-6 shadow-sm border border-border flex flex-col">
           <div className="flex justify-between items-center mb-2 px-2">
-            <h3 className="text-lg font-medium text-slate-700">Subject Accuracy</h3>
+            <h3 className="text-lg font-medium text-muted-foreground">Subject Accuracy</h3>
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className={`flex items-center justify-between min-w-[130px] text-[13px] font-medium px-4 py-2 rounded-full border transition-all ${dropdownOpen ? 'border-[#10b981] text-[#10b981] bg-white shadow-sm' : 'border-slate-200 text-slate-700 bg-white hover:bg-slate-50'}`}
+                className={`flex items-center justify-between min-w-[130px] text-[13px] font-medium px-4 py-2 rounded-full border transition-all ${dropdownOpen ? 'border-[#10b981] text-[#10b981] bg-white shadow-sm' : 'border-border text-muted-foreground bg-white hover:bg-muted'}`}
               >
                 {subjectFilter}
-                <ChevronDown className={`w-4 h-4 ml-2 transition-transform duration-200 ${dropdownOpen ? 'rotate-180 text-[#10b981]' : 'text-slate-400'}`} />
+                <ChevronDown className={`w-4 h-4 ml-2 transition-transform duration-200 ${dropdownOpen ? 'rotate-180 text-[#10b981]' : 'text-muted-foreground'}`} />
               </button>
 
               {dropdownOpen && (
-                <div className="absolute top-full mt-2 right-0 w-[150px] bg-white rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] border border-slate-100 overflow-hidden z-20 py-1.5 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
+                <div className="absolute top-full mt-2 right-0 w-[150px] bg-white rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] border border-border overflow-hidden z-20 py-1.5 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
                   {['Overall', 'Physics', 'Chemistry', 'Mathematics'].map((option) => (
                     <div
                       key={option}
@@ -336,7 +336,7 @@ export default function StudentDashboardPage() {
                         setSubjectFilter(option);
                         setDropdownOpen(false);
                       }}
-                      className={`px-4 py-2.5 text-[13px] font-medium cursor-pointer transition-colors ${subjectFilter === option ? 'text-[#10b981] bg-[#ecfdf5]' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
+                      className={`px-4 py-2.5 text-[13px] font-medium cursor-pointer transition-colors ${subjectFilter === option ? 'text-[#10b981] bg-[#ecfdf5]' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
                     >
                       {option}
                     </div>
@@ -374,10 +374,10 @@ export default function StudentDashboardPage() {
                 </PieChart>
               </ResponsiveContainer>
               <div className="absolute bottom-2 flex flex-col items-center pointer-events-none z-0">
-                <span className="text-3xl font-bold text-slate-900">
+                <span className="text-3xl font-bold text-foreground">
                   {subjectFilter === 'Overall' ? displayOverview.accuracy : currentSubjectAccuracy}%
                 </span>
-                <span className="text-[10px] text-slate-400 font-medium uppercase tracking-wider mt-0.5">
+                <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider mt-0.5">
                   {subjectFilter}
                 </span>
               </div>
@@ -386,7 +386,7 @@ export default function StudentDashboardPage() {
 
           <div className="grid grid-cols-2 gap-y-4 gap-x-2 mt-6 px-4">
             {subjectData.map((s, i) => (
-              <div key={i} className="flex items-center gap-2 text-[11px] font-medium text-slate-600">
+              <div key={i} className="flex items-center gap-2 text-[11px] font-medium text-muted-foreground">
                 <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: s.color }}></span>
                 {s.name} {subjectFilter === 'Overall' ? `(${s.value}%)` : `(${s.value})`}
               </div>
@@ -400,16 +400,16 @@ export default function StudentDashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
         {/* Question Stats (Subscriptions style) */}
-        <div className="bg-white rounded-[24px] p-6 shadow-sm border border-slate-100 flex flex-col justify-between">
+        <div className="bg-white rounded-[24px] p-6 shadow-sm border border-border flex flex-col justify-between">
           <div>
-            <h3 className="text-lg font-medium text-slate-700 mb-6">Question Stats</h3>
+            <h3 className="text-lg font-medium text-muted-foreground mb-6">Question Stats</h3>
             <div className="flex items-baseline gap-2 mb-4">
-              <span className="text-2xl font-bold text-slate-900">{totalQuestions}</span>
-              <span className="text-xs text-slate-400 font-medium">Total Attempted</span>
+              <span className="text-2xl font-bold text-foreground">{totalQuestions}</span>
+              <span className="text-xs text-muted-foreground font-medium">Total Attempted</span>
             </div>
 
             {/* Progress Bar Segmented */}
-            <div className="h-3 w-full bg-slate-100 rounded-full flex overflow-hidden mb-6">
+            <div className="h-3 w-full bg-muted rounded-full flex overflow-hidden mb-6">
               <div style={{ width: `${(displayQuestions.correct / totalQuestions) * 100}%` }} className="bg-[#10b981] h-full border-r-2 border-white"></div>
               <div style={{ width: `${(displayQuestions.wrong / totalQuestions) * 100}%` }} className="bg-[#f59e0b] h-full border-r-2 border-white"></div>
               <div style={{ width: `${(displayQuestions.skipped / totalQuestions) * 100}%` }} className="bg-[#ef4444] h-full"></div>
@@ -417,34 +417,34 @@ export default function StudentDashboardPage() {
           </div>
 
           <div className="flex justify-between items-center text-xs font-medium">
-            <div className="flex items-center gap-1.5 text-slate-600"><span className="w-2 h-2 rounded-full bg-[#10b981]"></span> Correct <span className="font-bold text-slate-900 ml-0.5">{displayQuestions.correct}</span></div>
-            <div className="flex items-center gap-1.5 text-slate-600"><span className="w-2 h-2 rounded-full bg-[#f59e0b]"></span> Wrong <span className="font-bold text-slate-900 ml-0.5">{displayQuestions.wrong}</span></div>
-            <div className="flex items-center gap-1.5 text-slate-600"><span className="w-2 h-2 rounded-full bg-[#ef4444]"></span> Skipped <span className="font-bold text-slate-900 ml-0.5">{displayQuestions.skipped}</span></div>
+            <div className="flex items-center gap-1.5 text-muted-foreground"><span className="w-2 h-2 rounded-full bg-[#10b981]"></span> Correct <span className="font-bold text-foreground ml-0.5">{displayQuestions.correct}</span></div>
+            <div className="flex items-center gap-1.5 text-muted-foreground"><span className="w-2 h-2 rounded-full bg-[#f59e0b]"></span> Wrong <span className="font-bold text-foreground ml-0.5">{displayQuestions.wrong}</span></div>
+            <div className="flex items-center gap-1.5 text-muted-foreground"><span className="w-2 h-2 rounded-full bg-[#ef4444]"></span> Skipped <span className="font-bold text-foreground ml-0.5">{displayQuestions.skipped}</span></div>
           </div>
         </div>
 
         {/* Study Progress (Video Lessons style) */}
-        <div className="bg-white rounded-[24px] p-6 shadow-sm border border-slate-100 flex flex-col justify-between">
-          <h3 className="text-lg font-medium text-slate-700 mb-6">Study Progress</h3>
+        <div className="bg-white rounded-[24px] p-6 shadow-sm border border-border flex flex-col justify-between">
+          <h3 className="text-lg font-medium text-muted-foreground mb-6">Study Progress</h3>
           <div className="flex justify-between gap-4 h-full items-end">
             <div 
               onClick={() => router.push('/dashboard/study-progress?tab=strong')}
-              className="border border-slate-100 rounded-[16px] p-4 flex-1 flex flex-col justify-between h-24 cursor-pointer hover:bg-slate-50 transition-colors"
+              className="border border-border rounded-[16px] p-4 flex-1 flex flex-col justify-between h-24 cursor-pointer hover:bg-muted transition-colors"
             >
-              <span className="text-xl font-bold text-slate-900">{strongChaptersList.length}</span>
+              <span className="text-xl font-bold text-foreground">{strongChaptersList.length}</span>
               <div className="flex justify-between items-end">
-                <span className="text-[10px] font-medium text-slate-400">Chapters Strong</span>
+                <span className="text-[10px] font-medium text-muted-foreground">Chapters Strong</span>
                 <div className="w-1.5 h-4 bg-[#10b981] rounded-full"></div>
               </div>
             </div>
 
             <div 
               onClick={() => router.push('/dashboard/study-progress?tab=weak')}
-              className="border border-slate-100 rounded-[16px] p-4 flex-1 flex flex-col justify-between h-24 cursor-pointer hover:bg-slate-50 transition-colors"
+              className="border border-border rounded-[16px] p-4 flex-1 flex flex-col justify-between h-24 cursor-pointer hover:bg-muted transition-colors"
             >
-              <span className="text-xl font-bold text-slate-900">{weakChaptersList.length}</span>
+              <span className="text-xl font-bold text-foreground">{weakChaptersList.length}</span>
               <div className="flex justify-between items-end">
-                <span className="text-[10px] font-medium text-slate-400">Needs Practice</span>
+                <span className="text-[10px] font-medium text-muted-foreground">Needs Practice</span>
                 <div className="w-1.5 h-4 bg-[#8b5cf6] rounded-full"></div>
               </div>
             </div>
@@ -452,30 +452,30 @@ export default function StudentDashboardPage() {
         </div>
 
         {/* Activity (Questions style) */}
-        <div className="bg-white rounded-[24px] p-6 shadow-sm border border-slate-100 flex flex-col justify-between">
-          <h3 className="text-lg font-medium text-slate-700 mb-6">Activity</h3>
+        <div className="bg-white rounded-[24px] p-6 shadow-sm border border-border flex flex-col justify-between">
+          <h3 className="text-lg font-medium text-muted-foreground mb-6">Activity</h3>
           <div className="flex justify-between gap-4 h-full items-end">
             <div
               onClick={() => router.push('/dashboard/mock-tests')}
-              className="border border-slate-100 rounded-[16px] p-4 flex-1 flex items-center justify-between h-24 cursor-pointer hover:shadow-md hover:border-slate-200 transition-all hover:-translate-y-1"
+              className="border border-border rounded-[16px] p-4 flex-1 flex items-center justify-between h-24 cursor-pointer hover:shadow-md hover:border-border transition-all hover:-translate-y-1"
             >
               <div>
-                <div className="text-xl font-bold text-slate-900 mb-1">{displayOverview.purchasedMocks}</div>
-                <div className="text-[10px] font-medium text-slate-400">Total Mocks</div>
+                <div className="text-xl font-bold text-foreground mb-1">{displayOverview.purchasedMocks}</div>
+                <div className="text-[10px] font-medium text-muted-foreground">Total Mocks</div>
               </div>
-              <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-500 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-success-light text-success flex items-center justify-center">
                 <BookOpen className="w-4 h-4" />
               </div>
             </div>
             <div
               onClick={() => router.push('/dashboard/results#test-attempts')}
-              className="border border-slate-100 rounded-[16px] p-4 flex-1 flex items-center justify-between h-24 cursor-pointer hover:shadow-md hover:border-slate-200 transition-all hover:-translate-y-1"
+              className="border border-border rounded-[16px] p-4 flex-1 flex items-center justify-between h-24 cursor-pointer hover:shadow-md hover:border-border transition-all hover:-translate-y-1"
             >
               <div>
-                <div className="text-xl font-bold text-slate-900 mb-1">{displayOverview.attemptedMocks}</div>
-                <div className="text-[10px] font-medium text-slate-400">Completed</div>
+                <div className="text-xl font-bold text-foreground mb-1">{displayOverview.attemptedMocks}</div>
+                <div className="text-[10px] font-medium text-muted-foreground">Completed</div>
               </div>
-              <div className="w-8 h-8 rounded-lg bg-purple-50 text-purple-500 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-primary-light text-primary flex items-center justify-center">
                 <CheckCircle className="w-4 h-4" />
               </div>
             </div>

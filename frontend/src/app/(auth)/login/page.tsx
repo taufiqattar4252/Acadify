@@ -29,7 +29,7 @@ export default function LoginPage() {
 
   return (
     <>
-      <h3 className="text-xl font-bold text-slate-900 mb-6 text-center">Sign in to your account</h3>
+      <h3 className="text-xl font-bold text-foreground mb-6 text-center">Sign in to your account</h3>
       
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <Input
@@ -66,16 +66,16 @@ export default function LoginPage() {
         </div>
       </form>
 
-      <div className="mt-6 text-center text-sm text-slate-600">
+      <div className="mt-6 text-center text-sm text-muted-foreground">
         Don't have an account?{' '}
         <Link href="/register" className="font-medium text-primary-600 hover:text-primary-500 transition-colors">
           Register here
         </Link>
       </div>
 
-      <div className="mt-4 text-center text-xs text-slate-500">
+      <div className="mt-4 text-center text-xs text-muted-foreground">
         Are you a partner?{' '}
-        <Link href="/partner-login" className="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+        <Link href="/partner-login" className="font-medium text-primary hover:text-primary transition-colors">
           Sign in to Partner Portal
         </Link>
       </div>

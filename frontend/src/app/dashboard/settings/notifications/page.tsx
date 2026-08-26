@@ -51,92 +51,92 @@ export default function NotificationSettingsPage() {
   return (
     <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+        <h1 className="text-2xl font-bold text-foreground tracking-tight flex items-center gap-2">
           {/* <Bell className="w-6 h-6 text-[#10B981]" fill="currentColor" /> */}
           Notification Settings
         </h1>
-        <p className="text-slate-500 mt-1">Manage how and when you want to be notified</p>
+        <p className="text-muted-foreground mt-1">Manage how and when you want to be notified</p>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-6">
-        <div className="p-6 border-b border-slate-100 bg-slate-50/50">
-          <h2 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-            <Mail className="w-5 h-5 text-slate-500" />
+      <div className="bg-white rounded-2xl shadow-sm border border-border overflow-hidden mb-6">
+        <div className="p-6 border-b border-border bg-muted/50">
+          <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+            <Mail className="w-5 h-5 text-muted-foreground" />
             Global Channels
           </h2>
-          <p className="text-sm text-slate-500 mt-1">Enable or disable communication channels completely.</p>
+          <p className="text-sm text-muted-foreground mt-1">Enable or disable communication channels completely.</p>
         </div>
         <div className="p-6 space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-slate-900">Email Notifications</p>
-              <p className="text-sm text-slate-500">Receive important updates directly in your inbox.</p>
+              <p className="font-medium text-foreground">Email Notifications</p>
+              <p className="text-sm text-muted-foreground">Receive important updates directly in your inbox.</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" className="sr-only peer" checked={prefs.email} onChange={() => handleToggle('email')} />
-              <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#10B981]/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#10B981]"></div>
+              <div className="w-11 h-6 bg-muted-hover peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#10B981]/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#10B981]"></div>
             </label>
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-slate-900">In-App Notifications</p>
-              <p className="text-sm text-slate-500">Receive alerts inside the platform.</p>
+              <p className="font-medium text-foreground">In-App Notifications</p>
+              <p className="text-sm text-muted-foreground">Receive alerts inside the platform.</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" className="sr-only peer" checked={prefs.inApp} onChange={() => handleToggle('inApp')} />
-              <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#10B981]/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#10B981]"></div>
+              <div className="w-11 h-6 bg-muted-hover peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#10B981]/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#10B981]"></div>
             </label>
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-6">
-        <div className="p-6 border-b border-slate-100 bg-slate-50/50">
-          <h2 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-            <MonitorPlay className="w-5 h-5 text-slate-500" />
+      <div className="bg-white rounded-2xl shadow-sm border border-border overflow-hidden mb-6">
+        <div className="p-6 border-b border-border bg-muted/50">
+          <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+            <MonitorPlay className="w-5 h-5 text-muted-foreground" />
             Specific Events
           </h2>
-          <p className="text-sm text-slate-500 mt-1">Choose which types of alerts you want to receive.</p>
+          <p className="text-sm text-muted-foreground mt-1">Choose which types of alerts you want to receive.</p>
         </div>
         <div className="p-6 space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-slate-900">Exam Reminders</p>
-              <p className="text-sm text-slate-500">Alerts for upcoming or unfinished exams.</p>
+              <p className="font-medium text-foreground">Exam Reminders</p>
+              <p className="text-sm text-muted-foreground">Alerts for upcoming or unfinished exams.</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" className="sr-only peer" checked={prefs.examReminders} onChange={() => handleToggle('examReminders')} />
-              <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#10B981]/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#10B981]"></div>
+              <div className="w-11 h-6 bg-muted-hover peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#10B981]/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#10B981]"></div>
             </label>
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-slate-900">Result Publishing</p>
-              <p className="text-sm text-slate-500">Notifies you when your mock test results are ready.</p>
+              <p className="font-medium text-foreground">Result Publishing</p>
+              <p className="text-sm text-muted-foreground">Notifies you when your mock test results are ready.</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" className="sr-only peer" checked={prefs.resultNotifications} onChange={() => handleToggle('resultNotifications')} />
-              <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#10B981]/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#10B981]"></div>
+              <div className="w-11 h-6 bg-muted-hover peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#10B981]/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#10B981]"></div>
             </label>
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-slate-900">System Announcements</p>
-              <p className="text-sm text-slate-500">Important messages from administrators or maintenance alerts.</p>
+              <p className="font-medium text-foreground">System Announcements</p>
+              <p className="text-sm text-muted-foreground">Important messages from administrators or maintenance alerts.</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" className="sr-only peer" checked={prefs.systemAnnouncements} onChange={() => handleToggle('systemAnnouncements')} />
-              <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#10B981]/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#10B981]"></div>
+              <div className="w-11 h-6 bg-muted-hover peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#10B981]/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#10B981]"></div>
             </label>
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-slate-900">Marketing & Offers</p>
-              <p className="text-sm text-slate-500">Occasional promotional offers for mock test bundles.</p>
+              <p className="font-medium text-foreground">Marketing & Offers</p>
+              <p className="text-sm text-muted-foreground">Occasional promotional offers for mock test bundles.</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" className="sr-only peer" checked={prefs.marketingEmails} onChange={() => handleToggle('marketingEmails')} />
-              <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#10B981]/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#10B981]"></div>
+              <div className="w-11 h-6 bg-muted-hover peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#10B981]/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#10B981]"></div>
             </label>
           </div>
         </div>

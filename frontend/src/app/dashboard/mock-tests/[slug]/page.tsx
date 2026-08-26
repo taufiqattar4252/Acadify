@@ -144,9 +144,9 @@ export default function MockDetailsPage() {
 
   if (isError || !data?.test) {
     return (
-      <div className="text-center py-20 bg-white rounded-xl border border-slate-200">
-        <h3 className="text-lg font-bold text-slate-900">Mock Test Not Found</h3>
-        <p className="text-slate-500 mt-1">This test might be unavailable or removed.</p>
+      <div className="text-center py-20 bg-white rounded-xl border border-border">
+        <h3 className="text-lg font-bold text-foreground">Mock Test Not Found</h3>
+        <p className="text-muted-foreground mt-1">This test might be unavailable or removed.</p>
         <Button variant="secondary" className="mt-4" onClick={() => router.push('/dashboard/mock-tests')}>
           Back to Store
         </Button>
@@ -160,14 +160,14 @@ export default function MockDetailsPage() {
     <div className="bg-[#f9f9f9] min-h-screen pb-20">
 
       {/* 1. Global Navigation / Breadcrumbs (Header Area) */}
-      <div className="bg-white border-b border-slate-200 hidden md:block">
+      <div className="bg-white border-b border-border hidden md:block">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
-          <div className="flex items-center text-sm text-slate-500 font-medium">
-            <Link href="/dashboard/mock-tests" className="hover:text-blue-600 transition-colors">Store</Link>
+          <div className="flex items-center text-sm text-muted-foreground font-medium">
+            <Link href="/dashboard/mock-tests" className="hover:text-primary transition-colors">Store</Link>
             <ChevronRight className="w-4 h-4 mx-2 text-slate-300" />
-            <span className="text-slate-900 truncate max-w-[300px]">{test.category || 'Mock Test'}</span>
+            <span className="text-foreground truncate max-w-[300px]">{test.category || 'Mock Test'}</span>
             <ChevronRight className="w-4 h-4 mx-2 text-slate-300" />
-            <span className="text-slate-400 truncate max-w-[200px]">{test.title}</span>
+            <span className="text-muted-foreground truncate max-w-[200px]">{test.title}</span>
           </div>
         </div>
       </div>
@@ -199,7 +199,7 @@ export default function MockDetailsPage() {
               <div className="flex flex-col sm:flex-row items-center gap-4">
                 {isPurchased ? (
                   <Button
-                    className="w-full sm:w-auto px-10 py-4 text-lg font-bold gap-2 bg-white !text-[#00BC7D] hover:!bg-slate-50 focus:!ring-[#00BC7D] border-none shadow-lg rounded-lg"
+                    className="w-full sm:w-auto px-10 py-4 text-lg font-bold gap-2 bg-white !text-[#00BC7D] hover:!bg-muted focus:!ring-[#00BC7D] border-none shadow-lg rounded-lg"
                     onClick={handleStartExam}
                     disabled={isStartingExam}
                   >
@@ -211,7 +211,7 @@ export default function MockDetailsPage() {
                   </Button>
                 ) : test.price === 0 ? (
                   <Button
-                    className="w-full sm:w-auto px-10 py-4 text-lg font-bold gap-2 bg-white !text-[#00BC7D] hover:!bg-slate-50 focus:!ring-[#00BC7D] border-none shadow-lg rounded-lg"
+                    className="w-full sm:w-auto px-10 py-4 text-lg font-bold gap-2 bg-white !text-[#00BC7D] hover:!bg-muted focus:!ring-[#00BC7D] border-none shadow-lg rounded-lg"
                     onClick={handlePayment}
                     disabled={isProcessing}
                   >
@@ -223,14 +223,14 @@ export default function MockDetailsPage() {
                   </Button>
                 ) : isInCart ? (
                   <Button
-                    className="w-full sm:w-auto px-10 py-4 text-lg font-bold gap-2 bg-white !text-[#00BC7D] hover:!bg-slate-50 focus:!ring-[#00BC7D] border-none shadow-lg rounded-lg"
+                    className="w-full sm:w-auto px-10 py-4 text-lg font-bold gap-2 bg-white !text-[#00BC7D] hover:!bg-muted focus:!ring-[#00BC7D] border-none shadow-lg rounded-lg"
                     onClick={() => router.push('/dashboard/cart')}
                   >
                     <ShoppingCart className="w-5 h-5" /> Go to Cart
                   </Button>
                 ) : (
                   <Button
-                    className="w-full sm:w-auto px-10 py-4 text-lg font-bold gap-2 bg-white !text-[#00BC7D] hover:!bg-slate-50 focus:!ring-[#00BC7D] border-none shadow-lg rounded-lg"
+                    className="w-full sm:w-auto px-10 py-4 text-lg font-bold gap-2 bg-white !text-[#00BC7D] hover:!bg-muted focus:!ring-[#00BC7D] border-none shadow-lg rounded-lg"
                     onClick={handleAddToCart}
                     disabled={addToCartMutation.isPending}
                   >
@@ -275,39 +275,39 @@ export default function MockDetailsPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
         {/* 4. Quick Stats Row */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pb-12 border-b border-slate-200 mb-12" id="about">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pb-12 border-b border-border mb-12" id="about">
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2 text-slate-900 font-bold text-lg">
-              <div className="flex text-amber-500">
+            <div className="flex items-center gap-2 text-foreground font-bold text-lg">
+              <div className="flex text-warning">
                 <Star className="w-5 h-5 fill-current" />
               </div>
               4.8
             </div>
-            <p className="text-sm text-slate-600 font-medium">(2,143 reviews)</p>
+            <p className="text-sm text-muted-foreground font-medium">(2,143 reviews)</p>
           </div>
 
-          <div className="flex flex-col gap-2 border-l border-slate-200 pl-6">
-            <div className="flex items-center gap-2 text-slate-900 font-bold text-lg">
+          <div className="flex flex-col gap-2 border-l border-border pl-6">
+            <div className="flex items-center gap-2 text-foreground font-bold text-lg">
               <Settings className="w-5 h-5" />
               {(test as any).level || 'Intermediate'} Level
             </div>
-            <p className="text-sm text-slate-600 font-medium">Recommended Experience</p>
+            <p className="text-sm text-muted-foreground font-medium">Recommended Experience</p>
           </div>
 
-          <div className="flex flex-col gap-2 border-l border-slate-200 pl-6">
-            <div className="flex items-center gap-2 text-slate-900 font-bold text-lg">
+          <div className="flex flex-col gap-2 border-l border-border pl-6">
+            <div className="flex items-center gap-2 text-foreground font-bold text-lg">
               <Clock className="w-5 h-5" />
               {test.duration} Minutes
             </div>
-            <p className="text-sm text-slate-600 font-medium">Auto-submission at deadline</p>
+            <p className="text-sm text-muted-foreground font-medium">Auto-submission at deadline</p>
           </div>
 
-          <div className="flex flex-col gap-2 border-l border-slate-200 pl-6">
-            <div className="flex items-center gap-2 text-slate-900 font-bold text-lg">
+          <div className="flex flex-col gap-2 border-l border-border pl-6">
+            <div className="flex items-center gap-2 text-foreground font-bold text-lg">
               <HelpCircle className="w-5 h-5" />
               {test.questions?.length || 'Multiple'} Questions
             </div>
-            <p className="text-sm text-slate-600 font-medium">Multiple Choice Format</p>
+            <p className="text-sm text-muted-foreground font-medium">Multiple Choice Format</p>
           </div>
         </div>
 
@@ -319,24 +319,24 @@ export default function MockDetailsPage() {
 
             {/* What you'll learn */}
             <section id="outcomes">
-              <h2 className="text-2xl font-bold text-slate-900 mb-6">What you'll gain</h2>
-              <div className="bg-white border border-slate-200 rounded-xl p-8 shadow-sm">
+              <h2 className="text-2xl font-bold text-foreground mb-6">What you'll gain</h2>
+              <div className="bg-white border border-border rounded-xl p-8 shadow-sm">
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <li className="flex gap-3">
-                    <CheckCircle className="w-6 h-6 text-green-600 shrink-0" />
-                    <span className="text-slate-700 font-medium">Real exam environment simulation</span>
+                    <CheckCircle className="w-6 h-6 text-success shrink-0" />
+                    <span className="text-muted-foreground font-medium">Real exam environment simulation</span>
                   </li>
                   <li className="flex gap-3">
-                    <CheckCircle className="w-6 h-6 text-green-600 shrink-0" />
-                    <span className="text-slate-700 font-medium">Detailed performance analytics and reporting</span>
+                    <CheckCircle className="w-6 h-6 text-success shrink-0" />
+                    <span className="text-muted-foreground font-medium">Detailed performance analytics and reporting</span>
                   </li>
                   <li className="flex gap-3">
-                    <CheckCircle className="w-6 h-6 text-green-600 shrink-0" />
-                    <span className="text-slate-700 font-medium">Identification of weak subjects and topics</span>
+                    <CheckCircle className="w-6 h-6 text-success shrink-0" />
+                    <span className="text-muted-foreground font-medium">Identification of weak subjects and topics</span>
                   </li>
                   <li className="flex gap-3">
-                    <CheckCircle className="w-6 h-6 text-green-600 shrink-0" />
-                    <span className="text-slate-700 font-medium">Time management skills under pressure</span>
+                    <CheckCircle className="w-6 h-6 text-success shrink-0" />
+                    <span className="text-muted-foreground font-medium">Time management skills under pressure</span>
                   </li>
                 </ul>
               </div>
@@ -344,10 +344,10 @@ export default function MockDetailsPage() {
 
             {/* Skills Pills */}
             <section>
-              <h2 className="text-xl font-bold text-slate-900 mb-4">Skills Tested</h2>
+              <h2 className="text-xl font-bold text-foreground mb-4">Skills Tested</h2>
               <div className="flex flex-wrap gap-2">
                 {['Time Management', 'Problem Solving', 'Accuracy', 'Speed', 'Concept Application'].map((skill, i) => (
-                  <span key={i} className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold rounded-full transition-colors cursor-default">
+                  <span key={i} className="px-4 py-2 bg-muted hover:bg-muted-hover text-muted-foreground text-sm font-bold rounded-full transition-colors cursor-default">
                     {skill}
                   </span>
                 ))}
@@ -356,55 +356,55 @@ export default function MockDetailsPage() {
 
             {/* Syllabus / Instructions Accordion */}
             <section id="syllabus">
-              <h2 className="text-2xl font-bold text-slate-900 mb-6">Test Syllabus & Instructions</h2>
+              <h2 className="text-2xl font-bold text-foreground mb-6">Test Syllabus & Instructions</h2>
 
               <div className="space-y-4">
                 {/* Accordion Item 1 */}
-                <details className="group bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm" open>
-                  <summary className="flex justify-between items-center font-bold cursor-pointer list-none p-6 hover:bg-slate-50 transition-colors">
+                <details className="group bg-white border border-border rounded-xl overflow-hidden shadow-sm" open>
+                  <summary className="flex justify-between items-center font-bold cursor-pointer list-none p-6 hover:bg-muted transition-colors">
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 bg-[#f4fbf8] text-[#00BC7D] rounded-lg flex items-center justify-center font-bold text-lg">1</div>
-                      <span className="text-lg text-slate-900">Exam Instructions</span>
+                      <span className="text-lg text-foreground">Exam Instructions</span>
                     </div>
                     <span className="transition group-open:rotate-180">
-                      <ChevronDown className="w-5 h-5 text-slate-400" />
+                      <ChevronDown className="w-5 h-5 text-muted-foreground" />
                     </span>
                   </summary>
-                  <div className="p-6 pt-0 border-t border-slate-100">
+                  <div className="p-6 pt-0 border-t border-border">
                     <ul className="space-y-4 mt-4 relative z-10 w-full md:w-3/4">
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="w-5 h-5 text-[#00BC7D] fill-[#00BC7D]/10 flex-shrink-0 mt-0.5" />
-                        <span className="text-slate-700 text-sm font-medium">Once started, the timer cannot be paused.</span>
+                        <span className="text-muted-foreground text-sm font-medium">Once started, the timer cannot be paused.</span>
                       </li>
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="w-5 h-5 text-[#00BC7D] fill-[#00BC7D]/10 flex-shrink-0 mt-0.5" />
-                        <span className="text-slate-700 text-sm font-medium">Ensure you have a stable internet connection.</span>
+                        <span className="text-muted-foreground text-sm font-medium">Ensure you have a stable internet connection.</span>
                       </li>
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="w-5 h-5 text-[#00BC7D] fill-[#00BC7D]/10 flex-shrink-0 mt-0.5" />
-                        <span className="text-slate-700 text-sm font-medium">Do not refresh or close the browser window during the test.</span>
+                        <span className="text-muted-foreground text-sm font-medium">Do not refresh or close the browser window during the test.</span>
                       </li>
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="w-5 h-5 text-[#00BC7D] fill-[#00BC7D]/10 flex-shrink-0 mt-0.5" />
-                        <span className="text-slate-700 text-sm font-medium">The test will be auto-submitted when the time is over.</span>
+                        <span className="text-muted-foreground text-sm font-medium">The test will be auto-submitted when the time is over.</span>
                       </li>
                     </ul>
                   </div>
                 </details>
 
                 {/* Accordion Item 2 */}
-                <details className="group bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-                  <summary className="flex justify-between items-center font-bold cursor-pointer list-none p-6 hover:bg-slate-50 transition-colors">
+                <details className="group bg-white border border-border rounded-xl overflow-hidden shadow-sm">
+                  <summary className="flex justify-between items-center font-bold cursor-pointer list-none p-6 hover:bg-muted transition-colors">
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 bg-[#f4fbf8] text-[#00BC7D] rounded-lg flex items-center justify-center font-bold text-lg">2</div>
-                      <span className="text-lg text-slate-900">Marking Scheme</span>
+                      <span className="text-lg text-foreground">Marking Scheme</span>
                     </div>
                     <span className="transition group-open:rotate-180">
-                      <ChevronDown className="w-5 h-5 text-slate-400" />
+                      <ChevronDown className="w-5 h-5 text-muted-foreground" />
                     </span>
                   </summary>
-                  <div className="p-6 pt-0 border-t border-slate-100">
-                    <p className="text-slate-600 mt-4 leading-relaxed">
+                  <div className="p-6 pt-0 border-t border-border">
+                    <p className="text-muted-foreground mt-4 leading-relaxed">
                       Each correct answer awards positive marks. There is <strong>No Negative Marking</strong> in this mock test unless specified otherwise in the question. Unattempted questions yield 0 marks.
                     </p>
                   </div>
@@ -419,62 +419,62 @@ export default function MockDetailsPage() {
             <div className="sticky top-[100px] space-y-6">
 
               {/* Creator Widget */}
-              <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-                <h3 className="font-bold text-slate-900 text-lg mb-4">Offered By</h3>
+              <div className="bg-white border border-border rounded-xl p-6 shadow-sm">
+                <h3 className="font-bold text-foreground text-lg mb-4">Offered By</h3>
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-14 h-14 bg-gradient-to-br from-[#00BC7D] to-[#009c3e] rounded-lg flex items-center justify-center shadow-inner text-white font-bold text-xl">
                     AC
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-900">Acadify Experts</h4>
-                    <p className="text-sm text-slate-500">Premium Educator</p>
+                    <h4 className="font-bold text-foreground">Acadify Experts</h4>
+                    <p className="text-sm text-muted-foreground">Premium Educator</p>
                   </div>
                 </div>
-                <p className="text-sm text-slate-600 mb-4 line-clamp-3">
+                <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
                   Acadify provides world-class educational tools and highly curated mock exams to ensure students perform at their absolute best in competitive examinations.
                 </p>
-                <div className="grid grid-cols-2 gap-2 text-center border-t border-slate-100 pt-4">
+                <div className="grid grid-cols-2 gap-2 text-center border-t border-border pt-4">
                   <div>
-                    <p className="text-lg font-bold text-slate-900">54</p>
-                    <p className="text-xs text-slate-500 font-medium">Tests</p>
+                    <p className="text-lg font-bold text-foreground">54</p>
+                    <p className="text-xs text-muted-foreground font-medium">Tests</p>
                   </div>
-                  <div className="border-l border-slate-100">
-                    <p className="text-lg font-bold text-slate-900">210k+</p>
-                    <p className="text-xs text-slate-500 font-medium">Learners</p>
+                  <div className="border-l border-border">
+                    <p className="text-lg font-bold text-foreground">210k+</p>
+                    <p className="text-xs text-muted-foreground font-medium">Learners</p>
                   </div>
                 </div>
               </div>
 
               {/* Test Features Widget */}
-              <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-                <h3 className="font-bold text-slate-900 text-lg mb-6">Test Features</h3>
+              <div className="bg-white border border-border rounded-xl p-6 shadow-sm">
+                <h3 className="font-bold text-foreground text-lg mb-6">Test Features</h3>
                 <ul className="space-y-5">
                   <li className="flex gap-4">
-                    <Trophy className="w-6 h-6 text-slate-400 shrink-0" />
+                    <Trophy className="w-6 h-6 text-muted-foreground shrink-0" />
                     <div>
-                      <p className="font-bold text-slate-900 text-sm">Passing Marks</p>
-                      <p className="text-slate-500 text-sm">{test.passingMarks || 'Not Specified'}</p>
+                      <p className="font-bold text-foreground text-sm">Passing Marks</p>
+                      <p className="text-muted-foreground text-sm">{test.passingMarks || 'Not Specified'}</p>
                     </div>
                   </li>
                   <li className="flex gap-4">
-                    <Layers className="w-6 h-6 text-slate-400 shrink-0" />
+                    <Layers className="w-6 h-6 text-muted-foreground shrink-0" />
                     <div>
-                      <p className="font-bold text-slate-900 text-sm">Difficulty Level</p>
-                      <p className="text-slate-500 text-sm">Mixed</p>
+                      <p className="font-bold text-foreground text-sm">Difficulty Level</p>
+                      <p className="text-muted-foreground text-sm">Mixed</p>
                     </div>
                   </li>
                   <li className="flex gap-4">
-                    <Calendar className="w-6 h-6 text-slate-400 shrink-0" />
+                    <Calendar className="w-6 h-6 text-muted-foreground shrink-0" />
                     <div>
-                      <p className="font-bold text-slate-900 text-sm">Validity</p>
-                      <p className="text-slate-500 text-sm">Unlimited Access</p>
+                      <p className="font-bold text-foreground text-sm">Validity</p>
+                      <p className="text-muted-foreground text-sm">Unlimited Access</p>
                     </div>
                   </li>
                   <li className="flex gap-4">
-                    <PieChart className="w-6 h-6 text-slate-400 shrink-0" />
+                    <PieChart className="w-6 h-6 text-muted-foreground shrink-0" />
                     <div>
-                      <p className="font-bold text-slate-900 text-sm">Results</p>
-                      <p className="text-slate-500 text-sm">Instant Analytics</p>
+                      <p className="font-bold text-foreground text-sm">Results</p>
+                      <p className="text-muted-foreground text-sm">Instant Analytics</p>
                     </div>
                   </li>
                 </ul>

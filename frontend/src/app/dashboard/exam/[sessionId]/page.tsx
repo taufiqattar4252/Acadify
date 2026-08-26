@@ -106,9 +106,9 @@ export default function ExamSessionPage() {
 
   if (isExamDataLoading || !isReady) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center">
+      <div className="min-h-screen bg-muted flex flex-col items-center justify-center">
         <Spinner size="xl" />
-        <p className="mt-4 text-slate-500 font-medium animate-pulse">
+        <p className="mt-4 text-muted-foreground font-medium animate-pulse">
           {!isReady ? 'Restoring exam session...' : 'Loading exam environment...'}
         </p>
       </div>
@@ -117,10 +117,10 @@ export default function ExamSessionPage() {
 
   if (isError || !examData) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-        <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 max-w-md w-full text-center">
-          <h2 className="text-xl font-bold text-slate-900 mb-2">Error Loading Exam</h2>
-          <p className="text-slate-500 mb-6">
+      <div className="min-h-screen bg-muted flex items-center justify-center p-4">
+        <div className="bg-white p-8 rounded-2xl shadow-sm border border-border max-w-md w-full text-center">
+          <h2 className="text-xl font-bold text-foreground mb-2">Error Loading Exam</h2>
+          <p className="text-muted-foreground mb-6">
             {(error as any)?.response?.data?.message || 'We could not load your exam session.'}
           </p>
           <Button onClick={() => router.push('/dashboard')} className="w-full">
@@ -137,11 +137,11 @@ export default function ExamSessionPage() {
     return (
       <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl animate-in fade-in zoom-in duration-300">
-          <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-destructive-light text-destructive rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle2 className="w-8 h-8" />
           </div>
-          <h2 className="text-2xl font-bold text-slate-900 mb-2">Time's Up!</h2>
-          <p className="text-slate-500 mb-6">
+          <h2 className="text-2xl font-bold text-foreground mb-2">Time's Up!</h2>
+          <p className="text-muted-foreground mb-6">
             Your exam duration has ended. We are automatically submitting your answers.
           </p>
           <div className="flex justify-center">

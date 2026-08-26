@@ -105,43 +105,43 @@ export default function CheckoutPage() {
         onLoad={() => setIsRazorpayLoaded(true)}
       />
       
-      <div className="max-w-6xl mx-auto flex flex-col lg:flex-row min-h-[80vh] border-t border-slate-200 mt-6">
+      <div className="max-w-6xl mx-auto flex flex-col lg:flex-row min-h-[80vh] border-t border-border mt-6">
         {/* Left Column */}
         <div className="lg:w-[60%] p-6 lg:p-12 bg-white">
-          <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-8">Checkout</h1>
+          <h1 className="text-3xl lg:text-4xl font-bold text-foreground mb-8">Checkout</h1>
           
           <div className="space-y-0">
-            <div className="py-5 border-b border-slate-200 flex justify-between items-center">
-              <span className="font-bold text-slate-900 text-[17px]">1. Logged in securely</span>
-              <span className="text-emerald-600 font-medium text-sm flex items-center gap-1">
+            <div className="py-5 border-b border-border flex justify-between items-center">
+              <span className="font-bold text-foreground text-[17px]">1. Logged in securely</span>
+              <span className="text-success font-medium text-sm flex items-center gap-1">
                 <CheckCircle2 className="w-4 h-4" /> Account verified
               </span>
             </div>
             
-            <div className="py-5 border-b border-slate-200 flex justify-between items-center">
-              <span className="font-bold text-slate-900 text-[17px]">2. Payment method</span>
-              <Lock className="w-4 h-4 text-slate-400" />
+            <div className="py-5 border-b border-border flex justify-between items-center">
+              <span className="font-bold text-foreground text-[17px]">2. Payment method</span>
+              <Lock className="w-4 h-4 text-muted-foreground" />
             </div>
             
             <div className="py-6">
-              <h2 className="text-[17px] font-bold text-slate-900 mb-6">Order details ({cart.items.length} course{cart.items.length > 1 ? 's' : ''})</h2>
+              <h2 className="text-[17px] font-bold text-foreground mb-6">Order details ({cart.items.length} course{cart.items.length > 1 ? 's' : ''})</h2>
               
               <div className="space-y-4">
                 {cart.items.map((item: any) => (
                   <div key={item.mockTest._id} className="flex gap-4">
-                    <div className="w-16 h-12 bg-slate-100 relative overflow-hidden flex-shrink-0 border border-slate-200">
+                    <div className="w-16 h-12 bg-muted relative overflow-hidden flex-shrink-0 border border-border">
                       {item.mockTest.thumbnail ? (
                         <Image src={item.mockTest.thumbnail} alt={item.mockTest.title} fill className="object-cover" />
                       ) : (
-                        <div className="absolute inset-0 flex items-center justify-center bg-slate-100">
+                        <div className="absolute inset-0 flex items-center justify-center bg-muted">
                           <ShoppingBag className="w-4 h-4 text-slate-300" />
                         </div>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-slate-900 text-sm line-clamp-2 leading-tight">{item.mockTest.title}</h3>
+                      <h3 className="font-bold text-foreground text-sm line-clamp-2 leading-tight">{item.mockTest.title}</h3>
                     </div>
-                    <div className="text-right font-bold text-slate-900 text-sm whitespace-nowrap">
+                    <div className="text-right font-bold text-foreground text-sm whitespace-nowrap">
                       {item.price === 0 ? <span className="bg-[#00BC7D] text-white text-[10px] md:text-[11px] uppercase tracking-wider font-bold px-2 py-0.5 rounded shadow-sm">FREE</span> : `₹${(item.price || 0).toFixed(2)}`}
                     </div>
                   </div>
@@ -152,21 +152,21 @@ export default function CheckoutPage() {
         </div>
 
         {/* Right Column */}
-        <div className="lg:w-[40%] bg-slate-50 p-6 lg:p-12 lg:border-l border-slate-200 relative">
-          <h2 className="text-2xl font-bold text-slate-900 mb-6">Order summary</h2>
+        <div className="lg:w-[40%] bg-muted p-6 lg:p-12 lg:border-l border-border relative">
+          <h2 className="text-2xl font-bold text-foreground mb-6">Order summary</h2>
           
-          <div className="space-y-3 text-slate-600 border-b border-slate-200 pb-6 mb-6 text-sm">
+          <div className="space-y-3 text-muted-foreground border-b border-border pb-6 mb-6 text-sm">
             <div className="flex justify-between">
               <span>Original Price:</span>
               <span>₹{(cart.subtotal || 0).toFixed(2)}</span>
             </div>
             {cart.discount > 0 && (
-              <div className="flex justify-between text-emerald-600">
+              <div className="flex justify-between text-success">
                 <span>Coupon Discount:</span>
                 <span>-₹{(cart.discount || 0).toFixed(2)}</span>
               </div>
             )}
-            <div className="flex justify-between font-bold text-slate-900 text-[17px] pt-3 mt-1">
+            <div className="flex justify-between font-bold text-foreground text-[17px] pt-3 mt-1">
               <span>Total ({cart.items.length} course{cart.items.length > 1 ? 's' : ''}):</span>
               <span>₹{(cart.finalTotal || 0).toFixed(2)}</span>
             </div>
@@ -180,16 +180,16 @@ export default function CheckoutPage() {
             {checkoutMutation.isPending ? 'Processing...' : `Complete Checkout`}
           </button>
 
-          <div className="mt-5 flex flex-col items-center justify-center gap-1.5 text-xs text-slate-500 font-medium">
+          <div className="mt-5 flex flex-col items-center justify-center gap-1.5 text-xs text-muted-foreground font-medium">
             <div className="flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-emerald-500" />
+              <ShieldCheck className="w-4 h-4 text-success" />
               100% Safe & Secure Checkout
             </div>
-            <div className="text-[11px] text-slate-400">Payments securely processed by <span className="font-bold text-slate-500">Razorpay</span></div>
+            <div className="text-[11px] text-muted-foreground">Payments securely processed by <span className="font-bold text-muted-foreground">Razorpay</span></div>
           </div>
 
-          <div className="text-[11px] text-slate-500 mt-6 text-center">
-            By completing your purchase you agree to these <a href="#" className="text-emerald-600 hover:underline font-medium">Terms of Service</a>.
+          <div className="text-[11px] text-muted-foreground mt-6 text-center">
+            By completing your purchase you agree to these <a href="#" className="text-success hover:underline font-medium">Terms of Service</a>.
           </div>
 
         </div>

@@ -42,11 +42,11 @@ function ResetPasswordForm() {
   if (!token) {
     return (
       <div className="text-center py-4">
-        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
-          <AlertCircle className="h-6 w-6 text-red-600" />
+        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-destructive-light mb-4">
+          <AlertCircle className="h-6 w-6 text-destructive" />
         </div>
-        <h3 className="text-xl font-bold text-slate-900 mb-2">Invalid Token</h3>
-        <p className="text-slate-600">
+        <h3 className="text-xl font-bold text-foreground mb-2">Invalid Token</h3>
+        <p className="text-muted-foreground">
           The password reset token is missing. Please check your email link again or request a new one.
         </p>
       </div>
@@ -55,7 +55,7 @@ function ResetPasswordForm() {
 
   return (
     <>
-      <h3 className="text-xl font-bold text-slate-900 mb-6 text-center">Set new password</h3>
+      <h3 className="text-xl font-bold text-foreground mb-6 text-center">Set new password</h3>
       
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <Input
@@ -90,7 +90,7 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <Suspense fallback={<div className="text-center py-8 text-slate-500">Loading...</div>}>
+    <Suspense fallback={<div className="text-center py-8 text-muted-foreground">Loading...</div>}>
       <ResetPasswordForm />
     </Suspense>
   );

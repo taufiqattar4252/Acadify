@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${font.variable} font-sans antialiased bg-[#f4f7f6] text-slate-900`}>
+      <body className={`${font.variable} font-sans antialiased bg-[#f4f7f6] text-foreground`}>
         <QueryProvider>
           {children}
           <ToastProvider />

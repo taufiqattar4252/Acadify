@@ -92,37 +92,37 @@ export default function QuestionSelectorModal({
         className="bg-white rounded-2xl shadow-xl w-full max-w-6xl max-h-[90vh] flex flex-col"
       >
         {/* Header */}
-        <div className="flex justify-between items-center p-4 sm:p-6 border-b border-slate-100">
+        <div className="flex justify-between items-center p-4 sm:p-6 border-b border-border">
           <div>
-            <h2 className="text-xl font-bold text-slate-900">Select Questions</h2>
-            <p className="text-sm text-slate-500 mt-1">
+            <h2 className="text-xl font-bold text-foreground">Select Questions</h2>
+            <p className="text-sm text-muted-foreground mt-1">
               {localSelection.size} selected. {selectedIds.length} already in mock test.
             </p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
+            className="p-2 text-muted-foreground hover:text-muted-foreground hover:bg-muted rounded-full transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Filters */}
-        <div className="p-4 sm:p-6 border-b border-slate-100 bg-slate-50 flex flex-wrap gap-3">
+        <div className="p-4 sm:p-6 border-b border-border bg-muted flex flex-wrap gap-3">
           <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input
               type="text"
               placeholder="Search questions..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-200 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 outline-none text-sm"
+              className="w-full pl-9 pr-3 py-2 rounded-lg border border-border focus:border-primary-500 focus:ring-1 focus:ring-primary-500 outline-none text-sm"
             />
           </div>
           <select
             value={subjectFilter}
             onChange={(e) => { setSubjectFilter(e.target.value); setChapterFilter(''); setPage(1); }}
-            className="px-3 py-2 rounded-lg border border-slate-200 text-sm bg-white min-w-[120px]"
+            className="px-3 py-2 rounded-lg border border-border text-sm bg-white min-w-[120px]"
           >
             <option value="">All Subjects</option>
             {subjectsData?.subjects.map(s => (
@@ -133,7 +133,7 @@ export default function QuestionSelectorModal({
             value={chapterFilter}
             onChange={(e) => { setChapterFilter(e.target.value); setPage(1); }}
             disabled={!subjectFilter}
-            className="px-3 py-2 rounded-lg border border-slate-200 text-sm bg-white min-w-[120px]"
+            className="px-3 py-2 rounded-lg border border-border text-sm bg-white min-w-[120px]"
           >
             <option value="">All Chapters</option>
             {chaptersData?.chapters.map(c => (
@@ -143,7 +143,7 @@ export default function QuestionSelectorModal({
           <select
             value={difficultyFilter}
             onChange={(e) => { setDifficultyFilter(e.target.value); setPage(1); }}
-            className="px-3 py-2 rounded-lg border border-slate-200 text-sm bg-white min-w-[120px]"
+            className="px-3 py-2 rounded-lg border border-border text-sm bg-white min-w-[120px]"
           >
             <option value="">All Difficulties</option>
             <option value="Easy">Easy</option>
@@ -155,18 +155,18 @@ export default function QuestionSelectorModal({
             placeholder="PYQ Year (e.g. 2023)"
             value={pyqYearFilter}
             onChange={(e) => { setPyqYearFilter(e.target.value); setPage(1); }}
-            className="px-3 py-2 rounded-lg border border-slate-200 text-sm bg-white w-[140px]"
+            className="px-3 py-2 rounded-lg border border-border text-sm bg-white w-[140px]"
           />
         </div>
 
         {/* Question List */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 bg-slate-50/50">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 bg-muted/50">
           {isLoading ? (
             <div className="flex justify-center py-12">
               <div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
             </div>
           ) : questionsData?.questions.length === 0 ? (
-            <div className="text-center py-12 text-slate-500">
+            <div className="text-center py-12 text-muted-foreground">
               No questions found matching the filters.
             </div>
           ) : (
@@ -180,10 +180,10 @@ export default function QuestionSelectorModal({
                     key={question._id} 
                     className={`flex items-start gap-4 p-4 rounded-xl border transition-all ${
                       isAlreadyAdded 
-                        ? 'bg-slate-100 border-slate-200 opacity-60' 
+                        ? 'bg-muted border-border opacity-60' 
                         : isSelected 
                           ? 'bg-primary-50 border-primary-200 ring-1 ring-primary-200' 
-                          : 'bg-white border-slate-200 hover:border-primary-200 hover:shadow-sm cursor-pointer'
+                          : 'bg-white border-border hover:border-primary-200 hover:shadow-sm cursor-pointer'
                     }`}
                     onClick={() => {
                       if (!isAlreadyAdded) toggleSelection(question);
@@ -191,9 +191,9 @@ export default function QuestionSelectorModal({
                   >
                     <div className="mt-1">
                       <div className={`w-5 h-5 rounded flex items-center justify-center border transition-colors ${
-                        isAlreadyAdded ? 'bg-slate-300 border-slate-300' 
+                        isAlreadyAdded ? 'bg-muted-hover border-border' 
                         : isSelected ? 'bg-primary-500 border-primary-500 text-white' 
-                        : 'border-slate-300 bg-white'
+                        : 'border-border bg-white'
                       }`}>
                         {(isSelected || isAlreadyAdded) && <Check className="w-3.5 h-3.5" />}
                       </div>
@@ -201,7 +201,7 @@ export default function QuestionSelectorModal({
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-4">
                         <div 
-                          className="text-sm text-slate-900 font-medium line-clamp-2"
+                          className="text-sm text-foreground font-medium line-clamp-2"
                           dangerouslySetInnerHTML={{ __html: question.questionText }}
                         />
                         <button
@@ -214,26 +214,26 @@ export default function QuestionSelectorModal({
                           Preview
                         </button>
                       </div>
-                      <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-slate-500">
-                        <span className="font-medium text-slate-700">{question.subject?.name} - {question.chapter?.name}</span>
+                      <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-muted-foreground">
+                        <span className="font-medium text-muted-foreground">{question.subject?.name} - {question.chapter?.name}</span>
                         <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {question.estimatedTime}s</span>
                         <span className={`inline-flex items-center px-1.5 py-0.5 rounded font-medium ${
-                          question.difficulty === 'Easy' ? 'bg-green-100 text-green-700' : 
-                          question.difficulty === 'Medium' ? 'bg-yellow-100 text-yellow-700' : 
-                          'bg-red-100 text-red-700'
+                          question.difficulty === 'Easy' ? 'bg-success-light text-success' : 
+                          question.difficulty === 'Medium' ? 'bg-warning-light text-warning' : 
+                          'bg-destructive-light text-destructive'
                         }`}>
                           {question.difficulty}
                         </span>
-                        <span className="inline-flex items-center px-1.5 py-0.5 rounded font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                        <span className="inline-flex items-center px-1.5 py-0.5 rounded font-medium bg-muted text-muted-foreground border border-border">
                           +{question.positiveMarks} / -{question.negativeMarks}
                         </span>
                         {question.pyqYears && question.pyqYears.length > 0 && (
-                          <span className="inline-flex items-center px-1.5 py-0.5 rounded font-medium bg-purple-100 text-purple-700 border border-purple-200">
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded font-medium bg-primary-light text-primary border border-purple-200">
                             PYQ {question.pyqYears[0]} {question.pyqYears.length > 1 ? `+${question.pyqYears.length - 1}` : ''}
                           </span>
                         )}
                         {isAlreadyAdded && (
-                          <span className="ml-auto flex items-center gap-1 text-slate-500 font-medium bg-slate-200 px-2 py-0.5 rounded">
+                          <span className="ml-auto flex items-center gap-1 text-muted-foreground font-medium bg-muted-hover px-2 py-0.5 rounded">
                             <ShieldAlert className="w-3 h-3" /> Already in Mock Test
                           </span>
                         )}
@@ -247,17 +247,17 @@ export default function QuestionSelectorModal({
         </div>
 
         {/* Footer */}
-        <div className="p-4 sm:p-6 border-t border-slate-100 flex items-center justify-between bg-white">
+        <div className="p-4 sm:p-6 border-t border-border flex items-center justify-between bg-white">
           <div className="flex items-center gap-4">
             <Button variant="secondary" onClick={selectAllCurrentPage} disabled={!questionsData?.questions.length}>
               Select All on Page
             </Button>
             <div className="flex gap-1">
-              <Button variant="secondary" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="px-2 py-1.5 h-auto text-slate-600">
+              <Button variant="secondary" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="px-2 py-1.5 h-auto text-muted-foreground">
                 &lt;
               </Button>
-              <span className="px-3 py-1.5 text-sm font-medium text-slate-700">Page {page} of {questionsData?.pagination.pages || 1}</span>
-              <Button variant="secondary" onClick={() => setPage(p => p + 1)} disabled={page >= (questionsData?.pagination.pages || 1)} className="px-2 py-1.5 h-auto text-slate-600">
+              <span className="px-3 py-1.5 text-sm font-medium text-muted-foreground">Page {page} of {questionsData?.pagination.pages || 1}</span>
+              <Button variant="secondary" onClick={() => setPage(p => p + 1)} disabled={page >= (questionsData?.pagination.pages || 1)} className="px-2 py-1.5 h-auto text-muted-foreground">
                 &gt;
               </Button>
             </div>

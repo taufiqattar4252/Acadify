@@ -30,10 +30,10 @@ export default function AdminLoginPage() {
   return (
     <>
       <div className="mb-6 flex flex-col items-center">
-        <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold tracking-wide uppercase mb-4">
+        <span className="px-3 py-1 bg-destructive-light text-destructive rounded-full text-xs font-bold tracking-wide uppercase mb-4">
           Restricted Area
         </span>
-        <h3 className="text-xl font-bold text-slate-900 text-center">Admin Portal Login</h3>
+        <h3 className="text-xl font-bold text-foreground text-center">Admin Portal Login</h3>
       </div>
       
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -67,7 +67,7 @@ export default function AdminLoginPage() {
         </div>
       </form>
 
-      <div className="mt-6 text-center text-sm text-slate-600">
+      <div className="mt-6 text-center text-sm text-muted-foreground">
         Not an administrator?{' '}
         <Link href="/login" className="font-medium text-primary-600 hover:text-primary-500 transition-colors">
           Student Login

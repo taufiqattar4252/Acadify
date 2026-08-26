@@ -189,11 +189,11 @@ export default function QuestionFormModal({ isOpen, onClose, editQuestion }: Que
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-slate-900/50 backdrop-blur-sm">
       <div className="bg-white w-full max-w-3xl h-full flex flex-col shadow-2xl animate-in slide-in-from-right duration-300">
-        <div className="flex justify-between items-center p-6 border-b border-slate-100 bg-slate-50">
-          <h3 className="text-xl font-bold text-slate-900">
+        <div className="flex justify-between items-center p-6 border-b border-border bg-muted">
+          <h3 className="text-xl font-bold text-foreground">
             {editQuestion ? 'Edit Question' : 'Create New Question'}
           </h3>
-          <button onClick={onClose} className="p-2 text-slate-400 hover:text-slate-600 bg-white rounded-full shadow-sm hover:shadow transition-all">
+          <button onClick={onClose} className="p-2 text-muted-foreground hover:text-muted-foreground bg-white rounded-full shadow-sm hover:shadow transition-all">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -205,36 +205,36 @@ export default function QuestionFormModal({ isOpen, onClose, editQuestion }: Que
             <h4 className="text-sm font-semibold text-primary-600 uppercase tracking-wider">1. Classification</h4>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Subject</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Subject</label>
                 <select
                   {...register('subject')}
-                  className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all outline-none text-slate-900 bg-white"
+                  className="w-full px-4 py-2.5 rounded-lg border border-border focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all outline-none text-foreground bg-white"
                 >
                   <option value="">Select Subject...</option>
                   {subjectsData?.subjects.map(s => <option key={s._id} value={s._id}>{s.name}</option>)}
                 </select>
-                {errors.subject && <p className="mt-1 text-sm text-red-500">{errors.subject.message}</p>}
+                {errors.subject && <p className="mt-1 text-sm text-destructive">{errors.subject.message}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Chapter</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Chapter</label>
                 <select
                   {...register('chapter')}
                   disabled={!subjectId}
-                  className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all outline-none text-slate-900 bg-white disabled:bg-slate-50 disabled:text-slate-400"
+                  className="w-full px-4 py-2.5 rounded-lg border border-border focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all outline-none text-foreground bg-white disabled:bg-muted disabled:text-muted-foreground"
                 >
                   <option value="">Select Chapter...</option>
                   {chaptersData?.chapters.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
                 </select>
-                {errors.chapter && <p className="mt-1 text-sm text-red-500">{errors.chapter.message}</p>}
+                {errors.chapter && <p className="mt-1 text-sm text-destructive">{errors.chapter.message}</p>}
               </div>
 
               <div className="col-span-2 grid grid-cols-5 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Difficulty</label>
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">Difficulty</label>
                   <select
                     {...register('difficulty')}
-                    className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:border-primary-500 outline-none text-sm bg-white"
+                    className="w-full px-4 py-2.5 rounded-lg border border-border focus:border-primary-500 outline-none text-sm bg-white"
                   >
                     <option value="Easy">Easy</option>
                     <option value="Medium">Medium</option>
@@ -255,54 +255,54 @@ export default function QuestionFormModal({ isOpen, onClose, editQuestion }: Que
             
             <div className="mt-4">
               <div className="flex items-center justify-between mb-2">
-                <label className="block text-sm font-medium text-slate-700">Previous Year Questions (PYQ)</label>
+                <label className="block text-sm font-medium text-muted-foreground">Previous Year Questions (PYQ)</label>
                 <Button type="button" variant="secondary" onClick={() => appendPyq({ value: new Date().getFullYear() })} className="py-1 px-3 text-xs h-auto gap-1">
                   <Plus className="w-3 h-3" /> Add Year
                 </Button>
               </div>
               
               {pyqFields.length > 0 ? (
-                <div className="flex flex-wrap gap-2 p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                <div className="flex flex-wrap gap-2 p-3 bg-muted border border-border rounded-lg">
                   {pyqFields.map((field, index) => (
-                    <div key={field.id} className="flex items-center gap-1 bg-white border border-slate-300 rounded-md p-1 shadow-sm focus-within:ring-2 focus-within:ring-primary-500/20">
+                    <div key={field.id} className="flex items-center gap-1 bg-white border border-border rounded-md p-1 shadow-sm focus-within:ring-2 focus-within:ring-primary-500/20">
                       <input
                         type="number"
                         {...register(`pyqYears.${index}.value`, { valueAsNumber: true })}
-                        className="w-20 text-sm px-2 py-1 outline-none text-center font-medium text-slate-700"
+                        className="w-20 text-sm px-2 py-1 outline-none text-center font-medium text-muted-foreground"
                       />
-                      <button type="button" onClick={() => removePyq(index)} className="p-1 text-slate-400 hover:text-red-500 rounded transition-colors">
+                      <button type="button" onClick={() => removePyq(index)} className="p-1 text-muted-foreground hover:text-destructive rounded transition-colors">
                         <X className="w-3 h-3" />
                       </button>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="text-sm text-slate-500 italic p-3 bg-slate-50 border border-slate-200 rounded-lg text-center">
+                <div className="text-sm text-muted-foreground italic p-3 bg-muted border border-border rounded-lg text-center">
                   No PYQ years added.
                 </div>
               )}
-              {errors.pyqYears && <p className="mt-1 text-sm text-red-500">{errors.pyqYears.message}</p>}
+              {errors.pyqYears && <p className="mt-1 text-sm text-destructive">{errors.pyqYears.message}</p>}
             </div>
           </section>
 
-          <hr className="border-slate-100" />
+          <hr className="border-border" />
 
           {/* Question Statement Section */}
           <section className="space-y-4">
             <h4 className="text-sm font-semibold text-primary-600 uppercase tracking-wider">2. Question Statement</h4>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Question Text</label>
+              <label className="block text-sm font-medium text-muted-foreground mb-1">Question Text</label>
               <textarea
                 {...register('questionText')}
                 rows={4}
-                className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all outline-none text-slate-900 font-medium"
+                className="w-full px-4 py-3 rounded-lg border border-border focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all outline-none text-foreground font-medium"
                 placeholder="Type your question here..."
               />
-              {errors.questionText && <p className="mt-1 text-sm text-red-500">{errors.questionText.message}</p>}
+              {errors.questionText && <p className="mt-1 text-sm text-destructive">{errors.questionText.message}</p>}
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Question Image (Optional)</label>
+              <label className="block text-sm font-medium text-muted-foreground mb-2">Question Image (Optional)</label>
               <div className="flex items-center gap-4">
                 <input
                   type="file"
@@ -313,14 +313,14 @@ export default function QuestionFormModal({ isOpen, onClose, editQuestion }: Que
                 />
                 <label 
                   htmlFor="questionImageUpload" 
-                  className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-300 hover:bg-slate-50 transition-colors text-sm font-medium text-slate-700"
+                  className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border hover:bg-muted transition-colors text-sm font-medium text-muted-foreground"
                 >
                   {uploadingField === 'questionImage' ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImageIcon className="w-4 h-4" />}
                   {uploadingField === 'questionImage' ? 'Uploading...' : 'Upload Image'}
                 </label>
                 {watch('questionImage') && (
                   <div className="relative group">
-                    <img src={watch('questionImage') as string} alt="Preview" className="h-12 w-12 object-cover rounded border border-slate-200" />
+                    <img src={watch('questionImage') as string} alt="Preview" className="h-12 w-12 object-cover rounded border border-border" />
                     <button type="button" onClick={() => setValue('questionImage', '')} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                       <X className="w-3 h-3" />
                     </button>
@@ -330,7 +330,7 @@ export default function QuestionFormModal({ isOpen, onClose, editQuestion }: Que
             </div>
           </section>
 
-          <hr className="border-slate-100" />
+          <hr className="border-border" />
 
           {/* Options Section */}
           <section className="space-y-4">
@@ -343,7 +343,7 @@ export default function QuestionFormModal({ isOpen, onClose, editQuestion }: Que
             
             <div className="space-y-3">
               {optionFields.map((field, index) => (
-                <div key={field.id} className={`flex gap-3 p-3 rounded-xl border transition-colors ${watch(`options.${index}.isCorrect`) ? 'bg-green-50 border-green-200' : 'bg-slate-50 border-slate-200'}`}>
+                <div key={field.id} className={`flex gap-3 p-3 rounded-xl border transition-colors ${watch(`options.${index}.isCorrect`) ? 'bg-success-light border-green-200' : 'bg-muted border-border'}`}>
                   <div className="pt-2">
                     <input
                       type="radio"
@@ -353,17 +353,17 @@ export default function QuestionFormModal({ isOpen, onClose, editQuestion }: Que
                         const opts = watch('options');
                         opts.forEach((_, i) => setValue(`options.${i}.isCorrect`, i === index));
                       }}
-                      className="w-4 h-4 text-green-600 border-slate-300 focus:ring-green-500 cursor-pointer"
+                      className="w-4 h-4 text-success border-border focus:ring-green-500 cursor-pointer"
                     />
                   </div>
                   <div className="flex-1 space-y-2">
                     <textarea
                       {...register(`options.${index}.text`)}
                       rows={2}
-                      className="w-full px-3 py-2 rounded-lg border border-slate-200 focus:border-primary-500 outline-none text-sm"
+                      className="w-full px-3 py-2 rounded-lg border border-border focus:border-primary-500 outline-none text-sm"
                       placeholder={`Option ${index + 1}`}
                     />
-                    {errors.options?.[index]?.text && <p className="text-xs text-red-500">{errors.options[index]?.text?.message}</p>}
+                    {errors.options?.[index]?.text && <p className="text-xs text-destructive">{errors.options[index]?.text?.message}</p>}
                     
                     <div className="flex items-center gap-2">
                       <input
@@ -375,46 +375,46 @@ export default function QuestionFormModal({ isOpen, onClose, editQuestion }: Que
                       />
                       <label 
                         htmlFor={`optionImageUpload-${index}`} 
-                        className="cursor-pointer text-xs font-medium text-slate-500 hover:text-primary-600 flex items-center gap-1"
+                        className="cursor-pointer text-xs font-medium text-muted-foreground hover:text-primary-600 flex items-center gap-1"
                       >
                         {uploadingField === `options.${index}.image` ? <Loader2 className="w-3 h-3 animate-spin" /> : <ImageIcon className="w-3 h-3" />}
                         {uploadingField === `options.${index}.image` ? 'Uploading...' : 'Add Image'}
                       </label>
                       {watch(`options.${index}.image`) && (
-                        <span className="text-xs text-green-600 flex items-center gap-1">
-                          Image Added <button type="button" onClick={() => setValue(`options.${index}.image`, '')} className="text-red-500 hover:underline">Remove</button>
+                        <span className="text-xs text-success flex items-center gap-1">
+                          Image Added <button type="button" onClick={() => setValue(`options.${index}.image`, '')} className="text-destructive hover:underline">Remove</button>
                         </span>
                       )}
                     </div>
                   </div>
                   {optionFields.length > 2 && (
-                    <button type="button" onClick={() => removeOption(index)} className="text-slate-400 hover:text-red-500 transition-colors pt-2">
+                    <button type="button" onClick={() => removeOption(index)} className="text-muted-foreground hover:text-destructive transition-colors pt-2">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   )}
                 </div>
               ))}
             </div>
-            {errors.options && <p className="text-sm text-red-500">{errors.options.message}</p>}
+            {errors.options && <p className="text-sm text-destructive">{errors.options.message}</p>}
           </section>
 
-          <hr className="border-slate-100" />
+          <hr className="border-border" />
 
           {/* Explanation Section */}
           <section className="space-y-4">
             <h4 className="text-sm font-semibold text-primary-600 uppercase tracking-wider">4. Explanation & Tags</h4>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Explanation (Optional)</label>
+              <label className="block text-sm font-medium text-muted-foreground mb-1">Explanation (Optional)</label>
               <textarea
                 {...register('explanation')}
                 rows={3}
-                className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-primary-500 outline-none text-slate-900"
+                className="w-full px-4 py-3 rounded-lg border border-border focus:border-primary-500 outline-none text-foreground"
                 placeholder="Explain the correct answer..."
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Explanation Image (Optional)</label>
+              <label className="block text-sm font-medium text-muted-foreground mb-2">Explanation Image (Optional)</label>
               <div className="flex items-center gap-4">
                 <input
                   type="file"
@@ -425,14 +425,14 @@ export default function QuestionFormModal({ isOpen, onClose, editQuestion }: Que
                 />
                 <label 
                   htmlFor="explanationImageUpload" 
-                  className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-300 hover:bg-slate-50 transition-colors text-sm font-medium text-slate-700"
+                  className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border hover:bg-muted transition-colors text-sm font-medium text-muted-foreground"
                 >
                   {uploadingField === 'explanationImage' ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImageIcon className="w-4 h-4" />}
                   {uploadingField === 'explanationImage' ? 'Uploading...' : 'Upload Image'}
                 </label>
                 {watch('explanationImage') && (
                   <div className="relative group">
-                    <img src={watch('explanationImage') as string} alt="Preview" className="h-12 w-12 object-cover rounded border border-slate-200" />
+                    <img src={watch('explanationImage') as string} alt="Preview" className="h-12 w-12 object-cover rounded border border-border" />
                     <button type="button" onClick={() => setValue('explanationImage', '')} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                       <X className="w-3 h-3" />
                     </button>
@@ -446,10 +446,10 @@ export default function QuestionFormModal({ isOpen, onClose, editQuestion }: Que
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Status</label>
+              <label className="block text-sm font-medium text-muted-foreground mb-1">Status</label>
               <select
                 {...register('status')}
-                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:border-primary-500 outline-none text-sm bg-white"
+                className="w-full px-4 py-2.5 rounded-lg border border-border focus:border-primary-500 outline-none text-sm bg-white"
               >
                 <option value="Draft">Draft</option>
                 <option value="Published">Published</option>
@@ -460,7 +460,7 @@ export default function QuestionFormModal({ isOpen, onClose, editQuestion }: Que
 
         </form>
 
-        <div className="p-6 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
+        <div className="p-6 border-t border-border bg-muted flex justify-end gap-3">
           <Button type="button" variant="secondary" onClick={onClose}>
             Cancel
           </Button>

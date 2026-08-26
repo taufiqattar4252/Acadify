@@ -63,10 +63,10 @@ export function PurchasesTable({
 
   return (
     <div className="w-full">
-      <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+      <div className="rounded-2xl border border-border bg-white overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="bg-slate-50/80 text-slate-500 font-medium border-b border-slate-200 sticky top-0 z-10">
+            <thead className="bg-muted/80 text-muted-foreground font-medium border-b border-border sticky top-0 z-10">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
@@ -81,7 +81,7 @@ export function PurchasesTable({
                           <div
                             {...{
                               className: header.column.getCanSort()
-                                ? 'cursor-pointer select-none flex items-center gap-1 hover:text-slate-800 transition-colors'
+                                ? 'cursor-pointer select-none flex items-center gap-1 hover:text-foreground transition-colors'
                                 : '',
                               onClick: header.column.getToggleSortingHandler(),
                             }}
@@ -116,8 +116,8 @@ export function PurchasesTable({
               ) : table.getRowModel().rows.length === 0 ? (
                 <tr>
                   <td colSpan={columns.length} className="h-64 text-center">
-                    <div className="flex flex-col items-center justify-center text-slate-500">
-                      <p className="text-base font-medium text-slate-900 mt-2">No purchases found</p>
+                    <div className="flex flex-col items-center justify-center text-muted-foreground">
+                      <p className="text-base font-medium text-foreground mt-2">No purchases found</p>
                       <p className="text-sm mt-1">Try adjusting your search or filters.</p>
                     </div>
                   </td>
@@ -128,7 +128,7 @@ export function PurchasesTable({
                     key={row.id}
                     onClick={() => onRowClick?.(row.original)}
                     className={clsx(
-                      "hover:bg-slate-50/80 transition-colors",
+                      "hover:bg-muted/80 transition-colors",
                       onRowClick && "cursor-pointer"
                     )}
                   >
@@ -148,36 +148,36 @@ export function PurchasesTable({
         </div>
 
         {/* Pagination Controls */}
-        <div className="flex items-center justify-between px-6 py-4 border-t border-slate-200 bg-slate-50/50">
-          <div className="text-sm text-slate-500 font-medium">
+        <div className="flex items-center justify-between px-6 py-4 border-t border-border bg-muted/50">
+          <div className="text-sm text-muted-foreground font-medium">
             Page {pageIndex + 1} of {pageCount || 1}
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => onPageChange(0)}
               disabled={pageIndex === 0 || isLoading}
-              className="p-2 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="p-2 rounded-lg border border-border bg-white text-muted-foreground hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               First
             </button>
             <button
               onClick={() => onPageChange(pageIndex - 1)}
               disabled={pageIndex === 0 || isLoading}
-              className="p-2 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="p-2 rounded-lg border border-border bg-white text-muted-foreground hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Previous
             </button>
             <button
               onClick={() => onPageChange(pageIndex + 1)}
               disabled={pageIndex >= pageCount - 1 || isLoading}
-              className="p-2 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="p-2 rounded-lg border border-border bg-white text-muted-foreground hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Next
             </button>
             <button
               onClick={() => onPageChange(pageCount - 1)}
               disabled={pageIndex >= pageCount - 1 || isLoading}
-              className="p-2 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="p-2 rounded-lg border border-border bg-white text-muted-foreground hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Last
             </button>

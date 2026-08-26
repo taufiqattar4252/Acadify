@@ -21,8 +21,8 @@ export function ExamInstructions({ examData, studentName, onReady }: ExamInstruc
   });
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4 md:p-8 flex justify-center items-start">
-      <div className="max-w-5xl w-full bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-[calc(100vh-4rem)]">
+    <div className="min-h-screen bg-muted p-4 md:p-8 flex justify-center items-start">
+      <div className="max-w-5xl w-full bg-white rounded-2xl shadow-sm border border-border overflow-hidden flex flex-col h-[calc(100vh-4rem)]">
 
         {/* Header - Candidate Details */}
         <div className="bg-[#00BC7D] text-white p-4 md:p-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm sticky top-0 z-10 shrink-0">
@@ -46,10 +46,10 @@ export function ExamInstructions({ examData, studentName, onReady }: ExamInstruc
 
         {/* Instructions Body */}
         <div className="flex-1 overflow-y-auto p-6 md:p-8">
-          <h2 className="text-2xl font-bold text-slate-800 mb-6 border-b pb-4">Exam Instructions</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-6 border-b pb-4">Exam Instructions</h2>
 
-          <div className="prose prose-slate max-w-none text-slate-700">
-            <h3 className="font-bold text-lg text-slate-900">About Question Paper:</h3>
+          <div className="prose prose-slate max-w-none text-muted-foreground">
+            <h3 className="font-bold text-lg text-foreground">About Question Paper:</h3>
             <ul className="list-disc pl-5 space-y-2 mb-6">
               <li>There are in all 150 Questions for this exam, <strong>Physics</strong> - 50 Questions (1 mark for each question), <strong>Chemistry</strong> - 50 Questions (1 mark for each question), <strong>Mathematics</strong> - 50 Questions (2 mark for each question).</li>
               <li>You will be given {duration} minutes to answer all questions.</li>
@@ -58,7 +58,7 @@ export function ExamInstructions({ examData, studentName, onReady }: ExamInstruc
               <li>The test will comprise of multiple choice objective type questions (Four Options).</li>
             </ul>
 
-            <h3 className="font-bold text-lg text-slate-900">About answering the questions:</h3>
+            <h3 className="font-bold text-lg text-foreground">About answering the questions:</h3>
             <ul className="list-disc pl-5 space-y-2 mb-6">
               <li>The candidates are requested to follow the instructions carefully. If any candidate does not follow the instructions / rules, it would be treated as a case of misconduct / adoption of unfair means.</li>
               <li>To answer a question, candidate must 'Mouse-click' the circle besides the alternative he/she feels appropriate/correct and then Click on any of the navigation buttons i.e. 'Next' OR 'Previous'. The clicked alternative/option shall be treated as the answer given by the candidate for the question.</li>
@@ -68,7 +68,7 @@ export function ExamInstructions({ examData, studentName, onReady }: ExamInstruc
             </ul>
 
             {/* Warnings */}
-            <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl mb-6">
+            <div className="bg-warning-light border border-amber-200 p-4 rounded-xl mb-6">
               <h4 className="flex items-center gap-2 font-bold text-amber-800 mb-2">
                 <AlertTriangle className="w-5 h-5" /> Important Warnings
               </h4>
@@ -79,8 +79,8 @@ export function ExamInstructions({ examData, studentName, onReady }: ExamInstruc
               </ul>
             </div>
 
-            <h3 className="font-bold text-lg text-slate-900 mb-4">Navigation Buttons Legend</h3>
-            <div className="border border-slate-200 rounded-xl overflow-hidden max-w-2xl mb-8">
+            <h3 className="font-bold text-lg text-foreground mb-4">Navigation Buttons Legend</h3>
+            <div className="border border-border rounded-xl overflow-hidden max-w-2xl mb-8">
               <div className="bg-[#00BC7D] text-white font-bold p-3 text-center">
                 Navigation Buttons
               </div>
@@ -103,7 +103,7 @@ export function ExamInstructions({ examData, studentName, onReady }: ExamInstruc
         </div>
 
         {/* Footer Actions */}
-        <div className="p-4 md:p-6 bg-slate-50 border-t border-slate-200 shrink-0 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="p-4 md:p-6 bg-muted border-t border-border shrink-0 flex flex-col md:flex-row items-center justify-between gap-4">
           <label className="flex items-start md:items-center gap-3 cursor-pointer group">
             <div className={`mt-0.5 md:mt-0 shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors ${isChecked ? 'bg-[#00BC7D] border-[#00BC7D]' : 'border-slate-400 group-hover:border-[#00BC7D]'}`}>
               {isChecked && <CheckCircle className="w-4 h-4 text-white" />}
@@ -114,7 +114,7 @@ export function ExamInstructions({ examData, studentName, onReady }: ExamInstruc
               checked={isChecked}
               onChange={(e) => setIsChecked(e.target.checked)}
             />
-            <span className="text-sm font-bold text-red-600 select-none">
+            <span className="text-sm font-bold text-destructive select-none">
               I have read and accept the disclaimer, terms and conditions and understood the instructions given above.
             </span>
           </label>
@@ -135,9 +135,9 @@ export function ExamInstructions({ examData, studentName, onReady }: ExamInstruc
 
 function LegendRow({ icon, text }: { icon: React.ReactNode, text: string }) {
   return (
-    <div className="flex items-center gap-4 p-3 bg-white hover:bg-slate-50">
+    <div className="flex items-center gap-4 p-3 bg-white hover:bg-muted">
       <div className="shrink-0">{icon}</div>
-      <span className="font-medium text-slate-700">{text}</span>
+      <span className="font-medium text-muted-foreground">{text}</span>
     </div>
   );
 }

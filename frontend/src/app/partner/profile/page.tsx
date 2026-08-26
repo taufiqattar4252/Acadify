@@ -53,59 +53,59 @@ export default function PartnerProfilePage() {
   };
 
   if (isLoading) {
-    return <div className="p-8 text-center text-gray-500">Loading Profile...</div>;
+    return <div className="p-8 text-center text-muted-foreground">Loading Profile...</div>;
   }
 
   const partner = data?.partner;
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-      <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Profile Settings</h1>
+      <h1 className="text-2xl font-bold text-foreground dark:text-white">Profile Settings</h1>
       
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+      <div className="bg-white dark:bg-card rounded-xl shadow-sm border border-border dark:border-border p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
+            <label className="block text-sm font-medium text-muted-foreground dark:text-gray-300 mb-1">Email Address</label>
             <input 
               type="email" 
               value={partner?.email || ''} 
               disabled 
-              className="w-full border p-2 rounded-lg bg-gray-50 text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 cursor-not-allowed" 
+              className="w-full border p-2 rounded-lg bg-muted text-muted-foreground dark:bg-muted dark:border-border dark:text-muted-foreground cursor-not-allowed" 
             />
-            <p className="text-xs text-gray-500 mt-1">Email cannot be changed.</p>
+            <p className="text-xs text-muted-foreground mt-1">Email cannot be changed.</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
+            <label className="block text-sm font-medium text-muted-foreground dark:text-gray-300 mb-1">Full Name</label>
             <input 
               type="text" 
               required
               value={formData.fullName} 
               onChange={(e) => setFormData({...formData, fullName: e.target.value})} 
-              className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white" 
+              className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-card dark:border-border dark:text-white" 
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Phone Number</label>
+            <label className="block text-sm font-medium text-muted-foreground dark:text-gray-300 mb-1">Phone Number</label>
             <input 
               type="text" 
               value={formData.phone} 
               onChange={(e) => setFormData({...formData, phone: e.target.value})} 
-              className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white" 
+              className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-card dark:border-border dark:text-white" 
             />
           </div>
 
-          <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-            <h3 className="text-lg font-medium text-gray-800 dark:text-white mb-4">Change Password</h3>
+          <div className="border-t border-border dark:border-border pt-6">
+            <h3 className="text-lg font-medium text-foreground dark:text-white mb-4">Change Password</h3>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">New Password</label>
+              <label className="block text-sm font-medium text-muted-foreground dark:text-gray-300 mb-1">New Password</label>
               <input 
                 type="password" 
                 placeholder="Leave blank to keep current password"
                 value={formData.password} 
                 onChange={(e) => setFormData({...formData, password: e.target.value})} 
-                className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white" 
+                className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-card dark:border-border dark:text-white" 
               />
             </div>
           </div>
@@ -114,7 +114,7 @@ export default function PartnerProfilePage() {
             <button 
               type="submit" 
               disabled={updateMutation.isPending}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium shadow-sm transition disabled:opacity-50"
+              className="bg-primary hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium shadow-sm transition disabled:opacity-50"
             >
               {updateMutation.isPending ? 'Saving...' : 'Save Changes'}
             </button>

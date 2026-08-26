@@ -56,15 +56,15 @@ export default function BrandingSettingsPage() {
   };
 
   if (isLoading) {
-    return <div className="p-8 animate-pulse bg-slate-50 h-full rounded-2xl"></div>;
+    return <div className="p-8 animate-pulse bg-muted h-full rounded-2xl"></div>;
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-8">
-      <div className="flex justify-between items-center border-b border-slate-100 pb-6 mb-8">
+      <div className="flex justify-between items-center border-b border-border pb-6 mb-8">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Website & Branding</h2>
-          <p className="text-sm text-slate-500 mt-1">Configure appearance, colors, and SEO.</p>
+          <h2 className="text-xl font-bold text-foreground">Website & Branding</h2>
+          <p className="text-sm text-muted-foreground mt-1">Configure appearance, colors, and SEO.</p>
         </div>
         <button 
           type="submit"
@@ -79,7 +79,7 @@ export default function BrandingSettingsPage() {
       <div className="space-y-8 max-w-3xl">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Primary Color (Hex)</label>
+            <label className="block text-sm font-medium text-muted-foreground mb-2">Primary Color (Hex)</label>
             <div className="flex items-center gap-3">
               <input 
                 type="color"
@@ -88,12 +88,12 @@ export default function BrandingSettingsPage() {
               />
               <input 
                 {...register('primaryColor')}
-                className="flex-1 bg-white border border-slate-200 text-slate-900 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 uppercase"
+                className="flex-1 bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 uppercase"
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Secondary Color (Hex)</label>
+            <label className="block text-sm font-medium text-muted-foreground mb-2">Secondary Color (Hex)</label>
             <div className="flex items-center gap-3">
               <input 
                 type="color"
@@ -102,74 +102,74 @@ export default function BrandingSettingsPage() {
               />
               <input 
                 {...register('secondaryColor')}
-                className="flex-1 bg-white border border-slate-200 text-slate-900 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 uppercase"
+                className="flex-1 bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 uppercase"
               />
             </div>
           </div>
         </div>
 
-        <div className="border-t border-slate-100 pt-8">
-          <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4">SEO & Metadata</h3>
+        <div className="border-t border-border pt-8">
+          <h3 className="text-sm font-bold text-foreground uppercase tracking-wider mb-4">SEO & Metadata</h3>
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">SEO Title</label>
+              <label className="block text-sm font-medium text-muted-foreground mb-2">SEO Title</label>
               <input 
                 {...register('seoTitle')}
-                className="w-full bg-white border border-slate-200 text-slate-900 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
+                className="w-full bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">SEO Description</label>
+              <label className="block text-sm font-medium text-muted-foreground mb-2">SEO Description</label>
               <textarea 
                 {...register('seoDescription')}
                 rows={3}
-                className="w-full bg-white border border-slate-200 text-slate-900 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 resize-none"
+                className="w-full bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 resize-none"
               />
             </div>
           </div>
         </div>
 
-        <div className="border-t border-slate-100 pt-8">
-          <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4">Footer & Social</h3>
+        <div className="border-t border-border pt-8">
+          <h3 className="text-sm font-bold text-foreground uppercase tracking-wider mb-4">Footer & Social</h3>
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Footer Copyright Text</label>
+              <label className="block text-sm font-medium text-muted-foreground mb-2">Footer Copyright Text</label>
               <input 
                 {...register('footerText')}
-                className="w-full bg-white border border-slate-200 text-slate-900 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
+                className="w-full bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
               />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Facebook URL</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-2">Facebook URL</label>
                 <input 
                   {...register('socialLinks.facebook')}
                   placeholder="https://facebook.com/..."
-                  className="w-full bg-white border border-slate-200 text-slate-900 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
+                  className="w-full bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Twitter / X URL</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-2">Twitter / X URL</label>
                 <input 
                   {...register('socialLinks.twitter')}
                   placeholder="https://twitter.com/..."
-                  className="w-full bg-white border border-slate-200 text-slate-900 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
+                  className="w-full bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Instagram URL</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-2">Instagram URL</label>
                 <input 
                   {...register('socialLinks.instagram')}
                   placeholder="https://instagram.com/..."
-                  className="w-full bg-white border border-slate-200 text-slate-900 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
+                  className="w-full bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">LinkedIn URL</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-2">LinkedIn URL</label>
                 <input 
                   {...register('socialLinks.linkedin')}
                   placeholder="https://linkedin.com/..."
-                  className="w-full bg-white border border-slate-200 text-slate-900 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
+                  className="w-full bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                 />
               </div>
             </div>

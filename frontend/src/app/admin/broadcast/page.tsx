@@ -77,19 +77,19 @@ export default function AdminBroadcastPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+      <div className="flex justify-between items-center bg-white p-6 rounded-xl shadow-sm border border-border">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
             <Radio className="w-6 h-6 text-primary-500" />
             Broadcast Center
           </h1>
-          <p className="text-slate-500 mt-1">Send announcements and offers to students.</p>
+          <p className="text-muted-foreground mt-1">Send announcements and offers to students.</p>
         </div>
-        <div className="flex bg-slate-100 p-1 rounded-lg">
+        <div className="flex bg-muted p-1 rounded-lg">
           <button
             onClick={() => setActiveTab('compose')}
             className={`px-4 py-2 text-sm font-medium rounded-md transition-colors flex items-center gap-2 ${
-              activeTab === 'compose' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+              activeTab === 'compose' ? 'bg-white text-foreground shadow-sm' : 'text-muted-foreground hover:text-muted-foreground'
             }`}
           >
             <Send className="w-4 h-4" /> Compose
@@ -97,7 +97,7 @@ export default function AdminBroadcastPage() {
           <button
             onClick={() => setActiveTab('history')}
             className={`px-4 py-2 text-sm font-medium rounded-md transition-colors flex items-center gap-2 ${
-              activeTab === 'history' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+              activeTab === 'history' ? 'bg-white text-foreground shadow-sm' : 'text-muted-foreground hover:text-muted-foreground'
             }`}
           >
             <History className="w-4 h-4" /> History
@@ -106,7 +106,7 @@ export default function AdminBroadcastPage() {
       </div>
 
       {activeTab === 'compose' && (
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div className="bg-white rounded-xl shadow-sm border border-border p-6">
           <form onSubmit={handleSubmit} className="space-y-6 max-w-3xl">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Input
@@ -118,12 +118,12 @@ export default function AdminBroadcastPage() {
                 required
               />
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Target Audience</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Target Audience</label>
                 <select
                   name="target"
                   value={formData.target}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none"
+                  className="w-full px-4 py-2 bg-white border border-border rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none"
                 >
                   <option value="All Students">All Students</option>
                   <option value="Purchased Students">Purchased Students</option>
@@ -134,7 +134,7 @@ export default function AdminBroadcastPage() {
 
             {formData.target === 'Specific Students' && (
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Student IDs (Comma separated) *</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Student IDs (Comma separated) *</label>
                 <Input
                   name="userIds"
                   value={formData.userIds}
@@ -142,12 +142,12 @@ export default function AdminBroadcastPage() {
                   placeholder="e.g. 64955f1f..., 64a88b2c..."
                   required
                 />
-                <p className="text-xs text-slate-500 mt-1">Enter the exact Object IDs of the students, separated by commas.</p>
+                <p className="text-xs text-muted-foreground mt-1">Enter the exact Object IDs of the students, separated by commas.</p>
               </div>
             )}
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Message Content *</label>
+              <label className="block text-sm font-medium text-muted-foreground mb-1">Message Content *</label>
               <textarea
                 name="message"
                 value={formData.message}
@@ -155,18 +155,18 @@ export default function AdminBroadcastPage() {
                 rows={5}
                 required
                 placeholder="Write your broadcast message here..."
-                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none resize-none"
+                className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none resize-none"
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Notification Type</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Notification Type</label>
                 <select
                   name="type"
                   value={formData.type}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 outline-none"
+                  className="w-full px-4 py-2 bg-white border border-border rounded-lg focus:ring-2 focus:ring-primary-500/20 outline-none"
                 >
                   <option value="Admin Announcement">Admin Announcement</option>
                   <option value="Promotional Offer">Promotional Offer</option>
@@ -175,12 +175,12 @@ export default function AdminBroadcastPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Priority</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Priority</label>
                 <select
                   name="priority"
                   value={formData.priority}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 outline-none"
+                  className="w-full px-4 py-2 bg-white border border-border rounded-lg focus:ring-2 focus:ring-primary-500/20 outline-none"
                 >
                   <option value="Low">Low</option>
                   <option value="Normal">Normal</option>
@@ -196,20 +196,20 @@ export default function AdminBroadcastPage() {
               />
             </div>
 
-            <div className="flex items-center gap-3 p-4 bg-slate-50 border border-slate-100 rounded-lg">
+            <div className="flex items-center gap-3 p-4 bg-muted border border-border rounded-lg">
               <input
                 type="checkbox"
                 id="sendEmail"
                 name="sendEmail"
                 checked={formData.sendEmail}
                 onChange={handleCheckboxChange}
-                className="w-4 h-4 text-primary-600 rounded border-slate-300 focus:ring-primary-500"
+                className="w-4 h-4 text-primary-600 rounded border-border focus:ring-primary-500"
               />
               <div>
-                <label htmlFor="sendEmail" className="font-medium text-slate-800 cursor-pointer">
+                <label htmlFor="sendEmail" className="font-medium text-foreground cursor-pointer">
                   Send as Email Broadcast as well
                 </label>
-                <p className="text-sm text-slate-500">Will send emails to all matched users (respecting their preferences).</p>
+                <p className="text-sm text-muted-foreground">Will send emails to all matched users (respecting their preferences).</p>
               </div>
             </div>
 
@@ -224,19 +224,19 @@ export default function AdminBroadcastPage() {
       )}
 
       {activeTab === 'history' && (
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border border-border overflow-hidden">
           {historyLoading ? (
             <div className="flex justify-center p-12">
-              <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+              <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
             </div>
           ) : history.length === 0 ? (
-            <div className="text-center p-12 text-slate-500">
+            <div className="text-center p-12 text-muted-foreground">
               No broadcast history found.
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="bg-slate-50 text-slate-600 font-medium">
+                <thead className="bg-muted text-muted-foreground font-medium">
                   <tr>
                     <th className="px-6 py-4">Title</th>
                     <th className="px-6 py-4">Type</th>
@@ -247,22 +247,22 @@ export default function AdminBroadcastPage() {
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {history.map((item: any) => (
-                    <tr key={item._id} className="hover:bg-slate-50">
-                      <td className="px-6 py-4 font-medium text-slate-800">{item.title}</td>
+                    <tr key={item._id} className="hover:bg-muted">
+                      <td className="px-6 py-4 font-medium text-foreground">{item.title}</td>
                       <td className="px-6 py-4">
-                        <span className="inline-block px-2 py-1 bg-slate-100 text-slate-600 rounded text-xs">
+                        <span className="inline-block px-2 py-1 bg-muted text-muted-foreground rounded text-xs">
                           {item.type}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-slate-600">{item.user?.email || 'N/A'}</td>
+                      <td className="px-6 py-4 text-muted-foreground">{item.user?.email || 'N/A'}</td>
                       <td className="px-6 py-4">
                         {item.isRead ? (
-                          <span className="text-emerald-600 font-medium text-xs">Read</span>
+                          <span className="text-success font-medium text-xs">Read</span>
                         ) : (
-                          <span className="text-slate-500 font-medium text-xs">Unread</span>
+                          <span className="text-muted-foreground font-medium text-xs">Unread</span>
                         )}
                       </td>
-                      <td className="px-6 py-4 text-slate-500">
+                      <td className="px-6 py-4 text-muted-foreground">
                         {format(new Date(item.createdAt), 'MMM d, yyyy h:mm a')}
                       </td>
                     </tr>

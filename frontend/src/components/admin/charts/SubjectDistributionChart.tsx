@@ -15,8 +15,8 @@ export const SubjectDistributionChart: React.FC<SubjectDistributionChartProps> =
   return (
     <Card className="p-6">
       <div className="mb-6">
-        <h3 className="text-lg font-bold text-slate-900">Subject Distribution</h3>
-        <p className="text-sm text-slate-500">Questions per subject</p>
+        <h3 className="text-lg font-bold text-foreground">Subject Distribution</h3>
+        <p className="text-sm text-muted-foreground">Questions per subject</p>
       </div>
       
       <div className="h-[300px] w-full flex items-center justify-center">
@@ -45,7 +45,7 @@ export const SubjectDistributionChart: React.FC<SubjectDistributionChartProps> =
               verticalAlign="bottom" 
               height={36}
               iconType="circle"
-              formatter={(value) => <span className="text-sm text-slate-600 font-medium">{value}</span>}
+              formatter={(value) => <span className="text-sm text-muted-foreground font-medium">{value}</span>}
             />
           </PieChart>
         </ResponsiveContainer>

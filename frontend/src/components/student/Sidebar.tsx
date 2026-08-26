@@ -27,7 +27,7 @@ export const StudentSidebar = () => {
         <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
           Acadify
         </h2>
-        <p className="text-xs text-slate-400 mt-1">Student Portal</p>
+        <p className="text-xs text-muted-foreground mt-1">Student Portal</p>
       </div>
 
       <nav className="flex-1 px-4 space-y-2 mt-4">
@@ -39,11 +39,11 @@ export const StudentSidebar = () => {
               href={item.href}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                 isActive 
-                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-900/50' 
+                  ? 'bg-primary text-white shadow-md shadow-indigo-900/50' 
                   : 'text-slate-300 hover:bg-slate-800 hover:text-white'
               }`}
             >
-              <item.icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+              <item.icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-muted-foreground'}`} />
               <span className="font-medium">{item.name}</span>
             </Link>
           );

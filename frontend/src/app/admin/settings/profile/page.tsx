@@ -63,15 +63,15 @@ export default function ProfileSettingsPage() {
   };
 
   if (isUserLoading) {
-    return <div className="p-8 animate-pulse bg-slate-50 h-full rounded-2xl"></div>;
+    return <div className="p-8 animate-pulse bg-muted h-full rounded-2xl"></div>;
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-8">
-      <div className="flex justify-between items-center border-b border-slate-100 pb-6 mb-8">
+      <div className="flex justify-between items-center border-b border-border pb-6 mb-8">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Personal Profile</h2>
-          <p className="text-sm text-slate-500 mt-1">Update your personal information and security details.</p>
+          <h2 className="text-xl font-bold text-foreground">Personal Profile</h2>
+          <p className="text-sm text-muted-foreground mt-1">Update your personal information and security details.</p>
         </div>
         <button 
           type="submit"
@@ -86,7 +86,7 @@ export default function ProfileSettingsPage() {
       <div className="flex flex-col lg:flex-row gap-12">
         {/* Avatar Section */}
         <div className="flex flex-col items-center shrink-0">
-          <div className="w-32 h-32 rounded-full bg-slate-100 border-4 border-white shadow-sm overflow-hidden relative group mb-4">
+          <div className="w-32 h-32 rounded-full bg-muted border-4 border-white shadow-sm overflow-hidden relative group mb-4">
             {user?.profilePicture ? (
               <img src={user.profilePicture} alt="Profile" className="w-full h-full object-cover" />
             ) : (
@@ -98,11 +98,11 @@ export default function ProfileSettingsPage() {
               <Camera className="w-6 h-6 text-white" />
             </div>
           </div>
-          <span className="text-xs font-medium text-slate-400 bg-slate-100 px-3 py-1 rounded-full uppercase tracking-wider">
+          <span className="text-xs font-medium text-muted-foreground bg-muted px-3 py-1 rounded-full uppercase tracking-wider">
             {user?.role}
           </span>
           {user?.lastLogin && (
-            <p className="text-xs text-slate-500 mt-4">
+            <p className="text-xs text-muted-foreground mt-4">
               Last login: {user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'N/A'}
             </p>
           )}
@@ -112,53 +112,53 @@ export default function ProfileSettingsPage() {
         <div className="flex-1 space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Full Name</label>
+              <label className="block text-sm font-medium text-muted-foreground mb-2">Full Name</label>
               <input 
                 {...register('fullName', { required: 'Name is required' })}
-                className="w-full bg-white border border-slate-200 text-slate-900 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
+                className="w-full bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
               />
-              {errors.fullName && <p className="text-red-500 text-xs mt-1">{errors.fullName.message as string}</p>}
+              {errors.fullName && <p className="text-destructive text-xs mt-1">{errors.fullName.message as string}</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Email Address</label>
+              <label className="block text-sm font-medium text-muted-foreground mb-2">Email Address</label>
               <input 
                 type="email"
                 {...register('email', { required: 'Email is required' })}
-                className="w-full bg-slate-50 border border-slate-200 text-slate-500 rounded-xl px-4 py-2.5 cursor-not-allowed"
+                className="w-full bg-muted border border-border text-muted-foreground rounded-xl px-4 py-2.5 cursor-not-allowed"
                 readOnly
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Phone Number</label>
+              <label className="block text-sm font-medium text-muted-foreground mb-2">Phone Number</label>
               <input 
                 {...register('phoneNumber')}
-                className="w-full bg-white border border-slate-200 text-slate-900 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
+                className="w-full bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                 placeholder="+91 9876543210"
               />
             </div>
           </div>
 
-          <div className="border-t border-slate-100 pt-8">
-            <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-              <Lock className="w-5 h-5 text-slate-400" />
+          <div className="border-t border-border pt-8">
+            <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+              <Lock className="w-5 h-5 text-muted-foreground" />
               Security
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">New Password</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-2">New Password</label>
                 <input 
                   type="password"
                   {...register('password')}
-                  className="w-full bg-white border border-slate-200 text-slate-900 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
+                  className="w-full bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                   placeholder="Leave blank to keep current"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Confirm New Password</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-2">Confirm New Password</label>
                 <input 
                   type="password"
                   {...register('confirmPassword')}
-                  className="w-full bg-white border border-slate-200 text-slate-900 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
+                  className="w-full bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                   placeholder="Leave blank to keep current"
                 />
               </div>

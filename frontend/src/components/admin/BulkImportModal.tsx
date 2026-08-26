@@ -73,9 +73,9 @@ export default function BulkImportModal({ isOpen, onClose }: BulkImportModalProp
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/50 backdrop-blur-sm">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg flex flex-col overflow-hidden">
         
-        <div className="flex justify-between items-center p-6 border-b border-slate-100 bg-slate-50">
-          <h3 className="text-lg font-bold text-slate-900">Bulk Import Questions</h3>
-          <button onClick={() => { onClose(); setFile(null); setImportResult(null); }} className="text-slate-400 hover:text-slate-600 transition-colors">
+        <div className="flex justify-between items-center p-6 border-b border-border bg-muted">
+          <h3 className="text-lg font-bold text-foreground">Bulk Import Questions</h3>
+          <button onClick={() => { onClose(); setFile(null); setImportResult(null); }} className="text-muted-foreground hover:text-muted-foreground transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -83,17 +83,17 @@ export default function BulkImportModal({ isOpen, onClose }: BulkImportModalProp
         <div className="p-6 space-y-6">
           {!importResult ? (
             <>
-              <div className="flex items-center justify-between p-4 bg-blue-50 text-blue-800 rounded-xl border border-blue-100">
+              <div className="flex items-center justify-between p-4 bg-primary-light text-blue-800 rounded-xl border border-blue-100">
                 <div>
                   <h4 className="font-semibold text-sm">Need a template?</h4>
-                  <p className="text-xs text-blue-700/80 mt-0.5">Download the CSV template with all required headers.</p>
+                  <p className="text-xs text-primary/80 mt-0.5">Download the CSV template with all required headers.</p>
                 </div>
                 <Button variant="secondary" onClick={downloadTemplate} className="text-sm shrink-0">
                   <FileSpreadsheet className="w-4 h-4 mr-2" /> Template
                 </Button>
               </div>
 
-              <div className="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center bg-slate-50 hover:bg-slate-100 transition-colors">
+              <div className="border-2 border-dashed border-border rounded-xl p-8 text-center bg-muted hover:bg-muted transition-colors">
                 <input
                   type="file"
                   accept=".csv, .xlsx, .xls"
@@ -103,10 +103,10 @@ export default function BulkImportModal({ isOpen, onClose }: BulkImportModalProp
                 />
                 <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center">
                   <UploadCloud className="w-10 h-10 text-primary-500 mb-3" />
-                  <span className="font-medium text-slate-700 text-base">
+                  <span className="font-medium text-muted-foreground text-base">
                     {file ? file.name : 'Click to upload CSV or Excel file'}
                   </span>
-                  <span className="text-sm text-slate-500 mt-1">
+                  <span className="text-sm text-muted-foreground mt-1">
                     Maximum file size 5MB
                   </span>
                 </label>
@@ -114,29 +114,29 @@ export default function BulkImportModal({ isOpen, onClose }: BulkImportModalProp
             </>
           ) : (
             <div className="space-y-4">
-              <div className="p-6 bg-slate-50 border border-slate-200 rounded-xl text-center space-y-2">
+              <div className="p-6 bg-muted border border-border rounded-xl text-center space-y-2">
                 {importResult.errors?.length === 0 ? (
-                  <CheckCircle2 className="w-12 h-12 text-green-500 mx-auto" />
+                  <CheckCircle2 className="w-12 h-12 text-success mx-auto" />
                 ) : (
-                  <AlertCircle className="w-12 h-12 text-orange-500 mx-auto" />
+                  <AlertCircle className="w-12 h-12 text-warning mx-auto" />
                 )}
-                <h3 className="text-lg font-bold text-slate-900">Import Complete</h3>
+                <h3 className="text-lg font-bold text-foreground">Import Complete</h3>
                 <div className="flex justify-center gap-6 mt-4 text-sm font-medium">
-                  <div className="text-slate-500"><span className="text-slate-900">{importResult.totalRows}</span> Total</div>
-                  <div className="text-green-600"><span className="font-bold">{importResult.imported}</span> Inserted</div>
-                  <div className="text-red-500"><span className="font-bold">{importResult.errors?.length}</span> Failed</div>
+                  <div className="text-muted-foreground"><span className="text-foreground">{importResult.totalRows}</span> Total</div>
+                  <div className="text-success"><span className="font-bold">{importResult.imported}</span> Inserted</div>
+                  <div className="text-destructive"><span className="font-bold">{importResult.errors?.length}</span> Failed</div>
                 </div>
               </div>
 
               {importResult.errors?.length > 0 && (
                 <div className="mt-4 border border-red-200 rounded-xl overflow-hidden">
-                  <div className="bg-red-50 px-4 py-3 font-semibold text-red-800 text-sm border-b border-red-200">
+                  <div className="bg-destructive-light px-4 py-3 font-semibold text-red-800 text-sm border-b border-red-200">
                     Error Log
                   </div>
                   <div className="max-h-48 overflow-y-auto bg-white p-4 space-y-2">
                     {importResult.errors.map((err: any, idx: number) => (
-                      <div key={idx} className="text-sm text-red-600 flex items-start gap-2">
-                        <span className="font-mono bg-red-100 px-1.5 py-0.5 rounded text-xs shrink-0">Row {err.row}</span>
+                      <div key={idx} className="text-sm text-destructive flex items-start gap-2">
+                        <span className="font-mono bg-destructive-light px-1.5 py-0.5 rounded text-xs shrink-0">Row {err.row}</span>
                         <span>{err.error}</span>
                       </div>
                     ))}
@@ -147,7 +147,7 @@ export default function BulkImportModal({ isOpen, onClose }: BulkImportModalProp
           )}
         </div>
 
-        <div className="p-6 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
+        <div className="p-6 border-t border-border bg-muted flex justify-end gap-3">
           {importResult ? (
             <Button onClick={() => { onClose(); setFile(null); setImportResult(null); }}>
               Close

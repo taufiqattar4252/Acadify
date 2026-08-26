@@ -78,16 +78,16 @@ export default function EmailSettingsPage() {
   };
 
   if (isLoading) {
-    return <div className="p-8 animate-pulse bg-slate-50 h-full rounded-2xl"></div>;
+    return <div className="p-8 animate-pulse bg-muted h-full rounded-2xl"></div>;
   }
 
   return (
     <div className="p-8">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex justify-between items-center border-b border-slate-100 pb-6 mb-8">
+        <div className="flex justify-between items-center border-b border-border pb-6 mb-8">
           <div>
-            <h2 className="text-xl font-bold text-slate-900">Email Delivery</h2>
-            <p className="text-sm text-slate-500 mt-1">Configure SMTP or third-party email providers.</p>
+            <h2 className="text-xl font-bold text-foreground">Email Delivery</h2>
+            <p className="text-sm text-muted-foreground mt-1">Configure SMTP or third-party email providers.</p>
           </div>
           {isSuperAdmin && (
             <button 
@@ -102,11 +102,11 @@ export default function EmailSettingsPage() {
         </div>
 
         {!isSuperAdmin && (
-          <div className="mb-8 p-4 bg-red-50 border border-red-100 rounded-xl flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-red-500 mt-0.5" />
+          <div className="mb-8 p-4 bg-destructive-light border border-red-100 rounded-xl flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-destructive mt-0.5" />
             <div>
               <h4 className="text-sm font-bold text-red-800">Restricted Access</h4>
-              <p className="text-xs text-red-600 mt-1">You do not have permission to modify these settings.</p>
+              <p className="text-xs text-destructive mt-1">You do not have permission to modify these settings.</p>
             </div>
           </div>
         )}
@@ -115,11 +115,11 @@ export default function EmailSettingsPage() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-slate-700 mb-2">Email Provider</label>
+              <label className="block text-sm font-medium text-muted-foreground mb-2">Email Provider</label>
               <select 
                 {...register('provider')}
                 disabled={!isSuperAdmin}
-                className="w-full bg-white border border-slate-200 text-slate-900 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 disabled:bg-slate-50"
+                className="w-full bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 disabled:bg-muted"
               >
                 <option value="smtp">Standard SMTP</option>
                 <option value="resend">Resend</option>
@@ -129,23 +129,23 @@ export default function EmailSettingsPage() {
             </div>
           </div>
 
-          <div className="border-t border-slate-100 pt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="border-t border-border pt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Sender Name</label>
+              <label className="block text-sm font-medium text-muted-foreground mb-2">Sender Name</label>
               <input 
                 {...register('senderName')}
                 disabled={!isSuperAdmin}
-                className="w-full bg-white border border-slate-200 text-slate-900 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 disabled:bg-slate-50"
+                className="w-full bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 disabled:bg-muted"
                 placeholder="e.g. Acadify Support"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Sender Email</label>
+              <label className="block text-sm font-medium text-muted-foreground mb-2">Sender Email</label>
               <input 
                 type="email"
                 {...register('senderEmail')}
                 disabled={!isSuperAdmin}
-                className="w-full bg-white border border-slate-200 text-slate-900 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 disabled:bg-slate-50"
+                className="w-full bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 disabled:bg-muted"
                 placeholder="e.g. no-reply@acadify.com"
               />
             </div>
@@ -155,22 +155,22 @@ export default function EmailSettingsPage() {
 
       {/* Test Email Section (Outside main form so it doesn't trigger submit) */}
       {isSuperAdmin && (
-        <div className="mt-12 p-6 bg-slate-50 border border-slate-200 rounded-2xl max-w-3xl">
-          <h3 className="text-sm font-bold text-slate-900 mb-4">Send Test Email</h3>
+        <div className="mt-12 p-6 bg-muted border border-border rounded-2xl max-w-3xl">
+          <h3 className="text-sm font-bold text-foreground mb-4">Send Test Email</h3>
           <div className="flex flex-col gap-4">
             <input 
               type="email"
               value={testEmailAddress}
               onChange={(e) => setTestEmailAddress(e.target.value)}
               placeholder="Receiver's Email Address"
-              className="w-full bg-white border border-slate-300 text-slate-900 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
+              className="w-full bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
             />
             <textarea
               value={testEmailMessage}
               onChange={(e) => setTestEmailMessage(e.target.value)}
               placeholder="Custom email message (optional)"
               rows={3}
-              className="w-full bg-white border border-slate-300 text-slate-900 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 resize-none"
+              className="w-full bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 resize-none"
             />
             <div className="flex justify-end">
               <button 

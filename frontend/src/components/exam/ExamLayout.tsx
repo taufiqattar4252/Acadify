@@ -82,10 +82,10 @@ export function ExamLayout({
   const SummaryRow = ({ label, value, color, isCircle, hasGreenTick }: any) => (
     <div className="flex items-center justify-between px-4 py-2 text-[12px]">
       <div className="flex items-center gap-2">
-        <div className={`w-4 h-4 ${color} ${isCircle ? 'rounded-full' : 'rounded-sm'} border border-slate-300 ${hasGreenTick ? 'relative flex items-center justify-center' : ''}`}>
+        <div className={`w-4 h-4 ${color} ${isCircle ? 'rounded-full' : 'rounded-sm'} border border-border ${hasGreenTick ? 'relative flex items-center justify-center' : ''}`}>
           {hasGreenTick && <div className="w-1.5 h-1.5 bg-green-400 rounded-full" />}
         </div>
-        <span className="font-medium text-slate-700">{label}</span>
+        <span className="font-medium text-muted-foreground">{label}</span>
       </div>
       <span className="font-bold">{value}</span>
     </div>
@@ -109,14 +109,14 @@ export function ExamLayout({
       <div className="flex-1 flex overflow-hidden">
         
         {/* LEFT SIDEBAR */}
-        <aside className="w-[300px] border-r border-slate-300 flex flex-col bg-white shrink-0">
+        <aside className="w-[300px] border-r border-border flex flex-col bg-white shrink-0">
           {/* Sidebar Header */}
           <div className="bg-[#00BC7D] text-white px-4 py-2 font-bold text-[13px]">
             Section {currentSection}
           </div>
 
           {/* Grid */}
-          <div className="flex-1 overflow-y-auto p-4 bg-slate-50">
+          <div className="flex-1 overflow-y-auto p-4 bg-muted">
             <div className="grid grid-cols-5 gap-2">
               {questions.map((q, idx) => {
                 const status = statuses[q._id] || 'Not Visited';
@@ -129,7 +129,7 @@ export function ExamLayout({
                       className={`
                         w-full h-full rounded flex items-center justify-center font-bold text-[13px] shadow-sm relative
                         ${getStatusColor(status)}
-                        ${isCurrent ? 'ring-2 ring-offset-1 ring-[#00BC7D]' : 'border border-slate-300'}
+                        ${isCurrent ? 'ring-2 ring-offset-1 ring-[#00BC7D]' : 'border border-border'}
                       `}
                     >
                       {idx + 1}
@@ -146,14 +146,14 @@ export function ExamLayout({
           </div>
 
           {/* Summary Table */}
-          <div className="bg-white border-t border-slate-300">
+          <div className="bg-white border-t border-border">
             <div className="bg-[#00BC7D] text-white text-center font-bold py-1.5 text-xs">
               Summary
             </div>
             <div className="divide-y divide-slate-200">
               <SummaryRow label="Answered" value={stats.answered} color="bg-[#4ca64c]" />
               <SummaryRow label="Not Answered" value={stats.notAnswered} color="bg-[#ff3300]" />
-              <SummaryRow label="Not Visited" value={stats.notVisited} color="bg-[#e5e5e5] text-slate-800" />
+              <SummaryRow label="Not Visited" value={stats.notVisited} color="bg-[#e5e5e5] text-foreground" />
               <SummaryRow label="Marked for Review" value={stats.marked} color="bg-[#6b52ae]" isCircle />
               <SummaryRow label="Answered & Marked for Review" value={stats.answeredMarked} color="bg-[#6b52ae]" isCircle hasGreenTick />
             </div>
@@ -164,8 +164,8 @@ export function ExamLayout({
         <main className="flex-1 flex flex-col bg-white min-w-0">
           
           {/* Top Toolbar */}
-          <div className="px-4 py-2 border-b border-slate-300 flex items-center justify-between bg-white text-[13px]">
-            <label className="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
+          <div className="px-4 py-2 border-b border-border flex items-center justify-between bg-white text-[13px]">
+            <label className="flex items-center gap-2 cursor-pointer font-medium text-muted-foreground">
               <input 
                 type="checkbox" 
                 className="w-4 h-4 cursor-pointer"
@@ -175,15 +175,15 @@ export function ExamLayout({
               Mark for Review
             </label>
 
-            <div className="text-slate-700 font-medium">
+            <div className="text-muted-foreground font-medium">
               Time/Que : <span className="font-bold">{questionTime} Sec</span> (For Mock Test purpose only)
             </div>
 
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 text-slate-700">
+              <div className="flex items-center gap-2 text-muted-foreground">
                 <span className="font-medium">Zoom</span>
                 <select 
-                  className="border border-slate-300 rounded px-1 py-0.5 bg-white text-[13px]"
+                  className="border border-border rounded px-1 py-0.5 bg-white text-[13px]"
                   value={zoomLevel}
                   onChange={(e) => setZoomLevel(Number(e.target.value))}
                 >
@@ -193,10 +193,10 @@ export function ExamLayout({
                   <option value="150">150%</option>
                 </select>
               </div>
-              <div className="flex items-center gap-2 text-slate-700">
+              <div className="flex items-center gap-2 text-muted-foreground">
                 <span className="font-medium">Section</span>
                 <select 
-                  className="border border-slate-300 rounded px-1 py-0.5 bg-white text-[13px] font-bold"
+                  className="border border-border rounded px-1 py-0.5 bg-white text-[13px] font-bold"
                   value={currentSection}
                   onChange={(e) => {
                     const sec = safeSections.find(s => s.name === e.target.value);
@@ -213,11 +213,11 @@ export function ExamLayout({
 
           {/* Question Body */}
           <div className="flex-1 overflow-y-auto p-4 md:p-6" style={{ fontSize: `${zoomLevel}%` }}>
-            <div className="font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2 inline-block">
+            <div className="font-bold text-foreground mb-4 border-b border-border pb-2 inline-block">
               Question {currentIndex + 1} of {questions.length} :
             </div>
             
-            <div className="prose prose-slate max-w-none text-slate-800 font-medium">
+            <div className="prose prose-slate max-w-none text-foreground font-medium">
               <p className="whitespace-pre-wrap">{currentQuestion.questionText}</p>
               {currentQuestion.questionImage && (
                 <div className="my-4">
@@ -246,7 +246,7 @@ export function ExamLayout({
                       onChange={() => handleSelectOption(opt._id)}
                       className="mt-1 w-4 h-4 cursor-pointer text-[#00BC7D]" 
                     />
-                    <div className="flex-1 text-slate-800">
+                    <div className="flex-1 text-foreground">
                       {opt.text}
                       {opt.image && (
                         <div className="mt-2">
@@ -261,12 +261,12 @@ export function ExamLayout({
           </div>
 
           {/* Bottom Action Bar */}
-          <div className="px-4 py-3 border-t border-slate-300 flex items-center justify-between bg-slate-50 shrink-0">
+          <div className="px-4 py-3 border-t border-border flex items-center justify-between bg-muted shrink-0">
             <div className="flex items-center gap-3">
               <Button 
                 variant="secondary" 
                 onClick={handleClearResponse}
-                className="bg-white text-slate-700 border-slate-300 font-bold px-6"
+                className="bg-white text-muted-foreground border-border font-bold px-6"
               >
                 Reset Answer
               </Button>
@@ -278,7 +278,7 @@ export function ExamLayout({
                   }
                   handleNext();
                 }}
-                className="bg-white text-slate-700 border-slate-300 font-bold px-6"
+                className="bg-white text-muted-foreground border-border font-bold px-6"
               >
                 Mark for Review & Next
               </Button>
@@ -289,7 +289,7 @@ export function ExamLayout({
                 variant="secondary" 
                 onClick={handlePrev}
                 disabled={currentIndex === 0}
-                className="bg-white text-slate-700 border-slate-300 font-bold px-8"
+                className="bg-white text-muted-foreground border-border font-bold px-8"
               >
                 Previous
               </Button>
@@ -316,8 +316,8 @@ export function ExamLayout({
 
 function SummaryRow({ label, value, color, isCircle, hasGreenTick }: { label: string; value: number; color: string; isCircle?: boolean; hasGreenTick?: boolean }) {
   return (
-    <div className="flex items-center justify-between px-4 py-2 bg-white hover:bg-slate-50">
-      <span className="font-bold text-slate-700 text-[12px]">{label}</span>
+    <div className="flex items-center justify-between px-4 py-2 bg-white hover:bg-muted">
+      <span className="font-bold text-muted-foreground text-[12px]">{label}</span>
       <div className={`
         flex items-center justify-center font-bold text-white text-[12px] w-7 h-7 relative
         ${color}

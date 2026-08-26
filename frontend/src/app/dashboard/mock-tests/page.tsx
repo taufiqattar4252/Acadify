@@ -29,14 +29,14 @@ const CustomSelect = ({ value, onChange, options, placeholder }: any) => {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between w-full min-w-[160px] px-4 py-3 rounded-full border border-slate-100 bg-slate-50 focus:border-[#00BC7D] focus:bg-white focus:ring-1 focus:ring-[#00BC7D] outline-none text-sm transition-all text-slate-700"
+        className="flex items-center justify-between w-full min-w-[160px] px-4 py-3 rounded-full border border-border bg-muted focus:border-[#00BC7D] focus:bg-white focus:ring-1 focus:ring-[#00BC7D] outline-none text-sm transition-all text-muted-foreground"
       >
         <span className="truncate">{selectedOption ? selectedOption.label : placeholder}</span>
-        <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-2 w-full min-w-[180px] bg-white rounded-2xl shadow-lumina-hover border border-slate-100 py-2 z-50 animate-in fade-in slide-in-from-top-2">
+        <div className="absolute top-full left-0 mt-2 w-full min-w-[180px] bg-white rounded-2xl shadow-lumina-hover border border-border py-2 z-50 animate-in fade-in slide-in-from-top-2">
           {options.map((opt: any) => (
             <button
               key={opt.value}
@@ -46,7 +46,7 @@ const CustomSelect = ({ value, onChange, options, placeholder }: any) => {
               }}
               className={`w-full text-left px-4 py-2 text-sm transition-colors ${value === opt.value
                   ? "bg-[#00BC7D]/10 text-[#00BC7D] font-bold"
-                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 }`}
             >
               {opt.label}
@@ -61,7 +61,7 @@ const CustomSelect = ({ value, onChange, options, placeholder }: any) => {
 const MockTestCard = ({ test, router, cartData, handleAddToCart, addToCartMutation, isPurchased }: any) => (
   <div
     onClick={() => router.push(`/dashboard/mock-tests/${test.slug}`)}
-    className="bg-white rounded-3xl p-3 pb-5 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] border border-slate-100 hover:shadow-lg transition-all cursor-pointer group flex flex-col h-full min-h-[380px]"
+    className="bg-white rounded-3xl p-3 pb-5 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] border border-border hover:shadow-lg transition-all cursor-pointer group flex flex-col h-full min-h-[380px]"
   >
     {/* Top Image Area */}
     <div className="h-44 bg-[#f4fbf8] rounded-2xl relative overflow-hidden flex-shrink-0 flex items-center justify-center">
@@ -105,46 +105,46 @@ const MockTestCard = ({ test, router, cartData, handleAddToCart, addToCartMutati
 
     {/* Content Area */}
     <div className="px-3 pt-4 flex flex-col flex-1">
-      <h3 className="text-lg font-medium text-slate-700 line-clamp-1 leading-tight transition-colors mb-3">
+      <h3 className="text-lg font-medium text-muted-foreground line-clamp-1 leading-tight transition-colors mb-3">
         {test.title}
       </h3>
 
       {/* Category */}
-      <div className="flex items-center gap-2 text-slate-500 text-[14px] mb-4">
+      <div className="flex items-center gap-2 text-muted-foreground text-[14px] mb-4">
         <FileText className="w-4 h-4 text-[#00BC7D]" />
         {test.category || 'Full Mock Test'}
       </div>
 
       {/* Stats Row */}
-      <div className="flex items-center gap-4 text-slate-500 text-[13px] mb-5 whitespace-nowrap overflow-hidden">
+      <div className="flex items-center gap-4 text-muted-foreground text-[13px] mb-5 whitespace-nowrap overflow-hidden">
         <div className="flex items-center gap-1.5">
           <Clock className="w-4 h-4 text-[#00BC7D]" /> Duration: {test.duration || '-'} mins
         </div>
-        <div className="w-px h-4 bg-slate-200"></div>
+        <div className="w-px h-4 bg-muted-hover"></div>
         <div className="flex items-center gap-1.5">
           <Trophy className="w-4 h-4 text-[#00BC7D]" /> Total Marks: {test.totalMarks || '-'}
         </div>
       </div>
 
       {/* Rating */}
-      <div className="flex items-center gap-2 text-[15px] font-bold text-amber-500 mb-4 mt-auto">
+      <div className="flex items-center gap-2 text-[15px] font-bold text-warning mb-4 mt-auto">
         <span className="text-[18px]">4.7</span>
-        <div className="flex items-center space-x-1 text-amber-500">
+        <div className="flex items-center space-x-1 text-warning">
           <Star className="w-4 h-4 fill-current" />
           <Star className="w-4 h-4 fill-current" />
           <Star className="w-4 h-4 fill-current" />
           <Star className="w-4 h-4 fill-current" />
           <Star className="w-4 h-4 text-slate-200 fill-slate-200" />
         </div>
-        <span className="text-[13px] text-slate-400 font-normal ml-1">(1,241)</span>
+        <span className="text-[13px] text-muted-foreground font-normal ml-1">(1,241)</span>
       </div>
 
       {/* Bottom Actions/Price */}
       <div className="flex items-end justify-between mt-auto">
         <div className="flex flex-col gap-1">
-          <div className="font-bold text-lg text-slate-900 flex items-center leading-none">
+          <div className="font-bold text-lg text-foreground flex items-center leading-none">
             {isPurchased ? (
-              <span className="text-[14px] text-slate-500 font-medium pt-2">Purchased</span>
+              <span className="text-[14px] text-muted-foreground font-medium pt-2">Purchased</span>
             ) : test.price === 0 ? (
               <div className="bg-[#e8f7f0] text-[#00BC7D] text-[13px] uppercase tracking-wider font-bold px-4 py-2 rounded-full flex items-center gap-1.5 shadow-sm">
                 <Tag className="w-4 h-4 fill-current" /> FREE
@@ -154,7 +154,7 @@ const MockTestCard = ({ test, router, cartData, handleAddToCart, addToCartMutati
             )}
           </div>
           {!isPurchased && test.price > 0 && (
-            <div className="text-[13px] text-slate-400 line-through leading-none pb-[2px]">
+            <div className="text-[13px] text-muted-foreground line-through leading-none pb-[2px]">
               ₹{(test.price * 1.2).toFixed(2)}
             </div>
           )}
@@ -252,22 +252,22 @@ export default function MockStorePage() {
     <div className="space-y-10 pb-12">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-normal text-slate-800">
-          Mock Test <span className="font-semibold text-slate-900">Store</span>
+        <h1 className="text-3xl font-normal text-foreground">
+          Mock Test <span className="font-semibold text-foreground">Store</span>
         </h1>
-        <p className="text-sm text-slate-500 mt-1">Discover and purchase premium mock tests to ace your exams.</p>
+        <p className="text-sm text-muted-foreground mt-1">Discover and purchase premium mock tests to ace your exams.</p>
       </div>
 
       {/* Filters Bar */}
       <div className="bg-white p-4 rounded-3xl shadow-lumina border-transparent flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
             placeholder="Search mock tests..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-11 pr-4 py-3 rounded-full border border-slate-100 bg-slate-50 focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 outline-none text-sm transition-all"
+            className="w-full pl-11 pr-4 py-3 rounded-full border border-border bg-muted focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 outline-none text-sm transition-all"
           />
         </div>
         <div className="flex flex-wrap gap-3">
@@ -303,8 +303,8 @@ export default function MockStorePage() {
       {(page === 1 && purchasedTests.length > 0) && (
         <div className="space-y-4">
           <div className="flex items-center gap-2">
-            <h2 className="text-xl font-bold text-slate-900">My Mock Tests</h2>
-            <span className="bg-emerald-100 text-emerald-700 text-xs font-bold px-2.5 py-0.5 rounded-full">{purchasedTests.length} Enrolled</span>
+            <h2 className="text-xl font-bold text-foreground">My Mock Tests</h2>
+            <span className="bg-success-light text-success text-xs font-bold px-2.5 py-0.5 rounded-full">{purchasedTests.length} Enrolled</span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {purchasedTests.map((test: any) => (
@@ -324,7 +324,7 @@ export default function MockStorePage() {
 
       {/* Available for Purchase Section */}
       <div className="space-y-4">
-        <h2 className="text-xl font-bold text-slate-900">Unlock More That Help You Score 99+ Percentile</h2>
+        <h2 className="text-xl font-bold text-foreground">Unlock More That Help You Score 99+ Percentile</h2>
 
         {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -332,11 +332,11 @@ export default function MockStorePage() {
           </div>
         ) : storeTests.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-3xl shadow-lumina border-transparent">
-            <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-muted rounded-2xl flex items-center justify-center mx-auto mb-4">
               <Search className="w-8 h-8 text-slate-300" />
             </div>
-            <h3 className="text-lg font-bold text-slate-900">No available tests found</h3>
-            <p className="text-slate-500 mt-1">You may have purchased them all, or try adjusting filters.</p>
+            <h3 className="text-lg font-bold text-foreground">No available tests found</h3>
+            <p className="text-muted-foreground mt-1">You may have purchased them all, or try adjusting filters.</p>
             <Button variant="secondary" className="mt-6 mx-auto rounded-full px-6" onClick={() => { setSearch(''); setCategory(''); }}>
               Clear Filters
             </Button>
@@ -369,7 +369,7 @@ export default function MockStorePage() {
           >
             <ChevronLeft className="w-5 h-5" />
           </Button>
-          <span className="text-sm font-medium text-slate-700 px-4">
+          <span className="text-sm font-medium text-muted-foreground px-4">
             Page {page} of {data.pagination.pages}
           </span>
           <Button

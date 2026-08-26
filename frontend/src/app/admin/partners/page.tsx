@@ -81,10 +81,10 @@ export default function PartnersPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Partner Management</h1>
+        <h1 className="text-2xl font-bold text-foreground dark:text-white">Partner Management</h1>
         <button
           onClick={() => setIsCreateModalOpen(true)}
-          className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition"
+          className="flex items-center gap-2 bg-primary hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition"
         >
           <Plus className="w-4 h-4" /> Add Partner
         </button>
@@ -92,49 +92,49 @@ export default function PartnersPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-card p-6 rounded-xl shadow-sm border border-border dark:border-border">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Total Partners</p>
-              <h3 className="text-2xl font-bold text-gray-800 dark:text-white mt-1">{stats.totalPartners || 0}</h3>
+              <p className="text-sm text-muted-foreground dark:text-muted-foreground">Total Partners</p>
+              <h3 className="text-2xl font-bold text-foreground dark:text-white mt-1">{stats.totalPartners || 0}</h3>
             </div>
-            <div className="p-3 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-lg">
+            <div className="p-3 bg-primary-light dark:bg-indigo-900/30 text-primary dark:text-indigo-400 rounded-lg">
               <Briefcase size={20} />
             </div>
           </div>
         </div>
         
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-card p-6 rounded-xl shadow-sm border border-border dark:border-border">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Total Revenue</p>
-              <h3 className="text-2xl font-bold text-gray-800 dark:text-white mt-1">{formatCurrency(stats.totalRevenue || 0)}</h3>
+              <p className="text-sm text-muted-foreground dark:text-muted-foreground">Total Revenue</p>
+              <h3 className="text-2xl font-bold text-foreground dark:text-white mt-1">{formatCurrency(stats.totalRevenue || 0)}</h3>
             </div>
-            <div className="p-3 bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-lg">
+            <div className="p-3 bg-success-light dark:bg-green-900/30 text-success dark:text-green-400 rounded-lg">
               <Banknote size={20} />
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-card p-6 rounded-xl shadow-sm border border-border dark:border-border">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Pending Commission</p>
-              <h3 className="text-2xl font-bold text-gray-800 dark:text-white mt-1">{formatCurrency(stats.pendingCommission || 0)}</h3>
+              <p className="text-sm text-muted-foreground dark:text-muted-foreground">Pending Commission</p>
+              <h3 className="text-2xl font-bold text-foreground dark:text-white mt-1">{formatCurrency(stats.pendingCommission || 0)}</h3>
             </div>
-            <div className="p-3 bg-yellow-50 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 rounded-lg">
+            <div className="p-3 bg-warning-light dark:bg-yellow-900/30 text-warning dark:text-yellow-400 rounded-lg">
               <Banknote size={20} />
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-card p-6 rounded-xl shadow-sm border border-border dark:border-border">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Paid Commission</p>
-              <h3 className="text-2xl font-bold text-gray-800 dark:text-white mt-1">{formatCurrency(stats.paidCommission || 0)}</h3>
+              <p className="text-sm text-muted-foreground dark:text-muted-foreground">Paid Commission</p>
+              <h3 className="text-2xl font-bold text-foreground dark:text-white mt-1">{formatCurrency(stats.paidCommission || 0)}</h3>
             </div>
-            <div className="p-3 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg">
+            <div className="p-3 bg-primary-light dark:bg-blue-900/30 text-primary dark:text-blue-400 rounded-lg">
               <CheckCircle size={20} />
             </div>
           </div>
@@ -142,17 +142,17 @@ export default function PartnersPage() {
       </div>
 
       {/* Table Section */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-        <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
-          <h2 className="text-lg font-semibold text-gray-800 dark:text-white">All Partners</h2>
+      <div className="bg-white dark:bg-card rounded-xl shadow-sm border border-border dark:border-border overflow-hidden">
+        <div className="p-6 border-b border-border dark:border-border flex justify-between items-center">
+          <h2 className="text-lg font-semibold text-foreground dark:text-white">All Partners</h2>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
             <input
               type="text"
               placeholder="Search partners..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="pl-10 pr-4 py-2 border border-border dark:border-border rounded-lg bg-muted dark:bg-muted text-foreground dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
         </div>
@@ -160,7 +160,7 @@ export default function PartnersPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-gray-50 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 text-sm">
+              <tr className="bg-muted dark:bg-muted/50 text-muted-foreground dark:text-muted-foreground text-sm">
                 <th className="p-4 font-medium">Name</th>
                 <th className="p-4 font-medium">Commission</th>
                 <th className="p-4 font-medium">Referrals</th>
@@ -172,36 +172,36 @@ export default function PartnersPage() {
             <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
               {isLoading ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-gray-500">Loading...</td>
+                  <td colSpan={6} className="p-8 text-center text-muted-foreground">Loading...</td>
                 </tr>
               ) : filteredPartners.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-gray-500">No partners found.</td>
+                  <td colSpan={6} className="p-8 text-center text-muted-foreground">No partners found.</td>
                 </tr>
               ) : (
                 filteredPartners.map((partner: any) => (
-                  <tr key={partner._id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                  <tr key={partner._id} className="hover:bg-muted dark:hover:bg-muted/50 transition">
                     <td className="p-4">
                       <div>
-                        <p className="font-medium text-gray-800 dark:text-white">{partner.fullName}</p>
-                        <p className="text-sm text-gray-500">{partner.email}</p>
+                        <p className="font-medium text-foreground dark:text-white">{partner.fullName}</p>
+                        <p className="text-sm text-muted-foreground">{partner.email}</p>
                       </div>
                     </td>
-                    <td className="p-4 text-sm text-gray-600 dark:text-gray-300">
+                    <td className="p-4 text-sm text-muted-foreground dark:text-gray-300">
                       {partner.commissionType === 'percentage' ? `${partner.commissionValue}%` : formatCurrency(partner.commissionValue)}
                     </td>
-                    <td className="p-4 text-sm text-gray-600 dark:text-gray-300">{partner.studentsReferred}</td>
-                    <td className="p-4 text-sm text-gray-600 dark:text-gray-300">{formatCurrency(partner.revenueGenerated)}</td>
+                    <td className="p-4 text-sm text-muted-foreground dark:text-gray-300">{partner.studentsReferred}</td>
+                    <td className="p-4 text-sm text-muted-foreground dark:text-gray-300">{formatCurrency(partner.revenueGenerated)}</td>
                     <td className="p-4">
                       <button
                         onClick={() => statusMutation.mutate({ id: partner._id, status: !partner.status })}
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${partner.status ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
+                        className={`px-3 py-1 rounded-full text-xs font-medium ${partner.status ? 'bg-success-light text-success' : 'bg-destructive-light text-destructive'}`}
                       >
                         {partner.status ? 'Active' : 'Inactive'}
                       </button>
                     </td>
                     <td className="p-4 text-right space-x-2">
-                      <Link href={`/admin/partners/${partner._id}`} className="inline-flex items-center justify-center p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition">
+                      <Link href={`/admin/partners/${partner._id}`} className="inline-flex items-center justify-center p-2 text-primary hover:bg-primary-light rounded-lg transition">
                         <Eye className="w-4 h-4" />
                       </Link>
                       <button 
@@ -210,7 +210,7 @@ export default function PartnersPage() {
                             deleteMutation.mutate(partner._id);
                           }
                         }}
-                        className="inline-flex items-center justify-center p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
+                        className="inline-flex items-center justify-center p-2 text-destructive hover:bg-destructive-light rounded-lg transition"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -226,37 +226,37 @@ export default function PartnersPage() {
       <Modal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} title="Create New Partner">
         <form onSubmit={handleCreateSubmit} className="space-y-4 p-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
-            <input required type="text" value={formData.fullName} onChange={(e) => setFormData({...formData, fullName: e.target.value})} className="w-full border p-2 rounded-lg dark:bg-gray-800 dark:border-gray-600 text-black dark:text-white" />
+            <label className="block text-sm font-medium text-muted-foreground dark:text-gray-300 mb-1">Full Name</label>
+            <input required type="text" value={formData.fullName} onChange={(e) => setFormData({...formData, fullName: e.target.value})} className="w-full border p-2 rounded-lg dark:bg-card dark:border-border text-black dark:text-white" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
-            <input required type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full border p-2 rounded-lg dark:bg-gray-800 dark:border-gray-600 text-black dark:text-white" />
+            <label className="block text-sm font-medium text-muted-foreground dark:text-gray-300 mb-1">Email</label>
+            <input required type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full border p-2 rounded-lg dark:bg-card dark:border-border text-black dark:text-white" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Phone</label>
-            <input type="text" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full border p-2 rounded-lg dark:bg-gray-800 dark:border-gray-600 text-black dark:text-white" />
+            <label className="block text-sm font-medium text-muted-foreground dark:text-gray-300 mb-1">Phone</label>
+            <input type="text" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full border p-2 rounded-lg dark:bg-card dark:border-border text-black dark:text-white" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
-            <input required type="password" value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})} className="w-full border p-2 rounded-lg dark:bg-gray-800 dark:border-gray-600 text-black dark:text-white" />
+            <label className="block text-sm font-medium text-muted-foreground dark:text-gray-300 mb-1">Password</label>
+            <input required type="password" value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})} className="w-full border p-2 rounded-lg dark:bg-card dark:border-border text-black dark:text-white" />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Commission Type</label>
-              <select value={formData.commissionType} onChange={(e) => setFormData({...formData, commissionType: e.target.value})} className="w-full border p-2 rounded-lg dark:bg-gray-800 dark:border-gray-600 text-black dark:text-white">
+              <label className="block text-sm font-medium text-muted-foreground dark:text-gray-300 mb-1">Commission Type</label>
+              <select value={formData.commissionType} onChange={(e) => setFormData({...formData, commissionType: e.target.value})} className="w-full border p-2 rounded-lg dark:bg-card dark:border-border text-black dark:text-white">
                 <option value="percentage">Percentage (%)</option>
                 <option value="flat">Flat Amount (₹)</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Commission Value</label>
-              <input required type="number" min="0" max={formData.commissionType === 'percentage' ? 100 : undefined} value={formData.commissionValue} onChange={(e) => setFormData({...formData, commissionValue: Number(e.target.value)})} className="w-full border p-2 rounded-lg dark:bg-gray-800 dark:border-gray-600 text-black dark:text-white" />
+              <label className="block text-sm font-medium text-muted-foreground dark:text-gray-300 mb-1">Commission Value</label>
+              <input required type="number" min="0" max={formData.commissionType === 'percentage' ? 100 : undefined} value={formData.commissionValue} onChange={(e) => setFormData({...formData, commissionValue: Number(e.target.value)})} className="w-full border p-2 rounded-lg dark:bg-card dark:border-border text-black dark:text-white" />
             </div>
           </div>
           <div className="pt-4 flex justify-end gap-2">
-            <button type="button" onClick={() => setIsCreateModalOpen(false)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">Cancel</button>
-            <button type="submit" disabled={createMutation.isPending} className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg">
+            <button type="button" onClick={() => setIsCreateModalOpen(false)} className="px-4 py-2 text-muted-foreground hover:bg-muted rounded-lg">Cancel</button>
+            <button type="submit" disabled={createMutation.isPending} className="bg-primary hover:bg-indigo-700 text-white px-4 py-2 rounded-lg">
               {createMutation.isPending ? 'Creating...' : 'Create Partner'}
             </button>
           </div>

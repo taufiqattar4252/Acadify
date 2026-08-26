@@ -48,23 +48,23 @@ export const NotificationDropdown = () => {
     switch (type) {
       case 'Welcome':
       case 'Promotional Offer':
-        return <Gift className="w-4 h-4 text-purple-500" />;
+        return <Gift className="w-4 h-4 text-primary" />;
       case 'Support':
       case 'Admin Announcement':
       case 'System Maintenance':
-        return <Info className="w-4 h-4 text-blue-500" />;
+        return <Info className="w-4 h-4 text-primary" />;
       case 'Payment Successful':
       case 'Payment Failed':
       case 'Mock Purchased':
-        return <CreditCard className="w-4 h-4 text-emerald-500" />;
+        return <CreditCard className="w-4 h-4 text-success" />;
       case 'Exam Reminder':
       case 'Mock Published':
-        return <MonitorPlay className="w-4 h-4 text-orange-500" />;
+        return <MonitorPlay className="w-4 h-4 text-warning" />;
       case 'Result Published':
       case 'Exam Submitted':
-        return <FileText className="w-4 h-4 text-indigo-500" />;
+        return <FileText className="w-4 h-4 text-primary" />;
       default:
-        return <Bell className="w-4 h-4 text-slate-500" />;
+        return <Bell className="w-4 h-4 text-muted-foreground" />;
     }
   };
 
@@ -72,7 +72,7 @@ export const NotificationDropdown = () => {
     <div className="relative" ref={dropdownRef}>
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="w-10 h-10 rounded-full bg-white shadow-lumina flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors relative"
+        className="w-10 h-10 rounded-full bg-white shadow-lumina flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors relative"
       >
         <Bell className="w-5 h-5" />
         {unreadCount > 0 && (
@@ -83,9 +83,9 @@ export const NotificationDropdown = () => {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-4 w-80 sm:w-96 bg-white rounded-2xl shadow-lumina-hover border border-slate-100 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
-          <div className="flex items-center justify-between p-4 border-b border-slate-100">
-            <h3 className="font-bold text-slate-800">Notifications</h3>
+        <div className="absolute right-0 mt-4 w-80 sm:w-96 bg-white rounded-2xl shadow-lumina-hover border border-border overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
+          <div className="flex items-center justify-between p-4 border-b border-border">
+            <h3 className="font-bold text-foreground">Notifications</h3>
             {unreadCount > 0 && (
               <button 
                 onClick={() => markAllAsRead.mutate()}
@@ -100,10 +100,10 @@ export const NotificationDropdown = () => {
           <div className="max-h-[360px] overflow-y-auto">
             {isLoading ? (
               <div className="flex justify-center p-8">
-                <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+                <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
               </div>
             ) : notifications.length === 0 ? (
-              <div className="p-8 text-center text-sm text-slate-500">
+              <div className="p-8 text-center text-sm text-muted-foreground">
                 You have no notifications yet.
               </div>
             ) : (
@@ -112,19 +112,19 @@ export const NotificationDropdown = () => {
                   <div 
                     key={notification._id}
                     onClick={() => handleNotificationClick(notification)}
-                    className={`p-4 border-b border-slate-50 cursor-pointer hover:bg-slate-50 transition-colors flex gap-3 ${!notification.isRead ? 'bg-blue-50/30' : ''}`}
+                    className={`p-4 border-b border-slate-50 cursor-pointer hover:bg-muted transition-colors flex gap-3 ${!notification.isRead ? 'bg-primary-light/30' : ''}`}
                   >
-                    <div className={`mt-0.5 w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${!notification.isRead ? 'bg-blue-100' : 'bg-slate-100'}`}>
+                    <div className={`mt-0.5 w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${!notification.isRead ? 'bg-primary-light' : 'bg-muted'}`}>
                       {getIcon(notification.type)}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm mb-0.5 ${!notification.isRead ? 'font-semibold text-slate-900' : 'font-medium text-slate-700'}`}>
+                      <p className={`text-sm mb-0.5 ${!notification.isRead ? 'font-semibold text-foreground' : 'font-medium text-muted-foreground'}`}>
                         {notification.title}
                       </p>
-                      <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
+                      <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
                         {notification.message}
                       </p>
-                      <p className="text-[10px] text-slate-400 mt-2">
+                      <p className="text-[10px] text-muted-foreground mt-2">
                         {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
                       </p>
                     </div>
@@ -137,11 +137,11 @@ export const NotificationDropdown = () => {
             )}
           </div>
           
-          <div className="p-3 border-t border-slate-100 text-center bg-slate-50 hover:bg-slate-100 transition-colors">
+          <div className="p-3 border-t border-border text-center bg-muted hover:bg-muted transition-colors">
             <Link 
               href="/dashboard/notifications" 
               onClick={() => setIsOpen(false)}
-              className="text-sm font-medium text-slate-700 block w-full"
+              className="text-sm font-medium text-muted-foreground block w-full"
             >
               View all notifications
             </Link>

@@ -49,7 +49,7 @@ export function SubmitConfirmationModal({
             Submit Exam?
           </h2>
           {!isSubmitting && (
-            <button onClick={onCancel} className="text-slate-400 hover:text-white transition-colors">
+            <button onClick={onCancel} className="text-muted-foreground hover:text-white transition-colors">
               <X className="w-5 h-5" />
             </button>
           )}
@@ -57,14 +57,14 @@ export function SubmitConfirmationModal({
 
         {/* Content */}
         <div className="p-6">
-          <p className="text-slate-600 mb-6 text-center">
+          <p className="text-muted-foreground mb-6 text-center">
             You are about to submit your exam. Please review your attempt summary below before final submission.
           </p>
 
           {/* Stats Grid */}
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <StatBox label="Total Questions" value={totalQuestions} color="bg-slate-50 text-slate-800" />
-            <StatBox label="Time Remaining" value={formatTime(timeRemaining)} color="bg-blue-50 text-blue-700" isBold />
+            <StatBox label="Total Questions" value={totalQuestions} color="bg-muted text-foreground" />
+            <StatBox label="Time Remaining" value={formatTime(timeRemaining)} color="bg-primary-light text-primary" isBold />
             <StatBox label="Answered" value={stats.answered} color="bg-[#4ca64c]/10 text-[#4ca64c]" />
             <StatBox label="Not Answered" value={stats.notAnswered} color="bg-[#ff3300]/10 text-[#ff3300]" />
             <StatBox label="Marked for Review" value={stats.marked} color="bg-[#6b52ae]/10 text-[#6b52ae]" />
@@ -72,22 +72,22 @@ export function SubmitConfirmationModal({
           </div>
 
           {/* Warning */}
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
-            <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+          <div className="bg-warning-light border border-amber-200 rounded-xl p-4 flex items-start gap-3">
+            <AlertTriangle className="w-5 h-5 text-warning shrink-0 mt-0.5" />
             <div>
               <p className="text-amber-800 font-bold text-sm">Are you sure you want to submit?</p>
-              <p className="text-amber-700/80 text-xs mt-1 font-medium">You will not be able to modify your answers or return to the exam after submission.</p>
+              <p className="text-warning/80 text-xs mt-1 font-medium">You will not be able to modify your answers or return to the exam after submission.</p>
             </div>
           </div>
         </div>
 
         {/* Actions */}
-        <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-3">
+        <div className="px-6 py-4 bg-muted border-t border-border flex items-center justify-end gap-3">
           <Button 
             variant="secondary" 
             onClick={onCancel}
             disabled={isSubmitting}
-            className="bg-white hover:bg-slate-100 text-slate-700 border-slate-200"
+            className="bg-white hover:bg-muted text-muted-foreground border-border"
           >
             Cancel & Return
           </Button>

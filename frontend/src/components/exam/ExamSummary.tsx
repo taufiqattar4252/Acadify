@@ -20,8 +20,8 @@ export function ExamSummary({ examData, studentName, onContinue }: ExamSummaryPr
   const totalMarks = examData.questions?.reduce((acc, q) => acc + (q.positiveMarks || 1), 0) || 200;
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4 md:p-8 flex justify-center items-start">
-      <div className="max-w-4xl w-full bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+    <div className="min-h-screen bg-muted p-4 md:p-8 flex justify-center items-start">
+      <div className="max-w-4xl w-full bg-white rounded-2xl shadow-sm border border-border overflow-hidden">
 
         {/* Header */}
         <div className="bg-[#00BC7D] p-6 md:p-8 text-white text-center">
@@ -47,11 +47,11 @@ export function ExamSummary({ examData, studentName, onContinue }: ExamSummaryPr
             </div>
           </div>
 
-          <hr className="border-slate-100" />
+          <hr className="border-border" />
 
           {/* Question Distribution */}
           <div>
-            <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+            <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
               <Info className="w-5 h-5 text-[#00BC7D]" />
               Question Distribution (MHT-CET Pattern)
             </h3>
@@ -62,15 +62,15 @@ export function ExamSummary({ examData, studentName, onContinue }: ExamSummaryPr
             </div>
           </div>
 
-          <hr className="border-slate-100" />
+          <hr className="border-border" />
 
           {/* Legend */}
           <div>
-            <h3 className="text-lg font-bold text-slate-800 mb-4">Question Status Legend</h3>
+            <h3 className="text-lg font-bold text-foreground mb-4">Question Status Legend</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-4 gap-x-2 text-sm">
               <LegendItem status="Answered" className="bg-[#4ca64c] text-white rounded" />
               <LegendItem status="Not Answered" className="bg-[#ff3300] text-white rounded" />
-              <LegendItem status="Not Visited" className="bg-[#e5e5e5] text-slate-800 rounded" />
+              <LegendItem status="Not Visited" className="bg-[#e5e5e5] text-foreground rounded" />
               <LegendItem status="Marked for Review" className="bg-[#6b52ae] text-white !rounded-full" />
               <LegendItem 
                 status="Answered & Marked" 
@@ -80,12 +80,12 @@ export function ExamSummary({ examData, studentName, onContinue }: ExamSummaryPr
             </div>
           </div>
 
-          <hr className="border-slate-100" />
+          <hr className="border-border" />
 
           {/* Important Instructions */}
-          <div className="bg-blue-50/50 p-6 rounded-xl border border-blue-100">
+          <div className="bg-primary-light/50 p-6 rounded-xl border border-blue-100">
             <h3 className="text-lg font-bold text-blue-900 mb-3 flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-blue-600" />
+              <AlertCircle className="w-5 h-5 text-primary" />
               Important Instructions
             </h3>
             <ul className="list-disc list-outside ml-5 space-y-2 text-blue-800 font-medium">
@@ -112,17 +112,17 @@ export function ExamSummary({ examData, studentName, onContinue }: ExamSummaryPr
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between py-2 border-b border-slate-50 last:border-0">
-      <span className="text-slate-500 font-medium">{label}</span>
-      <span className="text-slate-800 font-semibold text-right">{value}</span>
+      <span className="text-muted-foreground font-medium">{label}</span>
+      <span className="text-foreground font-semibold text-right">{value}</span>
     </div>
   );
 }
 
 function DistributionCard({ subject, count, marks }: { subject: string; count: string; marks: string }) {
   return (
-    <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
-      <h4 className="font-bold text-slate-800 mb-1">{subject}</h4>
-      <p className="text-sm text-slate-500">{count}</p>
+    <div className="bg-muted p-4 rounded-xl border border-border">
+      <h4 className="font-bold text-foreground mb-1">{subject}</h4>
+      <p className="text-sm text-muted-foreground">{count}</p>
       <p className="text-sm font-medium text-[#00BC7D]">{marks}</p>
     </div>
   );
@@ -139,7 +139,7 @@ function LegendItem({ status, className, isAnsweredMarked }: { status: string; c
           </span>
         )}
       </div>
-      <span className="text-slate-600 font-medium leading-tight">{status}</span>
+      <span className="text-muted-foreground font-medium leading-tight">{status}</span>
     </div>
   );
 }

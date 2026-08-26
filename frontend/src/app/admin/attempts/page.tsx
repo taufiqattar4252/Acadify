@@ -21,7 +21,7 @@ export default function AdminAttemptsPage() {
 
   if (isError || !data) {
     return (
-      <div className="bg-red-50 text-red-600 p-4 rounded-lg">
+      <div className="bg-destructive-light text-destructive p-4 rounded-lg">
         Failed to load attempts data.
       </div>
     );
@@ -33,25 +33,25 @@ export default function AdminAttemptsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Student Attempts</h1>
-          <p className="text-slate-500">View and analyze all mock test submissions.</p>
+          <h1 className="text-2xl font-bold text-foreground">Student Attempts</h1>
+          <p className="text-muted-foreground">View and analyze all mock test submissions.</p>
         </div>
         
         {/* Simple mock search bar (UI only for now) */}
         <div className="relative">
-          <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input 
             type="text" 
             placeholder="Search student or mock..." 
-            className="pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none w-full sm:w-64"
+            className="pl-10 pr-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none w-full sm:w-64"
           />
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-border overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm whitespace-nowrap">
-            <thead className="bg-slate-50 text-slate-600 font-medium">
+            <thead className="bg-muted text-muted-foreground font-medium">
               <tr>
                 <th className="px-6 py-4">Student</th>
                 <th className="px-6 py-4">Mock Test</th>
@@ -64,7 +64,7 @@ export default function AdminAttemptsPage() {
             <tbody className="divide-y divide-slate-100">
               {attempts.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center text-slate-500">
+                  <td colSpan={6} className="px-6 py-8 text-center text-muted-foreground">
                     No attempts found.
                   </td>
                 </tr>
@@ -75,24 +75,24 @@ export default function AdminAttemptsPage() {
                     : 0;
 
                   return (
-                    <tr key={attempt._id} className="hover:bg-slate-50/50">
+                    <tr key={attempt._id} className="hover:bg-muted/50">
                       <td className="px-6 py-4">
-                        <div className="font-medium text-slate-900">{attempt.user?.fullName || 'Unknown User'}</div>
-                        <div className="text-xs text-slate-500">{attempt.user?.email || 'N/A'}</div>
+                        <div className="font-medium text-foreground">{attempt.user?.fullName || 'Unknown User'}</div>
+                        <div className="text-xs text-muted-foreground">{attempt.user?.email || 'N/A'}</div>
                       </td>
-                      <td className="px-6 py-4 font-medium text-slate-700">
+                      <td className="px-6 py-4 font-medium text-muted-foreground">
                         {attempt.mockTest?.title || 'Unknown Test'}
                       </td>
                       <td className="px-6 py-4">
-                        <span className="font-bold text-indigo-600">{attempt.score}</span>
+                        <span className="font-bold text-primary">{attempt.score}</span>
                       </td>
-                      <td className="px-6 py-4 font-medium text-slate-600">
+                      <td className="px-6 py-4 font-medium text-muted-foreground">
                         {accuracy.toFixed(1)}%
                       </td>
-                      <td className="px-6 py-4 text-slate-500 text-xs">
+                      <td className="px-6 py-4 text-muted-foreground text-xs">
                         {(attempt.submittedAt || attempt.createdAt) ? new Date(attempt.submittedAt || attempt.createdAt).toLocaleString() : 'N/A'}
                       </td>
-                      <td className="px-6 py-4 text-slate-500 text-xs font-mono">
+                      <td className="px-6 py-4 text-muted-foreground text-xs font-mono">
                         {attempt.ipAddress || 'Unknown'}
                       </td>
                     </tr>
@@ -105,8 +105,8 @@ export default function AdminAttemptsPage() {
         
         {/* Pagination */}
         {pagination.totalPages > 1 && (
-          <div className="px-6 py-4 border-t border-slate-200 flex items-center justify-between">
-            <span className="text-sm text-slate-500">
+          <div className="px-6 py-4 border-t border-border flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">
               Showing page {pagination.page} of {pagination.totalPages}
             </span>
             <div className="flex gap-2">

@@ -19,14 +19,14 @@ export default function PartnerLayout({ children }: { children: React.ReactNode 
 
   if (isLoading || !user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#f4f7f6] dark:bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-[#f4f7f6] dark:bg-background">
         <Spinner size="xl" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#f4f7f6] dark:bg-gray-900 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#f4f7f6] dark:bg-background flex flex-col font-sans">
       <PartnerTopNavbar />
       <main className="flex-1 overflow-x-hidden p-6 md:p-8">
         <div className="max-w-[1400px] mx-auto w-full">

@@ -44,7 +44,7 @@ export default function NotificationSettingsPage() {
   };
 
   if (isLoading) {
-    return <div className="p-8 animate-pulse bg-slate-50 h-full rounded-2xl"></div>;
+    return <div className="p-8 animate-pulse bg-muted h-full rounded-2xl"></div>;
   }
 
   const toggleConfig = [
@@ -57,10 +57,10 @@ export default function NotificationSettingsPage() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-8">
-      <div className="flex justify-between items-center border-b border-slate-100 pb-6 mb-8">
+      <div className="flex justify-between items-center border-b border-border pb-6 mb-8">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Notification Preferences</h2>
-          <p className="text-sm text-slate-500 mt-1">Manage global notification toggles.</p>
+          <h2 className="text-xl font-bold text-foreground">Notification Preferences</h2>
+          <p className="text-sm text-muted-foreground mt-1">Manage global notification toggles.</p>
         </div>
         <button 
           type="submit"
@@ -74,14 +74,14 @@ export default function NotificationSettingsPage() {
 
       <div className="space-y-4 max-w-3xl">
         {toggleConfig.map((item) => (
-          <div key={item.name} className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-xl">
+          <div key={item.name} className="flex items-center justify-between p-4 bg-muted border border-border rounded-xl">
             <div>
-              <h4 className="text-sm font-medium text-slate-900">{item.title}</h4>
-              <p className="text-xs text-slate-500 mt-1">{item.desc}</p>
+              <h4 className="text-sm font-medium text-foreground">{item.title}</h4>
+              <p className="text-xs text-muted-foreground mt-1">{item.desc}</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" {...register(item.name as any)} className="sr-only peer" />
-              <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
+              <div className="w-11 h-6 bg-muted-hover peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
             </label>
           </div>
         ))}

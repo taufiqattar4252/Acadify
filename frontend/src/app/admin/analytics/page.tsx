@@ -18,7 +18,7 @@ export default function AdminAnalyticsPage() {
 
   if (isError || !analytics) {
     return (
-      <div className="bg-red-50 text-red-600 p-4 rounded-lg">
+      <div className="bg-destructive-light text-destructive p-4 rounded-lg">
         Failed to load analytics data.
       </div>
     );
@@ -32,54 +32,54 @@ export default function AdminAnalyticsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-slate-900">Platform Analytics</h1>
-      <p className="text-slate-500">High-level overview of student performance across all mock tests.</p>
+      <h1 className="text-2xl font-bold text-foreground">Platform Analytics</h1>
+      <p className="text-muted-foreground">High-level overview of student performance across all mock tests.</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+        <div className="bg-white p-6 rounded-xl border border-border shadow-sm flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-primary-light text-primary flex items-center justify-center shrink-0">
             <Users className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-sm font-medium text-slate-500 uppercase">Total Attempts</p>
-            <p className="text-2xl font-bold text-slate-900">{analytics.totalAttempts}</p>
+            <p className="text-sm font-medium text-muted-foreground uppercase">Total Attempts</p>
+            <p className="text-2xl font-bold text-foreground">{analytics.totalAttempts}</p>
           </div>
         </div>
         
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+        <div className="bg-white p-6 rounded-xl border border-border shadow-sm flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-success-light text-success flex items-center justify-center shrink-0">
             <Target className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-sm font-medium text-slate-500 uppercase">Average Score</p>
-            <p className="text-2xl font-bold text-slate-900">{(analytics.averageScore || 0).toFixed(1)}</p>
+            <p className="text-sm font-medium text-muted-foreground uppercase">Average Score</p>
+            <p className="text-2xl font-bold text-foreground">{(analytics.averageScore || 0).toFixed(1)}</p>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
+        <div className="bg-white p-6 rounded-xl border border-border shadow-sm flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-primary-light text-primary flex items-center justify-center shrink-0">
             <TrendingUp className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-sm font-medium text-slate-500 uppercase">Highest Score</p>
-            <p className="text-2xl font-bold text-slate-900">{analytics.highestScore}</p>
+            <p className="text-sm font-medium text-muted-foreground uppercase">Highest Score</p>
+            <p className="text-2xl font-bold text-foreground">{analytics.highestScore}</p>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+        <div className="bg-white p-6 rounded-xl border border-border shadow-sm flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-warning-light text-warning flex items-center justify-center shrink-0">
             <Clock className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-sm font-medium text-slate-500 uppercase">Avg Time Taken</p>
-            <p className="text-2xl font-bold text-slate-900">{formatTime(analytics.averageTimeTaken)}</p>
+            <p className="text-sm font-medium text-muted-foreground uppercase">Avg Time Taken</p>
+            <p className="text-2xl font-bold text-foreground">{formatTime(analytics.averageTimeTaken)}</p>
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-12 text-center text-slate-500">
+      <div className="bg-white rounded-xl border border-border shadow-sm p-12 text-center text-muted-foreground">
         <BarChart2 className="w-16 h-16 mx-auto text-slate-300 mb-4" />
-        <h3 className="text-lg font-bold text-slate-700 mb-2">Detailed Reports Coming Soon</h3>
+        <h3 className="text-lg font-bold text-muted-foreground mb-2">Detailed Reports Coming Soon</h3>
         <p>Mock-specific and Question-specific analytics are being actively developed.</p>
       </div>
     </div>

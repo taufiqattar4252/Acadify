@@ -63,7 +63,7 @@ export const StudentTopNavbar = () => {
           <div className="w-10 h-10 rounded-xl bg-[#00BC7D] flex items-center justify-center transform -rotate-12">
             <div className="w-3.5 h-3.5 bg-white rounded-[4px]"></div>
           </div>
-          <span className="text-2xl font-bold text-slate-800 tracking-tight ml-1">Acadify</span>
+          <span className="text-2xl font-bold text-foreground tracking-tight ml-1">Acadify</span>
         </Link>
 
         {/* CENTER: Floating Pill Navigation */}
@@ -79,8 +79,8 @@ export const StudentTopNavbar = () => {
                 className={cn(
                   'px-5 py-2 rounded-full text-sm font-medium transition-all duration-300',
                   isActive
-                    ? 'bg-slate-100 text-slate-900 shadow-sm'
-                    : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
+                    ? 'bg-muted text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                 )}
               >
                 {item.name}
@@ -93,7 +93,7 @@ export const StudentTopNavbar = () => {
 
         {/* RIGHT: Actions & Profile */}
         <div className="flex items-center gap-3">
-          <Link href="/dashboard/cart" className="relative w-10 h-10 rounded-full bg-white shadow-lumina flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors">
+          <Link href="/dashboard/cart" className="relative w-10 h-10 rounded-full bg-white shadow-lumina flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
             <ShoppingCart className="w-5 h-5" />
             {cartData && cartData.items && cartData.items.length > 0 && (
               <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#00BC7D] text-[9px] font-bold text-white shadow-sm ring-2 ring-white">
@@ -108,19 +108,19 @@ export const StudentTopNavbar = () => {
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="w-10 h-10 rounded-full bg-slate-200 border-2 border-white shadow-sm overflow-hidden flex items-center justify-center cursor-pointer hover:border-slate-300 transition-colors"
+              className="w-10 h-10 rounded-full bg-muted-hover border-2 border-white shadow-sm overflow-hidden flex items-center justify-center cursor-pointer hover:border-border transition-colors"
             >
-              <User className="w-5 h-5 text-slate-500" />
+              <User className="w-5 h-5 text-muted-foreground" />
             </button>
             {dropdownOpen && (
-              <div className="absolute right-0 mt-4 w-48 bg-white rounded-2xl shadow-lumina-hover border border-slate-100 py-2 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
-                <Link href="/dashboard/purchases" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900">My Purchases</Link>
-                <Link href="/dashboard/profile" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900">Profile</Link>
-                <Link href="/dashboard/settings/notifications" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900">Settings</Link>
-                <div className="h-px bg-slate-100 my-1"></div>
+              <div className="absolute right-0 mt-4 w-48 bg-white rounded-2xl shadow-lumina-hover border border-border py-2 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
+                <Link href="/dashboard/purchases" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground">My Purchases</Link>
+                <Link href="/dashboard/profile" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground">Profile</Link>
+                <Link href="/dashboard/settings/notifications" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground">Settings</Link>
+                <div className="h-px bg-muted my-1"></div>
                 <button
                   onClick={() => { setDropdownOpen(false); handleLogout(); }}
-                  className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                  className="w-full text-left px-4 py-2 text-sm text-destructive hover:bg-destructive-light flex items-center gap-2"
                 >
                   <LogOut className="w-4 h-4" /> Logout
                 </button>

@@ -12,15 +12,15 @@ export default function VerifyPendingPage() {
         <Mail className="h-10 w-10 text-primary-600" />
       </div>
       
-      <h3 className="text-2xl font-extrabold text-slate-900 mb-4 tracking-tight">Check your email</h3>
+      <h3 className="text-2xl font-extrabold text-foreground mb-4 tracking-tight">Check your email</h3>
       
-      <p className="text-slate-600 text-lg mb-8 max-w-sm mx-auto leading-relaxed">
+      <p className="text-muted-foreground text-lg mb-8 max-w-sm mx-auto leading-relaxed">
         We've sent a verification link to your registered email address. 
         Please click the link to verify your account and continue.
       </p>
 
       <div className="space-y-4">
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-muted-foreground">
           Didn't receive the email? Check your spam folder.
         </p>
         

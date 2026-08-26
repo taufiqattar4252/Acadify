@@ -35,7 +35,7 @@ export default function Loading() {
       </h2>
 
       {/* Dynamic Loading Bar */}
-      <div className="w-64 h-2.5 bg-gray-200 rounded-full overflow-hidden relative">
+      <div className="w-64 h-2.5 bg-muted-hover rounded-full overflow-hidden relative">
         <div
           className="absolute top-0 left-0 h-full bg-[#00BC7D] rounded-full animate-loading-bar"
         ></div>

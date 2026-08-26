@@ -17,13 +17,13 @@ export default function PurchasesPage() {
     <div className="space-y-6 pb-12">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Purchase History</h1>
-        <p className="text-sm text-slate-500 mt-1">View your purchased mock tests and payment records.</p>
+        <h1 className="text-2xl font-bold text-foreground">Purchase History</h1>
+        <p className="text-sm text-muted-foreground mt-1">View your purchased mock tests and payment records.</p>
       </div>
 
       {isLoading ? (
         <div className="bg-white rounded-3xl shadow-lumina border-transparent overflow-hidden">
-          <div className="p-6 border-b border-slate-100">
+          <div className="p-6 border-b border-border">
             <Skeleton className="h-6 w-48" />
           </div>
           <div className="p-6 space-y-4">
@@ -32,11 +32,11 @@ export default function PurchasesPage() {
         </div>
       ) : purchases.length === 0 ? (
         <div className="text-center py-20 bg-white rounded-3xl border-transparent shadow-lumina">
-          <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-muted rounded-2xl flex items-center justify-center mx-auto mb-4">
             <ShoppingBag className="w-8 h-8 text-slate-300" />
           </div>
-          <h3 className="text-lg font-bold text-slate-900">No purchases found</h3>
-          <p className="text-slate-500 mt-1">You haven't purchased any mock tests yet.</p>
+          <h3 className="text-lg font-bold text-foreground">No purchases found</h3>
+          <p className="text-muted-foreground mt-1">You haven't purchased any mock tests yet.</p>
           <Button variant="secondary" className="mt-6 mx-auto rounded-full px-6" onClick={() => router.push('/dashboard/mock-tests')}>
             Explore Mock Store
           </Button>
@@ -45,7 +45,7 @@ export default function PurchasesPage() {
         <div className="bg-white rounded-3xl shadow-lumina border-transparent overflow-hidden relative">
           <div className="overflow-x-auto p-6">
             <table className="w-full text-left text-sm whitespace-nowrap">
-              <thead className="text-slate-500 font-medium border-b border-slate-100">
+              <thead className="text-muted-foreground font-medium border-b border-border">
                 <tr>
                   <th className="px-6 py-4 font-semibold">Mock Test</th>
                   <th className="px-6 py-4 font-semibold">Purchase Date</th>
@@ -56,30 +56,30 @@ export default function PurchasesPage() {
               </thead>
               <tbody className="divide-y divide-slate-50">
                 {purchases.map((purchase) => (
-                  <tr key={purchase._id} className="hover:bg-slate-50/50 transition-colors">
+                  <tr key={purchase._id} className="hover:bg-muted/50 transition-colors">
                     <td className="px-6 py-5">
                       <div className="flex flex-col gap-1">
-                        <span className="font-bold text-slate-900 text-base">{purchase.mockTest?.title || 'Unknown Test'}</span>
-                        <span className="text-xs font-medium text-slate-500">
+                        <span className="font-bold text-foreground text-base">{purchase.mockTest?.title || 'Unknown Test'}</span>
+                        <span className="text-xs font-medium text-muted-foreground">
                           {purchase.mockTest?.category || 'Mock Test'} • {purchase.mockTest?.duration || 0} mins
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-5 font-medium text-slate-600">
+                    <td className="px-6 py-5 font-medium text-muted-foreground">
                       {new Date(purchase.purchaseDate).toLocaleDateString(undefined, {
                         year: 'numeric',
                         month: 'short',
                         day: 'numeric'
                       })}
                     </td>
-                    <td className="px-6 py-5 font-bold text-slate-900 flex items-center h-full mt-2">
+                    <td className="px-6 py-5 font-bold text-foreground flex items-center h-full mt-2">
                       <IndianRupee className="w-4 h-4 mr-0.5" /> {purchase.amountPaid}
                     </td>
                     <td className="px-6 py-5">
                       <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold border
-                        ${purchase.status === 'completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 
-                          purchase.status === 'pending' ? 'bg-amber-50 text-amber-700 border-amber-100' :
-                          'bg-red-50 text-red-700 border-red-100'}`}
+                        ${purchase.status === 'completed' ? 'bg-success-light text-success border-emerald-100' : 
+                          purchase.status === 'pending' ? 'bg-warning-light text-warning border-amber-100' :
+                          'bg-destructive-light text-destructive border-red-100'}`}
                       >
                         {purchase.status}
                       </span>
@@ -93,7 +93,7 @@ export default function PurchasesPage() {
                               variant="secondary"
                               onClick={() => router.push(`/dashboard/purchases/${purchase.payment}/invoice`)}
                             >
-                              <FileText className="w-4 h-4 mr-1.5 text-slate-400" /> Invoice
+                              <FileText className="w-4 h-4 mr-1.5 text-muted-foreground" /> Invoice
                             </Button>
                             <Button 
                               className="px-4 py-2 text-xs rounded-full" 

@@ -40,7 +40,7 @@ export default function RegisterPage() {
 
   return (
     <>
-      <h3 className="text-xl font-bold text-slate-900 mb-6 text-center">Create an account</h3>
+      <h3 className="text-xl font-bold text-foreground mb-6 text-center">Create an account</h3>
       
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <Input
@@ -94,7 +94,7 @@ export default function RegisterPage() {
         </div>
       </form>
 
-      <div className="mt-6 text-center text-sm text-slate-600">
+      <div className="mt-6 text-center text-sm text-muted-foreground">
         Already have an account?{' '}
         <Link href="/login" className="font-medium text-primary-600 hover:text-primary-500 transition-colors">
           Sign in here

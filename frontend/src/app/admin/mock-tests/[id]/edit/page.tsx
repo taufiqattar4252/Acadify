@@ -13,7 +13,7 @@ export default function EditMockTestPage({ params }: { params: Promise<{ id: str
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px]">
         <Loader2 className="w-8 h-8 text-primary-500 animate-spin mb-4" />
-        <p className="text-slate-500">Loading mock test builder...</p>
+        <p className="text-muted-foreground">Loading mock test builder...</p>
       </div>
     );
   }
@@ -21,7 +21,7 @@ export default function EditMockTestPage({ params }: { params: Promise<{ id: str
   if (isError || !initialData) {
     return (
       <div className="text-center py-12">
-        <p className="text-red-500">Failed to load mock test.</p>
+        <p className="text-destructive">Failed to load mock test.</p>
       </div>
     );
   }

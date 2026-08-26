@@ -84,11 +84,11 @@ export default function SubjectFormModal({ isOpen, onClose, editSubject }: Subje
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
-        <div className="flex justify-between items-center p-6 border-b border-slate-100">
-          <h3 className="text-lg font-bold text-slate-900">
+        <div className="flex justify-between items-center p-6 border-b border-border">
+          <h3 className="text-lg font-bold text-foreground">
             {editSubject ? 'Edit Subject' : 'Add New Subject'}
           </h3>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition-colors">
+          <button onClick={onClose} className="text-muted-foreground hover:text-muted-foreground transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -107,21 +107,21 @@ export default function SubjectFormModal({ isOpen, onClose, editSubject }: Subje
           />
           
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
+            <label className="block text-sm font-medium text-muted-foreground mb-1">Description</label>
             <textarea
               {...register('description')}
               rows={3}
-              className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all outline-none text-slate-900"
+              className="w-full px-4 py-2.5 rounded-lg border border-border focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all outline-none text-foreground"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Color</label>
+              <label className="block text-sm font-medium text-muted-foreground mb-1">Color</label>
               <input
                 type="color"
                 {...register('color')}
-                className="w-full h-10 px-1 py-1 rounded border border-slate-300 focus:ring-primary-500"
+                className="w-full h-10 px-1 py-1 rounded border border-border focus:ring-primary-500"
               />
             </div>
             <Input
@@ -143,9 +143,9 @@ export default function SubjectFormModal({ isOpen, onClose, editSubject }: Subje
               type="checkbox"
               id="isActive"
               {...register('isActive')}
-              className="w-4 h-4 text-primary-600 rounded border-slate-300 focus:ring-primary-500"
+              className="w-4 h-4 text-primary-600 rounded border-border focus:ring-primary-500"
             />
-            <label htmlFor="isActive" className="text-sm font-medium text-slate-700">
+            <label htmlFor="isActive" className="text-sm font-medium text-muted-foreground">
               Subject is Active
             </label>
           </div>

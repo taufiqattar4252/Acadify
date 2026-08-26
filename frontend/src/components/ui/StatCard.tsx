@@ -19,11 +19,11 @@ export const StatCard: React.FC<StatCardProps> = ({ title, value, icon: Icon, tr
 
   // Generate a random pastel color for the icon background based on the title length (deterministic)
   const colors = [
-    'bg-emerald-50 text-emerald-500', 
-    'bg-blue-50 text-blue-500', 
-    'bg-amber-50 text-amber-500', 
-    'bg-purple-50 text-purple-500',
-    'bg-rose-50 text-rose-500'
+    'bg-success-light text-success', 
+    'bg-primary-light text-primary', 
+    'bg-warning-light text-warning', 
+    'bg-primary-light text-primary',
+    'bg-destructive-light text-destructive'
   ];
   const colorClass = colors[title.length % colors.length];
 
@@ -31,8 +31,8 @@ export const StatCard: React.FC<StatCardProps> = ({ title, value, icon: Icon, tr
     <Card className={cn('p-6 flex flex-col justify-between h-full relative overflow-hidden', className)}>
       <div className="flex justify-between items-start mb-4">
         <div>
-          <h2 className="text-[28px] font-bold text-slate-900 leading-none mb-2">{value}</h2>
-          <h3 className="text-sm font-medium text-slate-400">{title}</h3>
+          <h2 className="text-[28px] font-bold text-foreground leading-none mb-2">{value}</h2>
+          <h3 className="text-sm font-medium text-muted-foreground">{title}</h3>
         </div>
         <div className={cn("p-3 rounded-2xl", colorClass)}>
           <Icon className="w-6 h-6" />
@@ -41,10 +41,10 @@ export const StatCard: React.FC<StatCardProps> = ({ title, value, icon: Icon, tr
       
       {trend && (
         <div className="mt-4 pt-4 border-t border-slate-50/50 flex items-center">
-          <span className={cn('text-xs font-bold px-2 py-1 rounded-full', isPositive ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600')}>
+          <span className={cn('text-xs font-bold px-2 py-1 rounded-full', isPositive ? 'bg-success-light text-success' : 'bg-destructive-light text-destructive')}>
             {isPositive ? '+' : ''}{trend.value}%
           </span>
-          <span className="text-xs text-slate-400 ml-2">{trend.label}</span>
+          <span className="text-xs text-muted-foreground ml-2">{trend.label}</span>
         </div>
       )}
     </Card>

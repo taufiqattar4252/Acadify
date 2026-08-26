@@ -20,51 +20,51 @@ function IncorrectQuestionsViewer({ chapterId, chapterName, onClose }: { chapter
           animate={{ x: 0 }}
           exit={{ x: '100%' }}
           transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-          className="w-full max-w-2xl bg-slate-50 shadow-2xl overflow-hidden flex flex-col h-full border-l border-slate-200"
+          className="w-full max-w-2xl bg-muted shadow-2xl overflow-hidden flex flex-col h-full border-l border-border"
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-5 bg-white border-b border-slate-100">
+          <div className="flex items-center justify-between px-6 py-5 bg-white border-b border-border">
             <div>
-              <h3 className="text-[18px] font-bold text-slate-900">Review Mistakes: {chapterName}</h3>
-              <p className="text-[13px] font-medium text-slate-500 mt-0.5">Reviewing {questions.length > 0 ? questions.length : ''} questions you answered incorrectly or skipped</p>
+              <h3 className="text-[18px] font-bold text-foreground">Review Mistakes: {chapterName}</h3>
+              <p className="text-[13px] font-medium text-muted-foreground mt-0.5">Reviewing {questions.length > 0 ? questions.length : ''} questions you answered incorrectly or skipped</p>
             </div>
-            <button onClick={onClose} className="p-2 bg-white hover:bg-slate-50 border border-slate-200 rounded-full transition-colors text-slate-500">
+            <button onClick={onClose} className="p-2 bg-white hover:bg-muted border border-border rounded-full transition-colors text-muted-foreground">
               <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* Content Area */}
-          <div className="px-6 py-6 overflow-y-auto flex-1 space-y-6 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-slate-200 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-slate-300">
+          <div className="px-6 py-6 overflow-y-auto flex-1 space-y-6 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-muted-hover [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-muted-hover">
             {isLoading ? (
               <div className="space-y-4">
-                <Skeleton className="h-64 w-full rounded-[20px] bg-white shadow-sm border border-slate-100" />
-                <Skeleton className="h-64 w-full rounded-[20px] bg-white shadow-sm border border-slate-100" />
+                <Skeleton className="h-64 w-full rounded-[20px] bg-white shadow-sm border border-border" />
+                <Skeleton className="h-64 w-full rounded-[20px] bg-white shadow-sm border border-border" />
               </div>
             ) : questions.length === 0 ? (
-              <div className="text-center py-16 bg-white rounded-[20px] border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
-                <div className="w-16 h-16 bg-emerald-50 text-[#10b981] rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="text-center py-16 bg-white rounded-[20px] border border-border shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
+                <div className="w-16 h-16 bg-success-light text-[#10b981] rounded-full flex items-center justify-center mx-auto mb-4">
                   <CheckCircle className="w-8 h-8" />
                 </div>
-                <h4 className="text-[18px] font-bold text-slate-900">Perfect Record!</h4>
-                <p className="text-[14px] text-slate-500 mt-1 font-medium">You haven't made any mistakes in this chapter yet.</p>
+                <h4 className="text-[18px] font-bold text-foreground">Perfect Record!</h4>
+                <p className="text-[14px] text-muted-foreground mt-1 font-medium">You haven't made any mistakes in this chapter yet.</p>
               </div>
             ) : (
               questions.map((q: any, i: number) => {
                 const questionData = q.question;
 
                 return (
-                  <div key={i} className="bg-white rounded-[20px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100">
+                  <div key={i} className="bg-white rounded-[20px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-border">
                     <div className="flex items-center justify-between mb-4">
-                      <span className="px-3 py-1 bg-slate-100 text-slate-600 font-medium text-[12px] rounded-full">Question {i + 1}</span>
-                      <span className="text-[12px] font-medium text-slate-400 flex items-center gap-1">
+                      <span className="px-3 py-1 bg-muted text-muted-foreground font-medium text-[12px] rounded-full">Question {i + 1}</span>
+                      <span className="text-[12px] font-medium text-muted-foreground flex items-center gap-1">
                         <Clock className="w-3.5 h-3.5" /> {q.timeSpent}s spent
                       </span>
                     </div>
 
-                    <div className="text-[15px] font-medium text-slate-800 mb-5 whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: questionData.questionText }} />
+                    <div className="text-[15px] font-medium text-foreground mb-5 whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: questionData.questionText }} />
 
                     {questionData.questionImage && (
-                      <div className="mb-5 border border-slate-100 rounded-xl overflow-hidden">
+                      <div className="mb-5 border border-border rounded-xl overflow-hidden">
                         <img src={questionData.questionImage} alt="Question" className="max-w-full max-h-64 object-contain" />
                       </div>
                     )}
@@ -74,14 +74,14 @@ function IncorrectQuestionsViewer({ chapterId, chapterName, onClose }: { chapter
                         const isCorrect = opt.isCorrect;
                         const isSelected = q.selectedOptionId === opt._id;
 
-                        let optStyle = "border-slate-100 bg-white text-slate-600";
-                        let bubbleStyle = "bg-slate-100 text-slate-500";
+                        let optStyle = "border-border bg-white text-muted-foreground";
+                        let bubbleStyle = "bg-muted text-muted-foreground";
 
                         if (isCorrect) {
-                          optStyle = "border-[#10b981] bg-emerald-50/30 text-emerald-900";
+                          optStyle = "border-[#10b981] bg-success-light/30 text-emerald-900";
                           bubbleStyle = "bg-[#10b981] text-white";
                         } else if (isSelected && !isCorrect) {
-                          optStyle = "border-[#ef4444] bg-red-50/30 text-red-900";
+                          optStyle = "border-[#ef4444] bg-destructive-light/30 text-red-900";
                           bubbleStyle = "bg-[#ef4444] text-white";
                         }
 
@@ -101,9 +101,9 @@ function IncorrectQuestionsViewer({ chapterId, chapterName, onClose }: { chapter
                     </div>
 
                     {questionData.explanation && (
-                      <div className="mt-6 p-4 bg-slate-50 rounded-xl border border-slate-100">
-                        <h5 className="text-[13px] font-bold text-slate-700 mb-2">Explanation:</h5>
-                        <div className="text-[14px] font-medium text-slate-600 whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: questionData.explanation }} />
+                      <div className="mt-6 p-4 bg-muted rounded-xl border border-border">
+                        <h5 className="text-[13px] font-bold text-muted-foreground mb-2">Explanation:</h5>
+                        <div className="text-[14px] font-medium text-muted-foreground whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: questionData.explanation }} />
                       </div>
                     )}
                   </div>
@@ -169,22 +169,22 @@ function StudyProgressContent() {
   }
 
   return (
-    <div className="font-sans text-slate-800">
+    <div className="font-sans text-foreground">
 
       {/* Page Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-normal text-slate-800">
-          Study <span className="font-semibold text-slate-900">Progress!</span>
+        <h1 className="text-3xl font-normal text-foreground">
+          Study <span className="font-semibold text-foreground">Progress!</span>
         </h1>
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-8 mb-6 border-b border-slate-200">
+      <div className="flex items-center gap-8 mb-6 border-b border-border">
         <button
           onClick={() => { setActiveTab('strong'); setCurrentPage(1); }}
           className={`pb-4 text-[15px] font-semibold transition-colors relative ${activeTab === 'strong'
               ? 'text-[#10b981]'
-              : 'text-slate-500 hover:text-slate-700'
+              : 'text-muted-foreground hover:text-muted-foreground'
             }`}
         >
           Chapters Strong ({chaptersData.filter(c => c.isStrong).length})
@@ -196,7 +196,7 @@ function StudyProgressContent() {
           onClick={() => { setActiveTab('weak'); setCurrentPage(1); }}
           className={`pb-4 text-[15px] font-semibold transition-colors relative ${activeTab === 'weak'
               ? 'text-[#10b981]'
-              : 'text-slate-500 hover:text-slate-700'
+              : 'text-muted-foreground hover:text-muted-foreground'
             }`}
         >
           Needs Practice ({chaptersData.filter(c => !c.isStrong).length})
@@ -206,33 +206,33 @@ function StudyProgressContent() {
         </button>
       </div>
 
-      <div className="bg-white rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 overflow-hidden flex flex-col">
+      <div className="bg-white rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-border overflow-hidden flex flex-col">
 
         {/* Table Header Controls */}
-        <div className="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-white">
-          <h2 className="text-[18px] font-bold text-slate-900">Chapter Performance</h2>
+        <div className="px-6 py-5 border-b border-border flex justify-between items-center bg-white">
+          <h2 className="text-[18px] font-bold text-foreground">Chapter Performance</h2>
 
           <div className="flex items-center gap-3">
             <div className="relative">
               <select
                 value={subjectFilter}
                 onChange={(e) => { setSubjectFilter(e.target.value); setCurrentPage(1); }}
-                className="appearance-none text-[13px] font-medium text-slate-600 bg-white pl-4 pr-10 py-2 rounded-xl border border-slate-200 cursor-pointer outline-none hover:bg-slate-50 transition-colors shadow-sm"
+                className="appearance-none text-[13px] font-medium text-muted-foreground bg-white pl-4 pr-10 py-2 rounded-xl border border-border cursor-pointer outline-none hover:bg-muted transition-colors shadow-sm"
               >
                 <option value="All Subjects">All Subjects</option>
                 <option value="Physics">Physics</option>
                 <option value="Chemistry">Chemistry</option>
                 <option value="Mathematics">Mathematics</option>
               </select>
-              <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <ChevronDown className="w-4 h-4 text-muted-foreground absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>
 
             <div className="relative">
-              <SlidersHorizontal className="w-4 h-4 text-slate-500 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <SlidersHorizontal className="w-4 h-4 text-muted-foreground absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
               <select
                 value={sortBy}
                 onChange={(e) => { setSortBy(e.target.value); setCurrentPage(1); }}
-                className="appearance-none text-[13px] font-medium text-slate-600 bg-slate-50 pl-[34px] pr-4 py-2 rounded-xl border border-slate-200 cursor-pointer outline-none hover:bg-slate-100 transition-colors"
+                className="appearance-none text-[13px] font-medium text-muted-foreground bg-muted pl-[34px] pr-4 py-2 rounded-xl border border-border cursor-pointer outline-none hover:bg-muted transition-colors"
               >
                 <option value="Performance">Sort: Performance</option>
                 <option value="Attempts">Sort: Attempts</option>
@@ -246,23 +246,23 @@ function StudyProgressContent() {
         <div className="w-full overflow-x-auto">
           <table className="w-full text-left min-w-[900px]">
             <thead>
-              <tr className="border-b border-slate-100">
-                <th className="px-6 py-4 text-[13px] font-medium text-slate-500 w-[280px]">Chapter</th>
-                <th className="px-4 py-4 text-[13px] font-medium text-slate-500">Subject</th>
-                <th className="px-4 py-4 text-[13px] font-medium text-slate-500 text-center">Accuracy</th>
-                <th className="px-4 py-4 text-[13px] font-medium text-slate-500 text-center">Attempts</th>
-                <th className="px-4 py-4 text-[13px] font-medium text-slate-500 text-center">Correct</th>
-                <th className="px-4 py-4 text-[13px] font-medium text-slate-500 text-center">Incorrect</th>
-                <th className="px-4 py-4 text-[13px] font-medium text-slate-500 text-center">Score</th>
-                <th className="px-6 py-4 text-[13px] font-medium text-slate-500 w-[180px]">Progress</th>
+              <tr className="border-b border-border">
+                <th className="px-6 py-4 text-[13px] font-medium text-muted-foreground w-[280px]">Chapter</th>
+                <th className="px-4 py-4 text-[13px] font-medium text-muted-foreground">Subject</th>
+                <th className="px-4 py-4 text-[13px] font-medium text-muted-foreground text-center">Accuracy</th>
+                <th className="px-4 py-4 text-[13px] font-medium text-muted-foreground text-center">Attempts</th>
+                <th className="px-4 py-4 text-[13px] font-medium text-muted-foreground text-center">Correct</th>
+                <th className="px-4 py-4 text-[13px] font-medium text-muted-foreground text-center">Incorrect</th>
+                <th className="px-4 py-4 text-[13px] font-medium text-muted-foreground text-center">Score</th>
+                <th className="px-6 py-4 text-[13px] font-medium text-muted-foreground w-[180px]">Progress</th>
                 <th className="px-4 py-4 w-10"></th>
               </tr>
             </thead>
             <tbody>
               {currentData.length > 0 ? currentData.map((chapter, idx) => (
-                <tr key={idx} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors group">
+                <tr key={idx} className="border-b border-slate-50 hover:bg-muted/50 transition-colors group">
                   <td className="px-6 py-4 flex items-center h-full min-h-[64px]">
-                    <span className="font-bold text-slate-900 text-[14px]">{chapter.name}</span>
+                    <span className="font-bold text-foreground text-[14px]">{chapter.name}</span>
                   </td>
                   <td className="px-4 py-4">
                     <span className={`inline-flex items-center px-3 py-1 rounded-full text-[12px] font-medium
@@ -278,7 +278,7 @@ function StudyProgressContent() {
                       {chapter.accuracy}%
                     </span>
                   </td>
-                  <td className="px-4 py-4 text-center font-medium text-slate-600 text-[14px]">
+                  <td className="px-4 py-4 text-center font-medium text-muted-foreground text-[14px]">
                     {chapter.attempts}
                   </td>
                   <td className="px-4 py-4 text-center font-semibold text-[#10b981] text-[14px]">
@@ -287,33 +287,33 @@ function StudyProgressContent() {
                   <td className="px-4 py-4 text-center font-semibold text-[#ef4444] text-[13px]">
                     {chapter.wrong}
                   </td>
-                  <td className="px-4 py-4 text-center font-medium text-slate-600 text-[14px]">
+                  <td className="px-4 py-4 text-center font-medium text-muted-foreground text-[14px]">
                     {chapter.score}
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                      <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
                         <div
                           className={`h-full rounded-full ${chapter.accuracy >= 70 ? 'bg-[#10b981]' : chapter.accuracy >= 40 ? 'bg-[#f59e0b]' : 'bg-[#ef4444]'}`}
                           style={{ width: `${chapter.accuracy}%` }}
                         ></div>
                       </div>
-                      <span className="text-[13px] font-medium text-slate-500 w-8">{chapter.accuracy}%</span>
+                      <span className="text-[13px] font-medium text-muted-foreground w-8">{chapter.accuracy}%</span>
                     </div>
                   </td>
                   <td className="px-4 py-4 text-right">
                     <button
                       onClick={() => setSelectedChapterForErrors({ id: chapter.id, name: chapter.name })}
-                      className="p-2 rounded-full hover:bg-slate-100 transition-colors group"
+                      className="p-2 rounded-full hover:bg-muted transition-colors group"
                       title="View Incorrect Questions"
                     >
-                      <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-[#8b5cf6] transition-colors" />
+                      <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-[#8b5cf6] transition-colors" />
                     </button>
                   </td>
                 </tr>
               )) : (
                 <tr>
-                  <td colSpan={9} className="px-6 py-12 text-center text-slate-500">
+                  <td colSpan={9} className="px-6 py-12 text-center text-muted-foreground">
                     No chapters found matching your filters.
                   </td>
                 </tr>
@@ -323,8 +323,8 @@ function StudyProgressContent() {
         </div>
 
         {/* Pagination Footer */}
-        <div className="px-6 py-4 border-t border-slate-100 flex items-center justify-between bg-slate-50/50">
-          <div className="text-[13px] text-slate-500 font-medium">
+        <div className="px-6 py-4 border-t border-border flex items-center justify-between bg-muted/50">
+          <div className="text-[13px] text-muted-foreground font-medium">
             Showing {filteredChapters.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0} to {Math.min(currentPage * itemsPerPage, filteredChapters.length)} of {filteredChapters.length} chapters
           </div>
 
@@ -332,9 +332,9 @@ function StudyProgressContent() {
             <button
               onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
               disabled={currentPage === 1}
-              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <ChevronLeft className="w-4 h-4 text-slate-600" />
+              <ChevronLeft className="w-4 h-4 text-muted-foreground" />
             </button>
 
             {Array.from({ length: totalPages }).map((_, i) => (
@@ -343,7 +343,7 @@ function StudyProgressContent() {
                 onClick={() => setCurrentPage(i + 1)}
                 className={`w-8 h-8 flex items-center justify-center rounded-full text-[13px] font-medium transition-colors ${currentPage === i + 1
                     ? 'bg-[#10b981] text-white'
-                    : 'text-slate-600 hover:bg-slate-200'
+                    : 'text-muted-foreground hover:bg-muted-hover'
                   }`}
               >
                 {i + 1}
@@ -353,9 +353,9 @@ function StudyProgressContent() {
             <button
               onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
               disabled={currentPage === totalPages}
-              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <ChevronRight className="w-4 h-4 text-slate-600" />
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
             </button>
           </div>
         </div>

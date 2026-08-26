@@ -11,7 +11,7 @@ export default function PaymentSettingsPage() {
   const { data: user } = useUser();
   const { data: settings, isLoading } = useGetSettings();
   const { mutate: updatePayment, isPending } = useUpdatePayment();
-  
+
   const isSuperAdmin = user?.role === 'Super Admin';
 
   const { register, handleSubmit, reset } = useForm({
@@ -68,10 +68,10 @@ export default function PaymentSettingsPage() {
       <div className="flex justify-between items-center border-b border-border pb-6 mb-8">
         <div>
           <h2 className="text-xl font-bold text-foreground">Payment Configuration</h2>
-          <p className="text-sm text-muted-foreground mt-1">Manage Razorpay integration and tax details.</p>
+          <p className="text-sm text-muted-foreground mt-1">Manage Razorpay integration and tax details. (Feature on hold!)</p>
         </div>
         {isSuperAdmin && (
-          <button 
+          <button
             type="submit"
             disabled={isPending}
             className="flex items-center gap-2 px-5 py-2.5 bg-primary-600 text-white font-medium rounded-xl hover:bg-primary-700 transition-colors shadow-sm shadow-primary-500/20 disabled:opacity-50"
@@ -93,11 +93,11 @@ export default function PaymentSettingsPage() {
       )}
 
       <div className="space-y-8 max-w-3xl opacity-100 transition-opacity" style={{ opacity: !isSuperAdmin ? 0.7 : 1 }}>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-muted-foreground mb-2">Razorpay Key ID</label>
-            <input 
+            <input
               {...register('razorpayKeyId')}
               disabled={!isSuperAdmin}
               className="w-full bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 disabled:bg-muted"
@@ -105,7 +105,7 @@ export default function PaymentSettingsPage() {
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-2">Razorpay Secret</label>
-            <input 
+            <input
               type="password"
               {...register('razorpaySecret')}
               disabled={!isSuperAdmin}
@@ -114,7 +114,7 @@ export default function PaymentSettingsPage() {
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-2">Webhook Secret</label>
-            <input 
+            <input
               type="password"
               {...register('webhookSecret')}
               disabled={!isSuperAdmin}
@@ -126,7 +126,7 @@ export default function PaymentSettingsPage() {
         <div className="border-t border-border pt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-2">Default Currency</label>
-            <select 
+            <select
               {...register('currency')}
               disabled={!isSuperAdmin}
               className="w-full bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 disabled:bg-muted"
@@ -137,7 +137,7 @@ export default function PaymentSettingsPage() {
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-2">Tax Percentage (%)</label>
-            <input 
+            <input
               type="number"
               step="0.01"
               {...register('taxPercentage', { valueAsNumber: true })}

@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 export default function BrandingSettingsPage() {
   const { data: settings, isLoading } = useGetSettings();
   const { mutate: updateBranding, isPending } = useUpdateBranding();
-  
+
   const { register, handleSubmit, reset } = useForm({
     defaultValues: {
       primaryColor: '#10B981',
@@ -64,9 +64,9 @@ export default function BrandingSettingsPage() {
       <div className="flex justify-between items-center border-b border-border pb-6 mb-8">
         <div>
           <h2 className="text-xl font-bold text-foreground">Website & Branding</h2>
-          <p className="text-sm text-muted-foreground mt-1">Configure appearance, colors, and SEO.</p>
+          <p className="text-sm text-muted-foreground mt-1">Configure appearance, colors, and SEO. (Feature on hold! )</p>
         </div>
-        <button 
+        <button
           type="submit"
           disabled={isPending}
           className="flex items-center gap-2 px-5 py-2.5 bg-primary-600 text-white font-medium rounded-xl hover:bg-primary-700 transition-colors shadow-sm shadow-primary-500/20 disabled:opacity-50"
@@ -81,12 +81,12 @@ export default function BrandingSettingsPage() {
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-2">Primary Color (Hex)</label>
             <div className="flex items-center gap-3">
-              <input 
+              <input
                 type="color"
                 {...register('primaryColor')}
                 className="w-10 h-10 rounded cursor-pointer border-0 p-0"
               />
-              <input 
+              <input
                 {...register('primaryColor')}
                 className="flex-1 bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 uppercase"
               />
@@ -95,12 +95,12 @@ export default function BrandingSettingsPage() {
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-2">Secondary Color (Hex)</label>
             <div className="flex items-center gap-3">
-              <input 
+              <input
                 type="color"
                 {...register('secondaryColor')}
                 className="w-10 h-10 rounded cursor-pointer border-0 p-0"
               />
-              <input 
+              <input
                 {...register('secondaryColor')}
                 className="flex-1 bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 uppercase"
               />
@@ -113,14 +113,14 @@ export default function BrandingSettingsPage() {
           <div className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-muted-foreground mb-2">SEO Title</label>
-              <input 
+              <input
                 {...register('seoTitle')}
                 className="w-full bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground mb-2">SEO Description</label>
-              <textarea 
+              <textarea
                 {...register('seoDescription')}
                 rows={3}
                 className="w-full bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 resize-none"
@@ -134,7 +134,7 @@ export default function BrandingSettingsPage() {
           <div className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-muted-foreground mb-2">Footer Copyright Text</label>
-              <input 
+              <input
                 {...register('footerText')}
                 className="w-full bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
               />
@@ -142,7 +142,7 @@ export default function BrandingSettingsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-muted-foreground mb-2">Facebook URL</label>
-                <input 
+                <input
                   {...register('socialLinks.facebook')}
                   placeholder="https://facebook.com/..."
                   className="w-full bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
@@ -150,7 +150,7 @@ export default function BrandingSettingsPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-muted-foreground mb-2">Twitter / X URL</label>
-                <input 
+                <input
                   {...register('socialLinks.twitter')}
                   placeholder="https://twitter.com/..."
                   className="w-full bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
@@ -158,7 +158,7 @@ export default function BrandingSettingsPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-muted-foreground mb-2">Instagram URL</label>
-                <input 
+                <input
                   {...register('socialLinks.instagram')}
                   placeholder="https://instagram.com/..."
                   className="w-full bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
@@ -166,7 +166,7 @@ export default function BrandingSettingsPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-muted-foreground mb-2">LinkedIn URL</label>
-                <input 
+                <input
                   {...register('socialLinks.linkedin')}
                   placeholder="https://linkedin.com/..."
                   className="w-full bg-white border border-border text-foreground rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"

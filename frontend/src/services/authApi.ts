@@ -147,3 +147,33 @@ export const useUser = () => {
     refetchOnWindowFocus: false,
   });
 };
+
+export const useSendOtp = () => {
+  return useMutation({
+    mutationFn: async (email: string) => {
+      const response = await api.post('/auth/send-otp', { email });
+      return response.data;
+    },
+    onSuccess: (data: any) => {
+      toast.success(data.message || 'OTP sent successfully!');
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Failed to send verification code. Please try again.');
+    },
+  });
+};
+
+export const useVerifyOtp = () => {
+  return useMutation({
+    mutationFn: async (data: { email: string; otp: string }) => {
+      const response = await api.post('/auth/verify-otp', data);
+      return response.data;
+    },
+    onSuccess: (data: any) => {
+      toast.success(data.message || 'Email verified successfully!');
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Verification failed');
+    },
+  });
+};

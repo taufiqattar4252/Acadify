@@ -32,7 +32,10 @@ export interface IUser extends Document {
     targetScore: number;
     targetPercentile: number;
     targetCollege: string;
+    targetExamYear?: number;
+    stream?: string;
   };
+  referralCode?: string;
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
@@ -102,7 +105,10 @@ const UserSchema: Schema = new Schema(
       targetScore: { type: Number, default: 0 },
       targetPercentile: { type: Number, default: 0 },
       targetCollege: { type: String, default: '' },
+      targetExamYear: { type: Number },
+      stream: { type: String, enum: ['PCM', 'PCB'] },
     },
+    referralCode: { type: String },
   },
   {
     timestamps: true,

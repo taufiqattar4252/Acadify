@@ -3,18 +3,27 @@ import crypto from 'crypto';
 import User from '../models/User';
 import Admin from '../models/Admin';
 import Partner from '../models/Partner';
+import Coupon from '../models/Coupon';
+import Otp from '../models/Otp';
 import catchAsync from '../utils/catchAsync';
 import AppError from '../utils/AppError';
 import { createSendToken, createVerificationToken } from '../services/authService';
 import sendEmail from '../services/emailService';
 
 export const register = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const { fullName, email, password, phone } = req.body;
+  const { fullName, email, password, phone, targetExamYear, stream, targetMarks, targetCollege, referralCode } = req.body;
 
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     if ((req as any).log) (req as any).log.warn({ event: 'auth.register.failed', email }, 'Registration failed: Email already in use');
     return next(new AppError('Email already in use', 400));
+  }
+
+  if (referralCode) {
+    const coupon = await Coupon.findOne({ code: referralCode, isActive: true });
+    if (!coupon) {
+      return next(new AppError('Invalid referral code', 400));
+    }
   }
 
   const { token, hashedToken } = createVerificationToken();
@@ -24,6 +33,13 @@ export const register = catchAsync(async (req: Request, res: Response, next: Nex
     email,
     password,
     phone,
+    goals: {
+      targetExamYear,
+      stream,
+      targetScore: targetMarks,
+      targetCollege,
+    },
+    referralCode,
     verificationToken: hashedToken,
     // Expire in 24 hours
     verificationTokenExpires: new Date(Date.now() + 24 * 60 * 60 * 1000),
@@ -221,3 +237,63 @@ export const getMe = (req: Request, res: Response) => {
     },
   });
 };
+
+export const sendOtp = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const { email } = req.body;
+  if (!email) {
+    return next(new AppError('Please provide an email address', 400));
+  }
+
+  // Delete any existing OTPs for this email to prevent spam
+  await Otp.deleteMany({ email: email.toLowerCase() });
+
+  // Generate 6-digit OTP
+  const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+  await Otp.create({
+    email: email.toLowerCase(),
+    otp: otpCode,
+  });
+
+  const message = `Your email verification code is: ${otpCode}\n\nThis code will expire in 10 minutes.`;
+
+  // Send email asynchronously so we don't block the response
+  sendEmail({
+    email,
+    subject: 'Your Acadify Verification Code',
+    message,
+  }).catch(err => {
+    if ((req as any).log) (req as any).log.error({ event: 'auth.otp.failed', err }, 'Failed to send OTP email');
+  });
+
+  if ((req as any).log) (req as any).log.info({ event: 'auth.otp.sent', email }, 'OTP sent successfully');
+
+  res.status(200).json({
+    status: 'success',
+    message: 'OTP sent successfully!',
+  });
+});
+
+export const verifyOtp = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const { email, otp } = req.body;
+  
+  if (!email || !otp) {
+    return next(new AppError('Please provide email and OTP', 400));
+  }
+
+  const otpDoc = await Otp.findOne({ email: email.toLowerCase(), otp });
+
+  if (!otpDoc) {
+    return next(new AppError('Invalid or expired OTP', 400));
+  }
+
+  // Delete the OTP document so it cannot be reused
+  await Otp.deleteOne({ _id: otpDoc._id });
+
+  if ((req as any).log) (req as any).log.info({ event: 'auth.otp.verified', email }, 'OTP verified successfully');
+
+  res.status(200).json({
+    status: 'success',
+    message: 'Email verified successfully!',
+  });
+});

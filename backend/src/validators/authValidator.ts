@@ -20,6 +20,11 @@ export const registerSchema = z.object({
       .regex(/[0-9]/, 'Password must contain at least one number'),
     confirmPassword: z.string(),
     phone: z.string().trim().optional(),
+    targetExamYear: z.number().optional(),
+    stream: z.enum(['PCM', 'PCB']).optional(),
+    targetMarks: z.number().optional(),
+    targetCollege: z.string().optional(),
+    referralCode: z.string().optional(),
   }).refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
     path: ['confirmPassword'],

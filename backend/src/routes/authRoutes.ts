@@ -9,6 +9,8 @@ import {
   forgotPassword,
   resetPassword,
   getMe,
+  sendOtp,
+  verifyOtp,
 } from '../controllers/authController';
 import { requireAuth } from '../middleware/authMiddleware';
 import { validateRequest } from '../middleware/validateRequest';
@@ -27,6 +29,10 @@ router.post('/login', validateRequest(loginSchema), login);
 router.post('/admin/login', validateRequest(loginSchema), adminLogin);
 router.post('/partner/login', validateRequest(loginSchema), partnerLogin);
 router.post('/logout', logout);
+
+router.post('/send-otp', sendOtp);
+router.post('/verify-otp', verifyOtp);
+
 
 router.post('/verify-email/:token', validateRequest(verifyEmailSchema), verifyEmail);
 router.post('/forgot-password', validateRequest(forgotPasswordSchema), forgotPassword);

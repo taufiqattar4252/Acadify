@@ -19,9 +19,13 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
+  const { register, handleSubmit, watch, formState: { errors } } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   });
+
+  const emailValue = watch('email');
+  const passwordValue = watch('password');
+  const isFilled = !!emailValue && !!passwordValue;
 
   const loginMutation = useLogin();
 
@@ -32,7 +36,7 @@ export default function LoginPage() {
   return (
     <div className="w-full animate-in fade-in slide-in-from-right-4 duration-300">
       <div className="mb-8">
-        <h2 className="text-2xl font-extrabold font-sans text-foreground tracking-tight mb-0.5">Welcome Back</h2>
+        <h2 className="text-2xl font-semibold font-sans text-foreground tracking-tight mb-0.5">Welcome Back</h2>
         <p className="text-muted-foreground text-xs font-medium">Sign in to your account to continue.</p>
       </div>
       
@@ -71,7 +75,8 @@ export default function LoginPage() {
           <Button 
             type="submit" 
             fullWidth 
-            className="!bg-emerald-500 hover:!bg-emerald-600 text-white py-3 !rounded-xl text-sm font-semibold transition-colors shadow-md shadow-emerald-500/20 !border-0 focus:!ring-0 focus:!ring-offset-0 focus:!outline-none hover:!border-transparent"
+            disabled={!isFilled}
+            className="!bg-emerald-500 hover:!bg-emerald-600 text-white py-3 !rounded-xl text-sm font-semibold transition-colors shadow-md shadow-emerald-500/20 !border-0 focus:!ring-0 focus:!ring-offset-0 focus:!outline-none hover:!border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
             isLoading={loginMutation.isPending}
           >
             Sign in
@@ -81,7 +86,7 @@ export default function LoginPage() {
 
       <div className="mt-8 text-center text-sm font-medium text-muted-foreground">
         Don't have an account?{' '}
-        <Link href="/register" className="font-bold text-emerald-500 hover:text-emerald-600 transition-colors">
+        <Link href="/register" className="font-semibold text-emerald-500 hover:text-emerald-600 transition-colors">
           Register here
         </Link>
       </div>

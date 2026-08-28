@@ -11,6 +11,7 @@ import {
   getMe,
   sendOtp,
   verifyOtp,
+  checkEmail,
 } from '../controllers/authController';
 import { requireAuth } from '../middleware/authMiddleware';
 import { validateRequest } from '../middleware/validateRequest';
@@ -32,6 +33,7 @@ router.post('/logout', logout);
 
 router.post('/send-otp', sendOtp);
 router.post('/verify-otp', verifyOtp);
+router.post('/check-email', checkEmail);
 
 
 router.post('/verify-email/:token', validateRequest(verifyEmailSchema), verifyEmail);

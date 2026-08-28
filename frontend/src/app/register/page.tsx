@@ -7,7 +7,7 @@ import { z } from 'zod';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { useRegister, useSendOtp, useVerifyOtp } from '@/services/authApi';
+import { useRegister, useSendOtp, useVerifyOtp, checkEmailExists } from '@/services/authApi';
 import toast from 'react-hot-toast';
 import { Check, ArrowRight, Shield, User, Mail, Lock, Eye, EyeOff, ChevronDown, Headphones } from 'lucide-react';
 
@@ -54,9 +54,10 @@ export default function RegisterPage() {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [timer, setTimer] = useState(60);
   const [isTimerActive, setIsTimerActive] = useState(false);
+  const [verifiedEmail, setVerifiedEmail] = useState('');
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const { register, handleSubmit, trigger, watch, formState: { errors } } = useForm<RegisterFormData>({
+  const { register, handleSubmit, trigger, watch, setError, clearErrors, formState: { errors } } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema) as any,
     mode: 'onChange',
     defaultValues: {
@@ -104,7 +105,10 @@ export default function RegisterPage() {
       return;
     }
     verifyOtpMutation.mutate({ email: formData.email, otp: otpValue }, {
-      onSuccess: () => setCurrentStep(3)
+      onSuccess: () => {
+        setVerifiedEmail(formData.email);
+        setCurrentStep(3);
+      }
     });
   };
 
@@ -134,6 +138,20 @@ export default function RegisterPage() {
     const isValid = await trigger(fieldsToValidate);
     if (isValid) {
       if (currentStep === 1) {
+        const email = formData.email;
+        if (email) {
+          const exists = await checkEmailExists(email);
+          if (exists) {
+            setError('email', { type: 'manual', message: 'Email already exists' });
+            return;
+          }
+        }
+        
+        if (email === verifiedEmail) {
+          setCurrentStep(3);
+          return;
+        }
+
         sendOtpMutation.mutate(formData.email, {
           onSuccess: () => {
             setCurrentStep(2);
@@ -148,14 +166,23 @@ export default function RegisterPage() {
   };
 
   const handleBack = () => {
-    setCurrentStep((prev) => prev - 1);
+    if (currentStep === 3) {
+      setCurrentStep(1);
+    } else {
+      setCurrentStep((prev) => prev - 1);
+    }
   };
 
   const onSubmit = (data: RegisterFormData) => {
     registerMutation.mutate(data);
   };
 
-
+  let isCurrentStepFilled = true;
+  if (currentStep === 1) {
+    isCurrentStepFilled = !!formData.fullName && !!formData.email && !!formData.phone && !!formData.password && !!formData.confirmPassword;
+  } else if (currentStep === 3) {
+    isCurrentStepFilled = !!formData.targetExamYear && !!formData.stream && !!formData.targetMarks;
+  }
 
   return (
     <div className="h-screen bg-white flex overflow-hidden">
@@ -176,12 +203,16 @@ export default function RegisterPage() {
         <div className="w-full max-w-md mx-auto xl:mx-0 flex-1 flex flex-col justify-center">
           <div className="mb-5">
             <div className="text-emerald-500 font-bold mb-1 text-[10px] tracking-wider uppercase">Step {currentStep} of {steps.length}</div>
-            <h2 className="text-2xl font-extrabold font-sans text-foreground tracking-tight mb-0.5">
-              {currentStep === 1 ? 'Create Your Account' : steps[currentStep - 1].title}
-            </h2>
-            <p className="text-muted-foreground text-xs font-medium">
-              {currentStep === 1 ? "Let's get started with your details." : steps[currentStep - 1].description}
-            </p>
+            {currentStep !== 2 && (
+              <>
+                <h2 className="text-2xl font-semibold font-sans text-foreground tracking-tight mb-0.5">
+                  {currentStep === 1 ? 'Create Your Account' : steps[currentStep - 1].title}
+                </h2>
+                <p className="text-muted-foreground text-xs font-medium">
+                  {currentStep === 1 ? "Let's get started with your details." : steps[currentStep - 1].description}
+                </p>
+              </>
+            )}
           </div>
 
           <form onSubmit={handleSubmit(onSubmit as any)} className="space-y-3">
@@ -204,6 +235,19 @@ export default function RegisterPage() {
                     placeholder="Enter your email address"
                     icon={<Mail className="w-4 h-4" />}
                     {...register('email')}
+                    onBlur={async (e) => {
+                      register('email').onBlur(e);
+                      const email = e.target.value;
+                      // Only check if it's a somewhat valid email to avoid unnecessary requests
+                      if (email && email.includes('@') && email.includes('.')) {
+                        const exists = await checkEmailExists(email);
+                        if (exists) {
+                          setError('email', { type: 'manual', message: 'Email already exists' });
+                        } else {
+                          clearErrors('email');
+                        }
+                      }
+                    }}
                     error={errors.email?.message}
                   />
                   
@@ -262,12 +306,13 @@ export default function RegisterPage() {
             {currentStep === 2 && (
               <div className="animate-in fade-in slide-in-from-right-4 duration-300">
                 <div className="space-y-6">
-                  <div className="bg-emerald-50 rounded-2xl p-5 border border-emerald-100 mb-6 text-center">
-                    <Mail className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
-                    <h3 className="font-bold text-emerald-800">Verify your email</h3>
-                    <p className="text-sm text-emerald-600 mt-1">
-                      We sent a 6-digit verification code to<br/>
-                      <span className="font-semibold">{formData.email || 'student@example.com'}</span>
+                  <div className="text-center mb-8">
+                    <div className="mx-auto flex items-center justify-center h-16 w-16 bg-emerald-50 text-emerald-500 rounded-2xl mb-6">
+                      <Mail className="w-8 h-8" />
+                    </div>
+                    <h3 className="text-2xl font-semibold font-sans text-foreground tracking-tight mb-2">Please check your email</h3>
+                    <p className="text-sm font-medium text-muted-foreground">
+                      We've sent a code to <span className="font-semibold text-foreground">{formData.email || 'student@example.com'}</span>
                     </p>
                   </div>
                   
@@ -282,7 +327,7 @@ export default function RegisterPage() {
                         value={digit}
                         onChange={(e) => handleOtpChange(idx, e.target.value)}
                         onKeyDown={(e) => handleOtpKeyDown(idx, e)}
-                        className="w-10 h-12 sm:w-12 sm:h-14 text-center text-xl font-bold border-2 border-border rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
+                        className="w-10 h-12 sm:w-12 sm:h-14 text-center text-xl font-medium text-slate-700 border-2 border-border rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
                       />
                     ))}
                   </div>
@@ -295,7 +340,7 @@ export default function RegisterPage() {
                       className="!bg-emerald-500 hover:!bg-emerald-600 text-white py-3 !rounded-xl text-sm font-semibold transition-colors shadow-md shadow-emerald-500/20 !border-0 focus:!ring-0 focus:!ring-offset-0 focus:!outline-none hover:!border-transparent"
                       isLoading={verifyOtpMutation.isPending}
                     >
-                      Verify Email
+                      Verify
                     </Button>
                   </div>
 
@@ -414,13 +459,18 @@ export default function RegisterPage() {
                 )}
                 
                 {currentStep < 5 ? (
-                  <Button type="button" onClick={handleNext} className="flex-1 !bg-emerald-500 hover:!bg-emerald-600 text-white py-3 rounded-xl text-sm font-semibold transition-colors shadow-md shadow-emerald-500/20 !border-0 focus:!ring-0 focus:!ring-offset-0 focus:!outline-none hover:!border-transparent">
+                  <Button 
+                    type="button" 
+                    onClick={handleNext} 
+                    disabled={(currentStep === 1 && !!errors.email) || !isCurrentStepFilled}
+                    className="flex-1 !bg-emerald-500 hover:!bg-emerald-600 text-white py-3 rounded-xl text-sm font-semibold transition-colors shadow-md shadow-emerald-500/20 !border-0 focus:!ring-0 focus:!ring-offset-0 focus:!outline-none hover:!border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
                     Next <ArrowRight className="w-4 h-4 ml-1.5" />
                   </Button>
                 ) : (
                   <Button 
                     type="submit" 
-                    className="flex-1 !bg-emerald-500 hover:!bg-emerald-600 text-white py-3 rounded-xl text-sm font-semibold transition-colors shadow-md shadow-emerald-500/20 !border-0 focus:!ring-0 focus:!ring-offset-0 focus:!outline-none hover:!border-transparent"
+                    className="flex-1 !bg-emerald-500 hover:!bg-emerald-600 text-white py-3 rounded-xl text-sm font-semibold transition-colors shadow-md shadow-emerald-500/20 !border-0 focus:!ring-0 focus:!ring-offset-0 focus:!outline-none hover:!border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
                     isLoading={registerMutation.isPending}
                     disabled={!formData.termsAccepted}
                   >
@@ -433,7 +483,7 @@ export default function RegisterPage() {
 
           <div className="mt-4 text-center text-xs font-medium text-muted-foreground">
             Already have an account?{' '}
-            <Link href="/login" className="font-bold text-emerald-500 hover:text-emerald-600 transition-colors">
+            <Link href="/login" className="font-semibold text-emerald-500 hover:text-emerald-600 transition-colors">
               Sign In
             </Link>
           </div>

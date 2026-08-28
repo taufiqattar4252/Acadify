@@ -29,15 +29,17 @@ export default function ForgotPasswordPage() {
 
   if (forgotPasswordMutation.isSuccess) {
     return (
-      <div className="text-center py-4">
-        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-success-light mb-4">
-          <Mail className="h-6 w-6 text-success" />
+      <div className="w-full animate-in fade-in slide-in-from-right-4 duration-300 text-center py-4">
+        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-emerald-100 mb-4">
+          <Mail className="h-6 w-6 text-emerald-500" />
         </div>
-        <h3 className="text-xl font-bold text-foreground mb-2">Check your email</h3>
-        <p className="text-muted-foreground mb-6">
-          We've sent a password reset link to your email address. Please check your inbox.
-        </p>
-        <Link href="/login" className="font-medium text-primary-600 hover:text-primary-500 transition-colors">
+        <div className="mb-8">
+          <h2 className="text-2xl font-semibold font-sans text-foreground tracking-tight mb-0.5">Check your email</h2>
+          <p className="text-muted-foreground text-xs font-medium mt-2">
+            We've sent a password reset link to your email address. Please check your inbox.
+          </p>
+        </div>
+        <Link href="/login" className="font-semibold text-emerald-500 hover:text-emerald-600 transition-colors text-sm">
           Return to login
         </Link>
       </div>
@@ -45,17 +47,18 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <>
-      <h3 className="text-xl font-bold text-foreground mb-2 text-center">Reset your password</h3>
-      <p className="text-center text-sm text-muted-foreground mb-6">
-        Enter your email address and we will send you a link to reset your password.
-      </p>
+    <div className="w-full animate-in fade-in slide-in-from-right-4 duration-300">
+      <div className="mb-8">
+        <h2 className="text-2xl font-semibold font-sans text-foreground tracking-tight mb-0.5">Reset Password</h2>
+        <p className="text-muted-foreground text-xs font-medium">Enter your email address to receive a reset link.</p>
+      </div>
       
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
         <Input
-          label="Email address"
+          label="Email Address"
           type="email"
-          placeholder="john@example.com"
+          placeholder="Enter your email address"
+          icon={<Mail className="w-4 h-4" />}
           {...register('email')}
           error={errors.email?.message}
         />
@@ -64,6 +67,7 @@ export default function ForgotPasswordPage() {
           <Button 
             type="submit" 
             fullWidth 
+            className="!bg-emerald-500 hover:!bg-emerald-600 text-white py-3 !rounded-xl text-sm font-semibold transition-colors shadow-md shadow-emerald-500/20 !border-0 focus:!ring-0 focus:!ring-offset-0 focus:!outline-none hover:!border-transparent"
             isLoading={forgotPasswordMutation.isPending}
           >
             Send reset link
@@ -71,12 +75,12 @@ export default function ForgotPasswordPage() {
         </div>
       </form>
 
-      <div className="mt-6 text-center text-sm text-muted-foreground">
+      <div className="mt-8 text-center text-sm font-medium text-muted-foreground">
         Remember your password?{' '}
-        <Link href="/login" className="font-medium text-primary-600 hover:text-primary-500 transition-colors">
+        <Link href="/login" className="font-semibold text-emerald-500 hover:text-emerald-600 transition-colors">
           Back to login
         </Link>
       </div>
-    </>
+    </div>
   );
 }

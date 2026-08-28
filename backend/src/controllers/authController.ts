@@ -26,13 +26,12 @@ export const register = catchAsync(async (req: Request, res: Response, next: Nex
     }
   }
 
-  const { token, hashedToken } = createVerificationToken();
-
   const newUser = await User.create({
     fullName,
     email,
     password,
     phone,
+    isVerified: true,
     goals: {
       targetExamYear,
       stream,
@@ -40,35 +39,13 @@ export const register = catchAsync(async (req: Request, res: Response, next: Nex
       targetCollege,
     },
     referralCode,
-    verificationToken: hashedToken,
-    // Expire in 24 hours
-    verificationTokenExpires: new Date(Date.now() + 24 * 60 * 60 * 1000),
   });
-
-  const verifyURL = `${req.protocol}://${req.get('host')}/api/auth/verify-email/${token}`;
-  // For frontend, we should ideally point to a frontend route instead of API directly:
-  const frontendVerifyURL = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/verify-email?token=${token}`;
-
-  const message = `Welcome to MHT-CET Platform!\nPlease verify your email by clicking on the link below:\n\n${frontendVerifyURL}\n\nIf you did not register, please ignore this email.`;
-
-  // In serverless environments (like Vercel), we MUST await async tasks before responding,
-  // otherwise the function is frozen and the email is never sent.
-  try {
-    await sendEmail({
-      email: newUser.email,
-      subject: 'Verify your email address',
-      message,
-    });
-  } catch (err) {
-    if ((req as any).log) (req as any).log.error({ event: 'auth.email.failed', err }, 'Failed to send verification email');
-    // We don't return an error here so the user is still registered; they can request a new link later.
-  }
 
   if ((req as any).log) (req as any).log.info({ event: 'auth.register.success', userId: newUser._id }, 'User registration successful');
 
   res.status(201).json({
     status: 'success',
-    message: 'Registration successful. Please check your email to verify your account.',
+    message: 'Registration successful. You can now log in.',
   });
 });
 
@@ -237,6 +214,18 @@ export const getMe = (req: Request, res: Response) => {
     },
   });
 };
+
+export const checkEmail = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const { email } = req.body;
+  if (!email) {
+    return next(new AppError('Please provide an email', 400));
+  }
+  const user = await User.findOne({ email: email.toLowerCase() });
+  res.status(200).json({
+    status: 'success',
+    exists: !!user,
+  });
+});
 
 export const sendOtp = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const { email } = req.body;

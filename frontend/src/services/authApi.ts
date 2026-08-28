@@ -12,8 +12,8 @@ export const useRegister = () => {
       return response.data;
     },
     onSuccess: (data) => {
-      toast.success(data.message || 'Registration successful! Please check your email.');
-      router.push('/verify-pending');
+      toast.success(data.message || 'Registration successful! You can now log in.');
+      router.push('/login');
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message || 'Registration failed');
@@ -176,4 +176,13 @@ export const useVerifyOtp = () => {
       toast.error(error.response?.data?.message || 'Verification failed');
     },
   });
+};
+
+export const checkEmailExists = async (email: string): Promise<boolean> => {
+  try {
+    const response = await api.post('/auth/check-email', { email });
+    return response.data.exists;
+  } catch (error) {
+    return false;
+  }
 };

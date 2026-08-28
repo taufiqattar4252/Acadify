@@ -126,7 +126,7 @@ UserSchema.methods.comparePassword = async function (candidatePassword: string):
 };
 
 
-UserSchema.index({ phone: 1 }, { unique: true, sparse: true }); // Sparse ensures multiple nulls don't trigger unique violation
+UserSchema.index({ phone: 1 }); // Removed unique: true to allow duplicate phone numbers
 
 const User: Model<IUser> = mongoose.models.User || mongoose.model<IUser>('User', UserSchema);
 

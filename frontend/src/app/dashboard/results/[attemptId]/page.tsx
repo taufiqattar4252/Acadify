@@ -24,6 +24,8 @@ export default function AttemptDetailsPage() {
    const [reviewFilter, setReviewFilter] = useState<string>('all');
    const [subjectFilter, setSubjectFilter] = useState<string>('All');
    const [reviewPage, setReviewPage] = useState<number>(1);
+   const [chapterPage, setChapterPage] = useState<number>(1);
+   const [isTimeModalOpen, setIsTimeModalOpen] = useState(false);
    const questionsPerPage = 5;
 
    if (isLoading) {
@@ -58,6 +60,12 @@ export default function AttemptDetailsPage() {
 
    const totalQuestions = summary.correct + summary.wrong + summary.skipped;
    const avgTimePerQuestion = summary.timeTaken / (totalQuestions || 1);
+
+   // Prepare time distribution data
+   const timeData = questionReview.map((q: any, index: number) => ({
+      name: `Q${index + 1}`,
+      Time: q.timeSpent || 0
+   })).sort((a: any, b: any) => b.Time - a.Time).slice(0, 15);
 
    // Chart Data preparation
    const questionPerformanceData = [
@@ -150,7 +158,7 @@ export default function AttemptDetailsPage() {
                   </div>
                   <div>
                      <p className="text-[13px] text-muted-foreground font-medium mb-1">Duration</p>
-                     <p className="text-sm font-semibold text-foreground">{formatTime(summary.timeTaken)}</p>
+                     <p className="text-sm font-semibold text-foreground">{formatTime(summary.totalDuration)}</p>
                   </div>
                   <div>
                      <p className="text-[13px] text-muted-foreground font-medium mb-1">Time Taken</p>
@@ -283,11 +291,11 @@ export default function AttemptDetailsPage() {
                      </BarChart>
                   </ResponsiveContainer>
                </div>
-               <div className="flex justify-end mt-4">
+               {/* <div className="flex justify-end mt-4">
                   <button className="text-[#00BC7D] text-[13px] font-semibold flex items-center gap-1 hover:underline">
                      View Subject Strength & Weakness &rarr;
                   </button>
-               </div>
+               </div> */}
             </div>
          </div>
 
@@ -409,7 +417,7 @@ export default function AttemptDetailsPage() {
                      ))}
                   </div>
                   <div className="flex justify-center mt-6">
-                     <button className="text-[#00BC7D] text-[13px] font-semibold flex items-center gap-1 hover:underline">
+                     <button onClick={() => setIsTimeModalOpen(true)} className="text-[#00BC7D] text-[13px] font-semibold flex items-center gap-1 hover:underline">
                         View Time Distribution &rarr;
                      </button>
                   </div>
@@ -590,9 +598,9 @@ export default function AttemptDetailsPage() {
                      </table>
                   </div>
                   <div className="p-4 border-t border-border flex items-center justify-between">
-                     <Button 
-                        variant="secondary" 
-                        onClick={() => setReviewPage(p => Math.max(1, p - 1))} 
+                     <Button
+                        variant="secondary"
+                        onClick={() => setReviewPage(p => Math.max(1, p - 1))}
                         disabled={reviewPage === 1}
                      >
                         Previous
@@ -600,9 +608,9 @@ export default function AttemptDetailsPage() {
                      <span className="text-sm font-medium text-muted-foreground">
                         Page {reviewPage} of {Math.max(1, Math.ceil(filteredQuestions.length / questionsPerPage))}
                      </span>
-                     <Button 
-                        variant="secondary" 
-                        onClick={() => setReviewPage(p => Math.min(Math.ceil(filteredQuestions.length / questionsPerPage), p + 1))} 
+                     <Button
+                        variant="secondary"
+                        onClick={() => setReviewPage(p => Math.min(Math.ceil(filteredQuestions.length / questionsPerPage), p + 1))}
                         disabled={reviewPage >= Math.ceil(filteredQuestions.length / questionsPerPage) || filteredQuestions.length === 0}
                      >
                         Next
@@ -665,6 +673,33 @@ export default function AttemptDetailsPage() {
           .print-container { padding: 0; margin: 0; max-width: 100%; }
         }
       `}} />
+
+         {/* Time Distribution Modal */}
+         {isTimeModalOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in">
+               <div className="bg-white rounded-3xl p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl relative">
+                  <button
+                     onClick={() => setIsTimeModalOpen(false)}
+                     className="absolute top-6 right-6 text-muted-foreground hover:text-foreground bg-muted hover:bg-muted/80 rounded-full p-1 transition-colors"
+                  >
+                     <XCircle className="w-6 h-6" />
+                  </button>
+                  <h2 className="text-2xl font-bold text-foreground mb-6">Time Distribution</h2>
+                  <div className="h-80 w-full mb-6">
+                     <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={timeData}>
+                           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                           <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#64748b' }} axisLine={false} tickLine={false} />
+                           <YAxis tick={{ fontSize: 12, fill: '#64748b' }} axisLine={false} tickLine={false} tickFormatter={(val) => `${val}s`} />
+                           <Tooltip cursor={{ fill: '#f8fafc' }} formatter={(val: any) => [`${val}s`, 'Time Spent']} contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                           <Bar dataKey="Time" fill="#00BC7D" radius={[4, 4, 0, 0]} />
+                        </BarChart>
+                     </ResponsiveContainer>
+                  </div>
+                  <p className="text-sm text-center text-muted-foreground font-medium">Showing top 15 most time-consuming questions.</p>
+               </div>
+            </div>
+         )}
       </div>
    );
 }

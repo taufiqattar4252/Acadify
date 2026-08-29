@@ -193,7 +193,7 @@ export default function MockDetailsPage() {
                 {/* <div className="w-10 h-10 rounded-full bg-[#00BC7D]/20 flex items-center justify-center border border-[#00BC7D]/30">
                   <Award className="w-5 h-5 text-[#00BC7D]" />
                 </div> */}
-                <span>Created by <strong className="text-white font-bold border-b border-[#00BC7D]/50 pb-0.5">Acadify Experts Team</strong></span>
+                <span>Created by <strong className="text-white font-bold border-b border-[#00BC7D]/50 pb-0.5">{test.creator?.name || 'Acadify Experts Team'}</strong></span>
               </div>
 
               <div className="flex flex-col sm:flex-row items-center gap-4">
@@ -243,7 +243,7 @@ export default function MockDetailsPage() {
                 )}
 
                 <p className="text-sm text-green-100 font-medium opacity-90">
-                  <strong>12,450</strong> already enrolled
+                  <strong>{(Number(test.reviewCount || 2143) + 673).toLocaleString()}</strong> already enrolled
                 </p>
               </div>
             </div>
@@ -281,9 +281,9 @@ export default function MockDetailsPage() {
               <div className="flex text-warning">
                 <Star className="w-5 h-5 fill-current" />
               </div>
-              4.8
+              {test.rating || '4.8'}
             </div>
-            <p className="text-sm text-muted-foreground font-medium">(2,143 reviews)</p>
+            <p className="text-sm text-muted-foreground font-medium">({test.reviewCount || '2,143'} reviews)</p>
           </div>
 
           <div className="flex flex-col gap-2 border-l border-border pl-6">
@@ -346,7 +346,7 @@ export default function MockDetailsPage() {
             <section>
               <h2 className="text-xl font-bold text-foreground mb-4">Skills Tested</h2>
               <div className="flex flex-wrap gap-2">
-                {['Time Management', 'Problem Solving', 'Accuracy', 'Speed', 'Concept Application'].map((skill, i) => (
+                {(test.skillsTested && test.skillsTested.length > 0 ? test.skillsTested : ['Time Management', 'Problem Solving', 'Accuracy', 'Speed', 'Concept Application']).map((skill: string, i: number) => (
                   <span key={i} className="px-4 py-2 bg-muted hover:bg-muted-hover text-muted-foreground text-sm font-bold rounded-full transition-colors cursor-default">
                     {skill}
                   </span>
@@ -422,24 +422,24 @@ export default function MockDetailsPage() {
               <div className="bg-white border border-border rounded-xl p-6 shadow-sm">
                 <h3 className="font-bold text-foreground text-lg mb-4">Offered By</h3>
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-14 h-14 bg-gradient-to-br from-[#00BC7D] to-[#009c3e] rounded-lg flex items-center justify-center shadow-inner text-white font-bold text-xl">
-                    AC
+                  <div className="w-14 h-14 bg-gradient-to-br from-[#00BC7D] to-[#009c3e] rounded-lg flex items-center justify-center shadow-inner text-white font-bold text-xl uppercase">
+                    {test.creator?.name ? test.creator.name.substring(0, 2) : 'AC'}
                   </div>
                   <div>
-                    <h4 className="font-bold text-foreground">Acadify Experts</h4>
-                    <p className="text-sm text-muted-foreground">Premium Educator</p>
+                    <h4 className="font-bold text-foreground">{test.creator?.name || 'Acadify Experts'}</h4>
+                    <p className="text-sm text-muted-foreground">{test.creator?.title || 'Premium Educator'}</p>
                   </div>
                 </div>
                 <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
-                  Acadify provides world-class educational tools and highly curated mock exams to ensure students perform at their absolute best in competitive examinations.
+                  {test.creator?.description || 'Acadify provides world-class educational tools and highly curated mock exams to ensure students perform at their absolute best in competitive examinations.'}
                 </p>
                 <div className="grid grid-cols-2 gap-2 text-center border-t border-border pt-4">
                   <div>
-                    <p className="text-lg font-bold text-foreground">54</p>
+                    <p className="text-lg font-bold text-foreground">{test.creator?.totalTests || '54'}</p>
                     <p className="text-xs text-muted-foreground font-medium">Tests</p>
                   </div>
                   <div className="border-l border-border">
-                    <p className="text-lg font-bold text-foreground">210k+</p>
+                    <p className="text-lg font-bold text-foreground">{test.creator?.totalLearners || '210k+'}</p>
                     <p className="text-xs text-muted-foreground font-medium">Learners</p>
                   </div>
                 </div>

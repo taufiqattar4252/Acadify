@@ -19,6 +19,8 @@ export interface IMockTest extends Document {
   totalMarks?: number;
   price?: number;
   discountPrice?: number;
+  rating?: number;
+  reviewCount?: number;
   language: string;
   status: MockTestStatus;
   featured: boolean;
@@ -91,6 +93,14 @@ const MockTestSchema: Schema = new Schema(
     },
     discountPrice: {
       type: Number,
+    },
+    rating: {
+      type: Number,
+      default: 4.8,
+    },
+    reviewCount: {
+      type: Number,
+      default: 0,
     },
     language: {
       type: String,

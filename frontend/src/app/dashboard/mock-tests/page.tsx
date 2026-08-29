@@ -128,7 +128,7 @@ const MockTestCard = ({ test, router, cartData, handleAddToCart, addToCartMutati
 
       {/* Rating */}
       <div className="flex items-center gap-2 text-[15px] font-bold text-warning mb-4 mt-auto">
-        <span className="text-[18px]">4.7</span>
+        <span className="text-[18px]">{test.rating || '4.8'}</span>
         <div className="flex items-center space-x-1 text-warning">
           <Star className="w-4 h-4 fill-current" />
           <Star className="w-4 h-4 fill-current" />
@@ -136,7 +136,7 @@ const MockTestCard = ({ test, router, cartData, handleAddToCart, addToCartMutati
           <Star className="w-4 h-4 fill-current" />
           <Star className="w-4 h-4 text-slate-200 fill-slate-200" />
         </div>
-        <span className="text-[13px] text-muted-foreground font-normal ml-1">(1,241)</span>
+        <span className="text-[13px] text-muted-foreground font-normal ml-1">({test.reviewCount || 0})</span>
       </div>
 
       {/* Bottom Actions/Price */}

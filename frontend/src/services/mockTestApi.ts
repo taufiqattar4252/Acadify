@@ -24,6 +24,17 @@ export interface MockTest {
   isDeleted: boolean;
   createdAt: string;
   updatedAt: string;
+  creator?: {
+    name?: string;
+    title?: string;
+    description?: string;
+    totalTests?: string | number;
+    totalLearners?: string | number;
+  };
+  enrolledCount?: number | string;
+  rating?: number | string;
+  reviewCount?: number | string;
+  skillsTested?: string[];
 }
 
 export interface MockTestsResponse {

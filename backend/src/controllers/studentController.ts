@@ -105,7 +105,7 @@ export const getPurchases = catchAsync(async (req: Request, res: Response, next:
   const purchases = await Purchase.find({ user: req.user._id })
     .populate({
       path: 'mockTest',
-      select: 'title slug thumbnail category duration price',
+      select: 'title slug thumbnail category duration price rating reviewCount',
     })
     .sort({ purchaseDate: -1 })
     .lean();
@@ -259,11 +259,11 @@ const calculateChapterStats = async (userId: any) => {
     attempt.answers.forEach((ans: any) => {
       const q = ans.questionId;
       if (!q || !q.chapter) return;
-      
+
       const chapterId = q.chapter._id.toString();
       const chapterName = q.chapter.name;
       const subjectName = q.subject?.name || 'Unknown';
-      
+
       if (!chapterMap.has(chapterId)) {
         chapterMap.set(chapterId, {
           id: chapterId,
@@ -275,10 +275,10 @@ const calculateChapterStats = async (userId: any) => {
           skipped: 0
         });
       }
-      
+
       const stats = chapterMap.get(chapterId);
       stats.attempts++;
-      
+
       if (!ans.selectedOptionId) {
         stats.skipped++;
       } else {
@@ -349,7 +349,7 @@ export const getStudentDashboard = catchAsync(async (req: Request, res: Response
     Purchase.find({ user: userId, status: 'completed' } as any)
       .sort({ purchaseDate: -1 })
       .limit(5)
-      .populate({ path: 'mockTest', select: 'title thumbnail category duration price' })
+      .populate({ path: 'mockTest', select: 'title thumbnail category duration price rating reviewCount' })
       .lean(),
 
     // Recommended tests (excluding purchased)
@@ -362,7 +362,7 @@ export const getStudentDashboard = catchAsync(async (req: Request, res: Response
         } as any)
           .sort({ createdAt: -1 })
           .limit(3)
-          .select('title slug thumbnail category duration price')
+          .select('title slug thumbnail category duration price rating reviewCount')
           .lean()
       ),
 
@@ -418,25 +418,25 @@ export const getStudentDashboard = catchAsync(async (req: Request, res: Response
 
   // Subject Performance (Mocked for now as we don't have full subject tagging per answer yet)
   const subjectPerformance = {
-    physics: { 
-      accuracy: accuracy > 0 ? Math.min(100, accuracy + 2) : 0, 
-      averageScore: averageScore > 0 ? Math.round(averageScore / 3) : 0, 
+    physics: {
+      accuracy: accuracy > 0 ? Math.min(100, accuracy + 2) : 0,
+      averageScore: averageScore > 0 ? Math.round(averageScore / 3) : 0,
       solved: Math.round(totalCorrect / 3),
       correct: Math.round(totalCorrect / 3),
       wrong: Math.round(totalWrong / 3),
       skipped: Math.round(totalSkipped / 3)
     },
-    chemistry: { 
-      accuracy: accuracy > 0 ? Math.max(0, accuracy - 5) : 0, 
-      averageScore: averageScore > 0 ? Math.round(averageScore / 3) : 0, 
+    chemistry: {
+      accuracy: accuracy > 0 ? Math.max(0, accuracy - 5) : 0,
+      averageScore: averageScore > 0 ? Math.round(averageScore / 3) : 0,
       solved: Math.round(totalCorrect / 3),
       correct: Math.round(totalCorrect / 3),
       wrong: Math.round(totalWrong / 3),
       skipped: Math.round(totalSkipped / 3)
     },
-    mathematics: { 
-      accuracy: accuracy > 0 ? Math.min(100, accuracy + 5) : 0, 
-      averageScore: averageScore > 0 ? Math.round(averageScore / 3) : 0, 
+    mathematics: {
+      accuracy: accuracy > 0 ? Math.min(100, accuracy + 5) : 0,
+      averageScore: averageScore > 0 ? Math.round(averageScore / 3) : 0,
       solved: totalCorrect - 2 * Math.round(totalCorrect / 3), // remainder
       correct: totalCorrect - 2 * Math.round(totalCorrect / 3),
       wrong: totalWrong - 2 * Math.round(totalWrong / 3),
@@ -613,7 +613,7 @@ export const getChapterIncorrectQuestions = catchAsync(async (req: Request, res:
     .populate({
       path: 'answers.questionId',
       select: 'questionText questionImage options explanation explanationImage chapter subject',
-      match: { chapter: chapterId } 
+      match: { chapter: chapterId }
     })
     .lean();
 
@@ -622,13 +622,13 @@ export const getChapterIncorrectQuestions = catchAsync(async (req: Request, res:
 
   attempts.forEach((attempt: any) => {
     if (!attempt.answers) return;
-    
+
     attempt.answers.forEach((ans: any) => {
       const q = ans.questionId;
-      if (!q) return; 
-      
+      if (!q) return;
+
       const qIdStr = q._id.toString();
-      
+
       if (seenQuestionIds.has(qIdStr)) return;
 
       let isCorrect = false;

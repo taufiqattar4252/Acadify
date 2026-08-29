@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { 
-  DndContext, 
+import {
+  DndContext,
   closestCenter,
   KeyboardSensor,
   PointerSensor,
@@ -40,6 +40,8 @@ const mockTestSchema = z.object({
   passingMarks: z.number().min(0).optional(),
   totalMarks: z.number().min(0).optional(),
   price: z.number().min(0).optional(),
+  rating: z.number().min(0).max(5).optional().or(z.nan().transform(() => undefined)),
+  reviewCount: z.number().min(0).optional().or(z.nan().transform(() => undefined)),
   status: z.enum(['Draft', 'Published', 'Archived', 'Hidden']),
   category: z.enum([
     'Full Mock Test',
@@ -62,12 +64,12 @@ interface MockTestBuilderProps {
 export default function MockTestBuilder({ initialData, isEdit }: MockTestBuilderProps) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'settings' | 'questions'>('settings');
-  
+
   const { data: settings } = useGetSettings();
-  
+
   // Questions state
   const [questions, setQuestions] = useState<Question[]>(initialData?.questions || []);
-  
+
   // Modals
   const [isSelectorOpen, setIsSelectorOpen] = useState(false);
   const [previewQuestion, setPreviewQuestion] = useState<Question | null>(null);
@@ -88,6 +90,8 @@ export default function MockTestBuilder({ initialData, isEdit }: MockTestBuilder
       passingMarks: initialData?.passingMarks || 0,
       totalMarks: initialData?.totalMarks || 0,
       price: initialData?.price || 0,
+      rating: (initialData?.rating as number) || 4.8,
+      reviewCount: (initialData?.reviewCount as number) || 0,
       status: initialData?.status || 'Draft',
       category: (initialData?.category as any) || 'Full Mock Test',
     }
@@ -138,7 +142,7 @@ export default function MockTestBuilder({ initialData, isEdit }: MockTestBuilder
     if (!dirtyFields.totalMarks && dynamicTotalMarks >= 0) {
       setValue('totalMarks', dynamicTotalMarks, { shouldValidate: true });
     }
-    
+
     if (settings?.exam?.passingPercentage && dynamicTotalMarks > 0) {
       if (!dirtyFields.passingMarks) {
         const calculatedPassingMarks = Math.round((dynamicTotalMarks * settings.exam.passingPercentage) / 100);
@@ -188,7 +192,7 @@ export default function MockTestBuilder({ initialData, isEdit }: MockTestBuilder
   // Auto-save every 30 seconds if dirty or questions changed (only for edit mode)
   useEffect(() => {
     if (!isEdit) return;
-    
+
     const timer = setInterval(() => {
       // Need a way to check if questions array is different from initial data
       // For simplicity, auto-save triggers if there is a change
@@ -200,11 +204,11 @@ export default function MockTestBuilder({ initialData, isEdit }: MockTestBuilder
             .then(() => {
               setLastSaved(new Date());
             })
-            .catch(() => {});
+            .catch(() => { });
         })();
       }
     }, 30000); // 30 seconds
-    
+
     return () => clearInterval(timer);
   }, [isEdit, isDirty, handleSubmit, questions, updateMock, initialData]);
 
@@ -254,17 +258,15 @@ export default function MockTestBuilder({ initialData, isEdit }: MockTestBuilder
           <div className="flex items-center gap-1 bg-muted p-1 rounded-xl">
             <button
               onClick={() => setActiveTab('settings')}
-              className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
-                activeTab === 'settings' ? 'bg-white text-foreground shadow-sm' : 'text-muted-foreground hover:text-muted-foreground hover:bg-muted-hover/50'
-              }`}
+              className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${activeTab === 'settings' ? 'bg-white text-foreground shadow-sm' : 'text-muted-foreground hover:text-muted-foreground hover:bg-muted-hover/50'
+                }`}
             >
               Mock Details
             </button>
             <button
               onClick={() => setActiveTab('questions')}
-              className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
-                activeTab === 'questions' ? 'bg-white text-foreground shadow-sm' : 'text-muted-foreground hover:text-muted-foreground hover:bg-muted-hover/50'
-              }`}
+              className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${activeTab === 'questions' ? 'bg-white text-foreground shadow-sm' : 'text-muted-foreground hover:text-muted-foreground hover:bg-muted-hover/50'
+                }`}
             >
               Questions ({questions.length})
             </button>
@@ -336,6 +338,14 @@ export default function MockTestBuilder({ initialData, isEdit }: MockTestBuilder
                     <Input label="Price (₹)" type="number" {...register('price', { valueAsNumber: true })} />
                   </div>
                 </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                  <div>
+                    <Input label="Rating (0-5)" type="number" step="0.1" {...register('rating', { valueAsNumber: true })} error={errors.rating?.message} />
+                  </div>
+                  <div>
+                    <Input label="Review Count" type="number" {...register('reviewCount', { valueAsNumber: true })} error={errors.reviewCount?.message} />
+                  </div>
+                </div>
               </div>
             ) : (
               <div className="space-y-6">
@@ -355,12 +365,12 @@ export default function MockTestBuilder({ initialData, isEdit }: MockTestBuilder
                     <p className="text-sm text-muted-foreground mt-1 max-w-sm mx-auto">Click the button above to open the Question Bank and select questions for this mock test.</p>
                   </div>
                 ) : (
-                  <DndContext 
+                  <DndContext
                     sensors={sensors}
                     collisionDetection={closestCenter}
                     onDragEnd={handleDragEnd}
                   >
-                    <SortableContext 
+                    <SortableContext
                       items={questions.map(q => q._id)}
                       strategy={verticalListSortingStrategy}
                     >
@@ -396,7 +406,7 @@ export default function MockTestBuilder({ initialData, isEdit }: MockTestBuilder
                 <p className="text-xs text-white/60">Test Statistics</p>
               </div>
             </div>
-            
+
             <div className="space-y-4">
               <div className="flex justify-between items-center pb-4 border-b border-white/10">
                 <span className="text-sm text-white/70">Total Questions</span>
@@ -410,7 +420,7 @@ export default function MockTestBuilder({ initialData, isEdit }: MockTestBuilder
                 <span className="text-sm text-white/70">Duration</span>
                 <span className="font-bold text-lg">{formData.duration}m</span>
               </div>
-              
+
               <div className="pt-2">
                 <span className="text-xs font-semibold text-white/50 uppercase tracking-wider block mb-3">Subject Distribution</span>
                 <div className="space-y-2">

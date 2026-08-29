@@ -538,14 +538,12 @@ export default function ResultsHistoryPage() {
             <thead>
               <tr className="border-b border-border">
                 <th className="pb-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Test Name</th>
-                <th className="pb-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Type</th>
                 <th className="pb-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider text-right">Score</th>
-                <th className="pb-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider text-right">Accuracy</th>
                 <th className="pb-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider text-right">Correct</th>
                 <th className="pb-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider text-right">Incorrect</th>
                 <th className="pb-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider text-right">Time Taken</th>
                 {/* <th className="pb-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider text-right">Attempt Date</th> */}
-                <th className="pb-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider text-center"></th>
+                <th className="pb-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider text-right"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
@@ -562,17 +560,9 @@ export default function ResultsHistoryPage() {
                       </div>
                     </div>
                   </td>
-                  <td className="py-4">
-                    <span className="text-[11px] font-bold text-[#00BC7D] bg-[#f4fbf8] px-3 py-1.5 rounded-full whitespace-nowrap">Full Syllabus</span>
-                  </td>
                   <td className="py-4 text-right">
                     <p className="text-sm font-bold text-foreground">{((attempt.score / attempt.totalMarks) * 100).toFixed(2)}%</p>
                     <p className="text-[11px] text-muted-foreground mt-0.5">{attempt.score} / {attempt.totalMarks}</p>
-                  </td>
-                  <td className="py-4 text-right">
-                    <p className="text-sm font-semibold text-muted-foreground">
-                      {((attempt.correct / ((attempt.correct + attempt.wrong) || 1)) * 100).toFixed(2)}%
-                    </p>
                   </td>
                   <td className="py-4 text-right">
                     <p className="text-sm font-semibold text-[#00BC7D]">{attempt.correct}</p>
@@ -581,16 +571,27 @@ export default function ResultsHistoryPage() {
                     <p className="text-sm font-semibold text-destructive">{attempt.wrong}</p>
                   </td>
                   <td className="py-4 text-right">
-                    <p className="text-sm font-medium text-muted-foreground">3h 12m</p>
+                    <p className="text-sm font-medium text-muted-foreground">
+                      {(() => {
+                        const secs = attempt.timeTaken || attempt.duration || 0;
+                        if (!secs) return 'N/A';
+                        const h = Math.floor(secs / 3600);
+                        const m = Math.floor((secs % 3600) / 60);
+                        const s = Math.floor(secs % 60);
+                        if (h > 0) return `${h}h ${m}m`;
+                        if (m > 0) return `${m}m ${s}s`;
+                        return `${s}s`;
+                      })()}
+                    </p>
                   </td>
                   {/* <td className="py-4 text-right">
                     <p className="text-xs font-medium text-foreground">{new Date(attempt.submittedAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
                     <p className="text-[11px] text-muted-foreground mt-0.5">{new Date(attempt.submittedAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</p>
                   </td> */}
-                  <td className="py-4 text-center pl-2">
+                  <td className="py-4 text-right pl-2">
                     <Link href={`/dashboard/results/${attempt._id}`}>
-                      <button className="text-muted-foreground hover:text-[#00BC7D] p-2 rounded-full hover:bg-[#f4fbf8] transition-colors">
-                        <MoreVertical className="w-4 h-4" />
+                      <button className="text-[#00BC7D] hover:text-white bg-[#f4fbf8] hover:bg-[#00BC7D] px-4 py-2 rounded-full text-xs font-bold transition-colors whitespace-nowrap">
+                        Detailed Analysis
                       </button>
                     </Link>
                   </td>
@@ -607,7 +608,7 @@ export default function ResultsHistoryPage() {
                       </div>
                     </div>
                   </td>
-                  <td colSpan={7}></td>
+                  <td colSpan={5}></td>
                 </tr>
               ))}
             </tbody>

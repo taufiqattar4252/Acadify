@@ -57,8 +57,8 @@ const CustomSelect = ({ value, onChange, options, placeholder, icon: Icon }: any
                 setIsOpen(false);
               }}
               className={`w-full text-left px-4 py-2 text-sm transition-colors ${value === opt.value
-                  ? "bg-[#00BC7D]/10 text-[#00BC7D] font-bold"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                ? "bg-[#00BC7D]/10 text-[#00BC7D] font-bold"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 }`}
             >
               {opt.label}
@@ -80,7 +80,7 @@ export default function ResultsHistoryPage() {
   const filteredAttempts = React.useMemo(() => {
     if (!attempts) return [];
     let filtered = [...attempts];
-    
+
     if (selectedCategory !== 'All Tests') {
       filtered = filtered.filter(a => {
         const cat = (a.mockTest?.category || a.category || 'Full Syllabus').toLowerCase();
@@ -95,10 +95,10 @@ export default function ResultsHistoryPage() {
       else if (dateRange === 'Last 3 Months') cutoff.setMonth(cutoff.getMonth() - 3);
       else if (dateRange === 'Last 6 Months') cutoff.setMonth(cutoff.getMonth() - 6);
       else if (dateRange === 'This Year') cutoff.setMonth(0, 1);
-      
+
       filtered = filtered.filter(a => new Date(a.submittedAt || a.createdAt) >= cutoff);
     }
-    
+
     return filtered;
   }, [attempts, selectedCategory, dateRange]);
 
@@ -115,25 +115,25 @@ export default function ResultsHistoryPage() {
 
   const handleExport = () => {
     if (!filteredAttempts.length) return;
-    
+
     const doc = new jsPDF();
-    
+
     // Add Report Title
     doc.setFontSize(18);
     doc.setTextColor(15, 23, 42); // slate-900
     doc.text('Results History Report', 14, 22);
-    
+
     // Add Metadata (Date and Filters)
     doc.setFontSize(11);
     doc.setTextColor(100, 116, 139); // slate-500
     doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 30);
-    
+
     doc.setFontSize(10);
     doc.text(`Category Filter: ${selectedCategory} | Date Filter: ${dateRange}`, 14, 36);
 
     // Table Headers
     const headers = [['Test Name', 'Date', 'Score', 'Total Marks', 'Accuracy (%)', 'Correct', 'Incorrect']];
-    
+
     // Table Data
     const data = filteredAttempts.map(a => {
       const title = a.mockTestTitle || 'Unknown Test';
@@ -143,10 +143,10 @@ export default function ResultsHistoryPage() {
       const score = a.score || 0;
       const totalMarks = a.totalMarks || 1;
       const accuracy = ((a.correct / ((a.correct + a.wrong) || 1)) * 100).toFixed(2);
-      
+
       return [title, dateStr, score, totalMarks, accuracy, a.correct || 0, a.wrong || 0];
     });
-    
+
     // Generate Table
     autoTable(doc, {
       startY: 45,
@@ -157,7 +157,7 @@ export default function ResultsHistoryPage() {
       styles: { fontSize: 9, cellPadding: 4 },
       alternateRowStyles: { fillColor: [248, 250, 252] }, // slate-50
     });
-    
+
     // Save PDF
     doc.save(`Results_Report_${new Date().toISOString().split('T')[0]}.pdf`);
   };
@@ -243,7 +243,7 @@ export default function ResultsHistoryPage() {
     const dateVal = attempt.submittedAt || attempt.createdAt;
     const d = dateVal ? new Date(dateVal) : new Date();
     const dateStr = isNaN(d.getTime()) ? 'Unknown' : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-    
+
     return {
       name: dateStr,
       score: attempt.percentage || (attempt.score / (attempt.totalMarks || 1)) * 100,
@@ -281,7 +281,7 @@ export default function ResultsHistoryPage() {
       {/* Filters Bar */}
       <div className="bg-white p-4 rounded-3xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] border border-border flex flex-col sm:flex-row gap-4 items-center justify-between">
         <div className="flex flex-wrap gap-3 w-full sm:w-auto">
-          <CustomSelect 
+          <CustomSelect
             value={selectedCategory}
             onChange={setSelectedCategory}
             options={[
@@ -293,7 +293,7 @@ export default function ResultsHistoryPage() {
             ]}
             placeholder="All Tests"
           />
-          <CustomSelect 
+          <CustomSelect
             value={dateRange}
             onChange={setDateRange}
             icon={Calendar}
@@ -307,7 +307,7 @@ export default function ResultsHistoryPage() {
             placeholder="All Time"
           />
         </div>
-        <button 
+        <button
           onClick={handleExport}
           className="w-full sm:w-auto flex items-center justify-center gap-2 bg-muted hover:bg-muted border border-border text-muted-foreground rounded-full px-5 py-3 text-sm font-medium transition-colors"
         >
@@ -464,9 +464,9 @@ export default function ResultsHistoryPage() {
             ))}
           </div>
 
-          <button className="w-full text-[#00BC7D] border border-border bg-muted hover:bg-muted text-sm font-medium py-3 rounded-full flex items-center justify-center transition-colors">
+          {/* <button className="w-full text-[#00BC7D] border border-border bg-muted hover:bg-muted text-sm font-medium py-3 rounded-full flex items-center justify-center transition-colors">
             <TrendingUp className="w-4 h-4 mr-2" /> View Detailed Analysis
-          </button>
+          </button> */}
         </div>
 
         {/* Ranking Among Competitors */}

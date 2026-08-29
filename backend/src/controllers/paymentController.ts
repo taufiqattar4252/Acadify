@@ -249,9 +249,14 @@ export const getPaymentDetails = catchAsync(async (req: Request, res: Response, 
     return next(new AppError('Payment not found', 404));
   }
 
+  // Fetch associated purchases for the invoice
+  const purchases = await Purchase.find({ payment: payment._id })
+    .populate('mockTest', 'title category')
+    .lean();
+
   res.status(200).json({
     success: true,
-    data: { payment },
+    data: { payment, purchases },
   });
 });
 

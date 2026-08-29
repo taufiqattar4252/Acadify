@@ -12,7 +12,9 @@ export default function InvoicePage() {
   const router = useRouter();
   const id = params.id as string;
 
-  const { data: payment, isLoading, isError } = useGetPaymentDetails(id);
+  const { data, isLoading, isError } = useGetPaymentDetails(id);
+  const payment = data?.payment;
+  const purchases = data?.purchases || [];
 
   if (isLoading) {
     return (
@@ -102,15 +104,17 @@ export default function InvoicePage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              <tr>
-                <td className="px-6 py-4">
-                  <span className="font-bold text-foreground block mb-1">{payment.mockTest.title}</span>
-                  <span className="text-xs text-muted-foreground">{payment.mockTest.category}</span>
-                </td>
-                <td className="px-6 py-4 text-right font-medium">
-                  ₹{payment.amount.toFixed(2)}
-                </td>
-              </tr>
+              {purchases.map((purchase: any) => (
+                <tr key={purchase._id}>
+                  <td className="px-6 py-4">
+                    <span className="font-bold text-foreground block mb-1">{purchase.mockTest?.title || 'Unknown Test'}</span>
+                    <span className="text-xs text-muted-foreground">{purchase.mockTest?.category || 'Mock Test'}</span>
+                  </td>
+                  <td className="px-6 py-4 text-right font-medium">
+                    ₹{purchase.amountPaid?.toFixed(2)}
+                  </td>
+                </tr>
+              ))}
             </tbody>
             <tfoot className="bg-muted border-t border-border">
               <tr>

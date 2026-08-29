@@ -78,7 +78,7 @@ export const useGetPaymentDetails = (id: string) => {
     queryKey: ['paymentDetails', id],
     queryFn: async () => {
       const response = await axiosInstance.get(`/payment/${id}`);
-      return response.data.data.payment as PaymentDetails;
+      return response.data.data;
     },
     enabled: !!id,
   });

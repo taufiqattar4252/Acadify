@@ -6,7 +6,7 @@ import { useGetAttemptDetails } from '@/services/resultApi';
 import { Spinner } from '@/components/ui/Spinner';
 import { Button } from '@/components/ui/Button';
 import {
-   ChevronLeft, Printer, Trophy, Target, Clock,
+   ChevronLeft, ChevronRight, Printer, Trophy, Target, Clock,
    BarChart2, CheckCircle2, XCircle, MinusCircle, Users, Award, Eye
 } from 'lucide-react';
 import Image from 'next/image';
@@ -27,6 +27,7 @@ export default function AttemptDetailsPage() {
    const [chapterPage, setChapterPage] = useState<number>(1);
    const [isTimeModalOpen, setIsTimeModalOpen] = useState(false);
    const questionsPerPage = 5;
+   const chaptersPerPage = 5;
 
    if (isLoading) {
       return (
@@ -304,7 +305,25 @@ export default function AttemptDetailsPage() {
             <div className="lg:col-span-8 bg-white p-6 rounded-[20px] border border-border shadow-sm">
                <div className="flex items-center justify-between mb-4">
                   <h3 className="font-bold text-foreground">Chapter-wise Analysis <span className="text-muted-foreground font-normal">({Object.keys(analytics.subjects)[0] || 'Physics'})</span></h3>
-                  <button className="text-[#00BC7D] text-[13px] font-semibold hover:underline">View All Chapters &rarr;</button>
+                  <div className="flex items-center gap-2">
+                     <button 
+                        onClick={() => setChapterPage(p => Math.max(1, p - 1))} 
+                        disabled={chapterPage === 1}
+                        className="text-[#00BC7D] hover:bg-[#00BC7D]/10 p-1 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                     >
+                        <ChevronLeft className="w-5 h-5" />
+                     </button>
+                     <span className="text-xs text-muted-foreground font-medium px-1">
+                        {chapterPage} / {Math.max(1, Math.ceil(Object.keys(analytics.chapters).length / chaptersPerPage))}
+                     </span>
+                     <button 
+                        onClick={() => setChapterPage(p => Math.min(Math.ceil(Object.keys(analytics.chapters).length / chaptersPerPage), p + 1))} 
+                        disabled={chapterPage >= Math.ceil(Object.keys(analytics.chapters).length / chaptersPerPage)}
+                        className="text-[#00BC7D] hover:bg-[#00BC7D]/10 p-1 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                     >
+                        <ChevronRight className="w-5 h-5" />
+                     </button>
+                  </div>
                </div>
                <div className="overflow-x-auto">
                   <table className="w-full text-left text-sm whitespace-nowrap">
@@ -319,7 +338,7 @@ export default function AttemptDetailsPage() {
                         </tr>
                      </thead>
                      <tbody className="divide-y divide-slate-50">
-                        {Object.entries(analytics.chapters).slice(0, 5).map(([chapter, data]: any) => (
+                        {Object.entries(analytics.chapters).slice((chapterPage - 1) * chaptersPerPage, chapterPage * chaptersPerPage).map(([chapter, data]: any) => (
                            <tr key={chapter} className="hover:bg-muted">
                               <td className="py-4 text-foreground font-medium">{chapter}</td>
                               <td className="py-4 text-muted-foreground text-center">{data.score}/{data.maxScore}</td>
@@ -633,16 +652,16 @@ export default function AttemptDetailsPage() {
 
                   <div className="space-y-4 mb-6 bg-white p-5 rounded-2xl border border-border shadow-sm">
                      {Object.entries(analytics.chapters).slice(0, 4).map(([chapter, data]: any) => (
-                        <div key={chapter} className="flex items-center justify-between border-b border-border pb-4 last:border-0 last:pb-0">
-                           <div className="max-w-[120px]">
+                        <div key={chapter} className="grid grid-cols-12 items-center gap-2 border-b border-border pb-4 last:border-0 last:pb-0">
+                           <div className="col-span-6 truncate pr-2">
                               <p className="font-bold text-foreground text-sm truncate">{chapter}</p>
                               <p className="text-[11px] text-muted-foreground mt-0.5">{Object.keys(analytics.subjects)[0] || 'Physics'}</p>
                            </div>
-                           <div className="text-right">
+                           <div className="col-span-4 text-center">
                               <p className="text-[11px] text-muted-foreground mb-0.5">Accuracy</p>
                               <p className="font-bold text-foreground text-sm">{data.accuracy.toFixed(0)}% <span className="text-xs text-muted-foreground font-normal ml-1">{data.correct}/{data.total}</span></p>
                            </div>
-                           <div className="w-16 text-right">
+                           <div className="col-span-2 text-right">
                               <span className={`text-[10px] uppercase font-bold tracking-wider ${data.accuracy >= 70 ? 'text-success' : data.accuracy >= 40 ? 'text-warning' : 'text-destructive'}`}>
                                  {data.accuracy >= 70 ? 'Strong' : data.accuracy >= 40 ? 'Average' : 'Weak'}
                               </span>

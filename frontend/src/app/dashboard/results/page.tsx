@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useGetStudentAttempts } from '@/services/resultApi';
 import { Spinner } from '@/components/ui/Spinner';
 import { Button } from '@/components/ui/Button';
@@ -10,13 +10,65 @@ import {
   PieChart, Pie, Cell
 } from 'recharts';
 import {
-  Target, Clock, Trophy, ChevronRight, ClipboardList, TrendingUp,
+  Target, Clock, Trophy, ChevronRight, ChevronDown, ClipboardList, TrendingUp,
   Award, Activity, Download, Calendar, MoreVertical, Search, BookOpen
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
 const COLORS = ['#00BC7D', '#3b82f6', '#8b5cf6', '#f59e0b'];
+
+const CustomSelect = ({ value, onChange, options, placeholder, icon: Icon }: any) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    if (isOpen) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isOpen]);
+
+  const selectedOption = options.find((opt: any) => opt.value === value);
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center justify-between w-full min-w-[160px] px-4 py-3 rounded-full border border-border bg-muted focus:border-[#00BC7D] focus:bg-white focus:ring-1 focus:ring-[#00BC7D] outline-none text-sm transition-all text-muted-foreground"
+      >
+        <div className="flex items-center gap-2">
+          {Icon && <Icon className="w-4 h-4 text-muted-foreground" />}
+          <span className="truncate">{selectedOption ? selectedOption.label : placeholder}</span>
+        </div>
+        <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+
+      {isOpen && (
+        <div className="absolute top-full left-0 mt-2 w-full min-w-[180px] bg-white rounded-2xl shadow-lumina-hover border border-border py-2 z-50 animate-in fade-in slide-in-from-top-2">
+          {options.map((opt: any) => (
+            <button
+              key={opt.value}
+              onClick={() => {
+                onChange(opt.value);
+                setIsOpen(false);
+              }}
+              className={`w-full text-left px-4 py-2 text-sm transition-colors ${value === opt.value
+                  ? "bg-[#00BC7D]/10 text-[#00BC7D] font-bold"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default function ResultsHistoryPage() {
   const { data: attempts, isLoading, isError } = useGetStudentAttempts();
@@ -229,31 +281,31 @@ export default function ResultsHistoryPage() {
       {/* Filters Bar */}
       <div className="bg-white p-4 rounded-3xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] border border-border flex flex-col sm:flex-row gap-4 items-center justify-between">
         <div className="flex flex-wrap gap-3 w-full sm:w-auto">
-          <select 
+          <CustomSelect 
             value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="flex-1 sm:flex-none min-w-[160px] bg-muted border border-border text-muted-foreground text-sm rounded-full px-4 py-3 outline-none focus:border-[#00BC7D] focus:ring-1 focus:ring-[#00BC7D] transition-all cursor-pointer"
-          >
-            <option>All Tests</option>
-            <option>Full Mock Test</option>
-            <option>Chapter-wise</option>
-            <option>Subject Test</option>
-            <option>Previous Year Paper</option>
-          </select>
-          <div className="flex-1 sm:flex-none flex items-center bg-muted border border-border text-muted-foreground text-sm rounded-full px-4 py-3 focus-within:border-[#00BC7D] focus-within:ring-1 focus-within:ring-[#00BC7D] transition-all relative">
-            <Calendar className="w-4 h-4 mr-2 text-muted-foreground absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
-            <select 
-              value={dateRange}
-              onChange={(e) => setDateRange(e.target.value)}
-              className="pl-6 bg-transparent outline-none cursor-pointer w-full appearance-none"
-            >
-              <option>All Time</option>
-              <option>Last 30 Days</option>
-              <option>Last 3 Months</option>
-              <option>Last 6 Months</option>
-              <option>This Year</option>
-            </select>
-          </div>
+            onChange={setSelectedCategory}
+            options={[
+              { value: 'All Tests', label: 'All Tests' },
+              { value: 'Full Mock Test', label: 'Full Mock Test' },
+              { value: 'Chapter-wise', label: 'Chapter-wise' },
+              { value: 'Subject Test', label: 'Subject Test' },
+              { value: 'Previous Year Paper', label: 'Previous Year Paper' }
+            ]}
+            placeholder="All Tests"
+          />
+          <CustomSelect 
+            value={dateRange}
+            onChange={setDateRange}
+            icon={Calendar}
+            options={[
+              { value: 'All Time', label: 'All Time' },
+              { value: 'Last 30 Days', label: 'Last 30 Days' },
+              { value: 'Last 3 Months', label: 'Last 3 Months' },
+              { value: 'Last 6 Months', label: 'Last 6 Months' },
+              { value: 'This Year', label: 'This Year' }
+            ]}
+            placeholder="All Time"
+          />
         </div>
         <button 
           onClick={handleExport}

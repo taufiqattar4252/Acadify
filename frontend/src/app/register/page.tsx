@@ -7,8 +7,8 @@ import { z } from 'zod';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { Alert } from '@/components/ui/Alert';
 import { useRegister, useSendOtp, useVerifyOtp, checkEmailExists } from '@/services/authApi';
-import toast from 'react-hot-toast';
 import { Check, ArrowRight, Shield, User, Mail, Lock, Eye, EyeOff, ChevronDown, Headphones } from 'lucide-react';
 
 const registerSchema = z.object({
@@ -56,6 +56,8 @@ export default function RegisterPage() {
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [verifiedEmail, setVerifiedEmail] = useState('');
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [formError, setFormError] = useState('');
+  const [formSuccess, setFormSuccess] = useState('');
 
   const { register, handleSubmit, trigger, watch, setError, clearErrors, formState: { errors } } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema) as any,
@@ -99,27 +101,35 @@ export default function RegisterPage() {
   };
 
   const handleVerifyOtp = () => {
+    setFormError('');
+    setFormSuccess('');
     const otpValue = otp.join('');
     if (otpValue.length !== 6) {
-      toast.error('Please enter a 6-digit code');
+      setFormError('Please enter a 6-digit code');
       return;
     }
     verifyOtpMutation.mutate({ email: formData.email, otp: otpValue }, {
       onSuccess: () => {
         setVerifiedEmail(formData.email);
         setCurrentStep(3);
-      }
+        setFormSuccess('Email verified successfully!');
+      },
+      onError: (err: any) => setFormError(err.response?.data?.message || 'Verification failed')
     });
   };
 
   const handleResendOtp = () => {
+    setFormError('');
+    setFormSuccess('');
     if (timer > 0) return;
     sendOtpMutation.mutate(formData.email, {
       onSuccess: () => {
         setTimer(60);
         setIsTimerActive(true);
         setOtp(['', '', '', '', '', '']);
-      }
+        setFormSuccess('OTP sent successfully!');
+      },
+      onError: (err: any) => setFormError(err.response?.data?.message || 'Failed to send OTP')
     });
   };
 
@@ -157,7 +167,9 @@ export default function RegisterPage() {
             setCurrentStep(2);
             setTimer(60);
             setIsTimerActive(true);
-          }
+            setFormSuccess('OTP sent successfully!');
+          },
+          onError: (err: any) => setFormError(err.response?.data?.message || 'Failed to send OTP')
         });
       } else {
         setCurrentStep((prev) => prev + 1);
@@ -174,7 +186,11 @@ export default function RegisterPage() {
   };
 
   const onSubmit = (data: RegisterFormData) => {
-    registerMutation.mutate(data);
+    setFormError('');
+    setFormSuccess('');
+    registerMutation.mutate(data, {
+      onError: (err: any) => setFormError(err.response?.data?.message || 'Registration failed')
+    });
   };
 
   let isCurrentStepFilled = true;
@@ -215,7 +231,13 @@ export default function RegisterPage() {
             )}
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit as any)} className="space-y-3">
+          <form onSubmit={handleSubmit(onSubmit as any)} className="space-y-4">
+            
+            {(formError || formSuccess) && (
+              <div className="mb-4">
+                <Alert type={formError ? 'error' : 'success'} message={formError || formSuccess} />
+              </div>
+            )}
             
             {/* STEP 1: ACCOUNT */}
             {currentStep === 1 && (

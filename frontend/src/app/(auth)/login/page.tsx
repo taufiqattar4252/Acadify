@@ -7,6 +7,7 @@ import { z } from 'zod';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { Alert } from '@/components/ui/Alert';
 import { useLogin } from '@/services/authApi';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 
@@ -33,6 +34,9 @@ export default function LoginPage() {
     loginMutation.mutate(data);
   };
 
+  const errorMessage = loginMutation.error ? ((loginMutation.error as any).response?.data?.message || 'Login failed') : null;
+  const successMessage = loginMutation.isSuccess ? 'Login successful!' : null;
+
   return (
     <div className="w-full animate-in fade-in slide-in-from-right-4 duration-300">
       <div className="mb-8">
@@ -40,7 +44,10 @@ export default function LoginPage() {
         <p className="text-muted-foreground text-xs font-medium">Sign in to your account to continue.</p>
       </div>
       
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {errorMessage && <Alert type="error" message={errorMessage} />}
+        {successMessage && <Alert type="success" message={successMessage} />}
+
         <Input
           label="Email Address"
           type="email"

@@ -1,6 +1,5 @@
 import api from '../lib/axios';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
 export const useRegister = () => {
@@ -12,11 +11,9 @@ export const useRegister = () => {
       return response.data;
     },
     onSuccess: (data) => {
-      toast.success(data.message || 'Registration successful! You can now log in.');
       router.push('/login');
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Registration failed');
     },
   });
 };
@@ -31,12 +28,10 @@ export const useLogin = () => {
       return response.data;
     },
     onSuccess: (data) => {
-      toast.success('Login successful!');
       queryClient.setQueryData(['user'], data.data.user);
       router.push('/dashboard'); // generic redirect
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Login failed');
     },
   });
 };
@@ -51,12 +46,10 @@ export const useAdminLogin = () => {
       return response.data;
     },
     onSuccess: (data) => {
-      toast.success('Admin login successful!');
       queryClient.setQueryData(['user'], data.data.admin);
       router.push('/admin'); // Redirect to admin dashboard
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Admin login failed');
     },
   });
 };
@@ -71,12 +64,10 @@ export const useLogout = () => {
       return response.data;
     },
     onSuccess: () => {
-      toast.success('Logged out successfully');
       queryClient.clear();
       router.push('/login');
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Logout failed');
     },
   });
 };
@@ -88,10 +79,8 @@ export const useForgotPassword = () => {
       return response.data;
     },
     onSuccess: (data) => {
-      toast.success(data.message || 'Password reset link sent to your email.');
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Failed to send reset link');
     },
   });
 };
@@ -105,11 +94,9 @@ export const useResetPassword = (token: string) => {
       return response.data;
     },
     onSuccess: () => {
-      toast.success('Password reset successfully! You are now logged in.');
       router.push('/dashboard');
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Failed to reset password');
     },
   });
 };
@@ -123,11 +110,9 @@ export const useVerifyEmail = () => {
       return response.data;
     },
     onSuccess: () => {
-      toast.success('Email verified successfully! You are now logged in.');
       router.push('/dashboard');
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Verification failed. The token may be expired or invalid.');
     },
   });
 };
@@ -155,10 +140,8 @@ export const useSendOtp = () => {
       return response.data;
     },
     onSuccess: (data: any) => {
-      toast.success(data.message || 'OTP sent successfully!');
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Failed to send verification code. Please try again.');
     },
   });
 };
@@ -170,10 +153,8 @@ export const useVerifyOtp = () => {
       return response.data;
     },
     onSuccess: (data: any) => {
-      toast.success(data.message || 'Email verified successfully!');
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Verification failed');
     },
   });
 };

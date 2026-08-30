@@ -93,7 +93,7 @@ export function ExamLayout({
 
   return (
     <div className="h-screen flex flex-col font-sans bg-white overflow-hidden text-sm">
-      
+
       {/* HEADER exactly like reference */}
       <header className="bg-[#00BC7D] text-white px-4 py-2 flex items-center justify-between shrink-0 shadow-sm z-20">
         <div className="font-bold flex items-center gap-2">
@@ -107,7 +107,7 @@ export function ExamLayout({
 
       {/* MAIN LAYOUT */}
       <div className="flex-1 flex overflow-hidden">
-        
+
         {/* LEFT SIDEBAR */}
         <aside className="w-[300px] border-r border-border flex flex-col bg-white shrink-0">
           {/* Sidebar Header */}
@@ -121,7 +121,7 @@ export function ExamLayout({
               {questions.map((q, idx) => {
                 const status = statuses[q._id] || 'Not Visited';
                 const isCurrent = idx === currentIndex;
-                
+
                 return (
                   <div key={q._id} className="relative h-9 w-9 mx-auto">
                     <button
@@ -162,12 +162,12 @@ export function ExamLayout({
 
         {/* QUESTION AREA (RIGHT) */}
         <main className="flex-1 flex flex-col bg-white min-w-0">
-          
+
           {/* Top Toolbar */}
           <div className="px-4 py-2 border-b border-border flex items-center justify-between bg-white text-[13px]">
             <label className="flex items-center gap-2 cursor-pointer font-medium text-muted-foreground">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 className="w-4 h-4 cursor-pointer"
                 checked={statuses[currentQuestion._id]?.includes('Marked')}
                 onChange={handleToggleMark}
@@ -182,7 +182,7 @@ export function ExamLayout({
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <span className="font-medium">Zoom</span>
-                <select 
+                <select
                   className="border border-border rounded px-1 py-0.5 bg-white text-[13px]"
                   value={zoomLevel}
                   onChange={(e) => setZoomLevel(Number(e.target.value))}
@@ -195,7 +195,7 @@ export function ExamLayout({
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <span className="font-medium">Section</span>
-                <select 
+                <select
                   className="border border-border rounded px-1 py-0.5 bg-white text-[13px] font-bold"
                   value={currentSection}
                   onChange={(e) => {
@@ -216,16 +216,16 @@ export function ExamLayout({
             <div className="font-bold text-foreground mb-4 border-b border-border pb-2 inline-block">
               Question {currentIndex + 1} of {questions.length} :
             </div>
-            
+
             <div className="prose prose-slate max-w-none text-foreground font-medium">
               <p className="whitespace-pre-wrap">{currentQuestion.questionText}</p>
               {currentQuestion.questionImage && (
                 <div className="my-4">
-                  <Image 
-                    src={currentQuestion.questionImage} 
-                    alt="Question" 
-                    width={600} 
-                    height={400} 
+                  <Image
+                    src={currentQuestion.questionImage}
+                    alt="Question"
+                    width={600}
+                    height={400}
                     className="max-w-full h-auto"
                   />
                 </div>
@@ -238,13 +238,13 @@ export function ExamLayout({
                 const isSelected = answers[currentQuestion._id] === opt._id;
                 return (
                   <label key={opt._id} className="flex items-start gap-3 cursor-pointer p-1">
-                    <input 
-                      type="radio" 
+                    <input
+                      type="radio"
                       name={`question-${currentQuestion._id}`}
                       value={opt._id}
                       checked={isSelected}
                       onChange={() => handleSelectOption(opt._id)}
-                      className="mt-1 w-4 h-4 cursor-pointer text-[#00BC7D]" 
+                      className="mt-1 w-4 h-4 cursor-pointer text-[#00BC7D]"
                     />
                     <div className="flex-1 text-foreground">
                       {opt.text}
@@ -263,15 +263,15 @@ export function ExamLayout({
           {/* Bottom Action Bar */}
           <div className="px-4 py-3 border-t border-border flex items-center justify-between bg-muted shrink-0">
             <div className="flex items-center gap-3">
-              <Button 
-                variant="secondary" 
+              <Button
+                variant="secondary"
                 onClick={handleClearResponse}
                 className="bg-white text-muted-foreground border-border font-bold px-6"
               >
                 Reset Answer
               </Button>
-              <Button 
-                variant="secondary" 
+              <Button
+                variant="secondary"
                 onClick={() => {
                   if (!statuses[currentQuestion._id]?.includes('Marked')) {
                     handleToggleMark();
@@ -283,24 +283,24 @@ export function ExamLayout({
                 Mark for Review & Next
               </Button>
             </div>
-            
+
             <div className="flex items-center gap-3">
-              <Button 
-                variant="secondary" 
+              <Button
+                variant="secondary"
                 onClick={handlePrev}
                 disabled={currentIndex === 0}
                 className="bg-white text-muted-foreground border-border font-bold px-8"
               >
                 Previous
               </Button>
-              <Button 
+              <Button
                 onClick={handleNext}
                 className="bg-[#00BC7D] hover:bg-[#00a36c] text-white font-bold px-8"
               >
                 Save & Next
               </Button>
 
-              <Button 
+              <Button
                 onClick={onSubmitClick}
                 className="bg-red-600 hover:bg-red-700 text-white font-bold px-4 ml-4"
               >

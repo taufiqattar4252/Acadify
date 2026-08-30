@@ -7,7 +7,7 @@ import ToastProvider from '@/providers/ToastProvider';
 const font = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
-  title: 'MHT-CET Mock Test Platform',
+  title: 'Acadify',
   description: 'A comprehensive mock test platform for MHT-CET preparation',
 };
 

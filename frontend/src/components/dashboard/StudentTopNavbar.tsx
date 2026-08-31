@@ -15,7 +15,9 @@ import {
   CreditCard,
   Target,
   Trophy,
-  ShoppingCart
+  ShoppingCart,
+  Menu,
+  X
 } from 'lucide-react';
 import { useLogout, useUser } from '@/services/authApi';
 import { useGetCart } from '@/services/cartApi';
@@ -27,12 +29,32 @@ const navItems = [
   { name: 'Result Analysis', href: '/dashboard/results' },
 ];
 
+const StairsIcon = ({ className }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <line x1="12" y1="7" x2="20" y2="7"></line>
+    <line x1="8" y1="12" x2="16" y2="12"></line>
+    <line x1="4" y1="17" x2="12" y2="17"></line>
+  </svg>
+);
+
 export const StudentTopNavbar = () => {
   const pathname = usePathname();
   const { data: user } = useUser();
   const { data: cartData } = useGetCart();
   const logoutMutation = useLogout();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -79,7 +101,7 @@ export const StudentTopNavbar = () => {
                 className={cn(
                   'px-5 py-2 rounded-full text-sm font-medium transition-all duration-300',
                   isActive
-                    ? 'bg-muted text-foreground shadow-sm'
+                    ? 'bg-[#00BC7D]/10 text-[#00BC7D] shadow-sm'
                     : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                 )}
               >
@@ -105,12 +127,12 @@ export const StudentTopNavbar = () => {
 
           <NotificationDropdown />
 
-          <div className="relative" ref={dropdownRef}>
+          <div className="relative hidden md:block" ref={dropdownRef}>
             <button
               onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="w-10 h-10 rounded-full bg-muted-hover border-2 border-white shadow-sm overflow-hidden flex items-center justify-center cursor-pointer hover:border-border transition-colors"
+              className="w-10 h-10 rounded-full bg-white shadow-lumina flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
             >
-              <User className="w-5 h-5 text-muted-foreground" />
+              <User className="w-5 h-5" />
             </button>
             {dropdownOpen && (
               <div className="absolute right-0 mt-4 w-48 bg-white rounded-2xl shadow-lumina-hover border border-border py-2 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
@@ -127,8 +149,101 @@ export const StudentTopNavbar = () => {
               </div>
             )}
           </div>
+
+          {/* Mobile Menu Toggle */}
+          <button
+            className="md:hidden w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            onClick={() => setMobileMenuOpen(true)}
+          >
+            <StairsIcon className="w-5 h-5" />
+          </button>
         </div>
       </div>
+
+      {/* Mobile Menu Drawer */}
+      {mobileMenuOpen && (
+        <>
+          {/* Backdrop */}
+          <div 
+            className="md:hidden fixed inset-0 bg-foreground/20 backdrop-blur-sm z-[60] animate-in fade-in" 
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          
+          {/* Drawer */}
+          <div className="md:hidden fixed top-0 right-0 h-full w-[280px] bg-white shadow-2xl z-[70] flex flex-col animate-in slide-in-from-right duration-300">
+            <div className="p-6 flex items-center justify-between border-b border-border/50">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-[#00BC7D] flex items-center justify-center transform -rotate-12">
+                  <div className="w-2.5 h-2.5 bg-white rounded-[3px]"></div>
+                </div>
+                <span className="text-xl font-bold text-foreground tracking-tight">Acadify</span>
+              </div>
+              <button 
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            
+            <div className="flex flex-col p-4 gap-2 overflow-y-auto">
+              <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2 px-2">Navigation</div>
+              {navItems.map((item) => {
+                const isActive = item.href === '/dashboard'
+                  ? pathname === item.href
+                  : pathname === item.href || pathname.startsWith(`${item.href}/`);
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={cn(
+                      'px-4 py-3.5 rounded-xl text-sm font-medium transition-all duration-300 flex items-center',
+                      isActive
+                        ? 'bg-[#00BC7D]/10 text-[#00BC7D] shadow-sm'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                    )}
+                  >
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </div>
+
+            <div className="mt-auto border-t border-border/50 bg-muted/30 p-2">
+              <div className="flex flex-col gap-1">
+                <Link 
+                  href="/dashboard/profile" 
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-4 py-3 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-white transition-all flex items-center gap-3"
+                >
+                  <User className="w-4 h-4" /> Profile
+                </Link>
+                <Link 
+                  href="/dashboard/purchases" 
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-4 py-3 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-white transition-all flex items-center gap-3"
+                >
+                  <FileText className="w-4 h-4" /> Purchases
+                </Link>
+                <Link 
+                  href="/dashboard/settings/notifications" 
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-4 py-3 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-white transition-all flex items-center gap-3"
+                >
+                  <Settings className="w-4 h-4" /> Settings
+                </Link>
+                <button 
+                  onClick={() => { setMobileMenuOpen(false); handleLogout(); }}
+                  className="px-4 py-3 rounded-xl text-sm font-medium text-destructive hover:bg-destructive-light transition-all flex items-center gap-3 text-left w-full"
+                >
+                  <LogOut className="w-4 h-4" /> Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </header>
   );
 };

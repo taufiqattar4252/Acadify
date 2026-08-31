@@ -16,6 +16,7 @@ import {
 export default function StudentDashboardPage() {
   const router = useRouter();
   const [pageIndex, setPageIndex] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [subjectFilter, setSubjectFilter] = useState('Overall');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -27,7 +28,15 @@ export default function StudentDashboardPage() {
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    
+    const handleResize = () => setItemsPerPage(window.innerWidth < 768 ? 6 : 10);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   const { data: response, isLoading } = useGetDashboardData();
@@ -67,13 +76,13 @@ export default function StudentDashboardPage() {
     { name: 'Jan', score: 0 }, { name: 'Feb', score: 0 } // Fallback empty
   ];
 
-  let startIndex = baseTrend.length - (pageIndex + 1) * 10;
-  let endIndex = baseTrend.length - pageIndex * 10;
+  let startIndex = baseTrend.length - (pageIndex + 1) * itemsPerPage;
+  let endIndex = baseTrend.length - pageIndex * itemsPerPage;
 
-  // Always show exactly 10 if we have at least 10 tests
+  // Always show exactly itemsPerPage if we have at least itemsPerPage tests
   if (startIndex < 0) {
     startIndex = 0;
-    endIndex = Math.min(10, baseTrend.length);
+    endIndex = Math.min(itemsPerPage, baseTrend.length);
   }
 
   const filteredTrend = baseTrend.slice(startIndex, endIndex);
@@ -138,20 +147,20 @@ export default function StudentDashboardPage() {
   const MetricCard = ({ value, label, icon: Icon, iconColor, iconBg, bottomText, bottomLabel, onClick }: any) => (
     <div
       onClick={onClick}
-      className={`bg-white rounded-[24px] p-6 shadow-sm border border-border flex flex-col justify-between h-full ${onClick ? 'cursor-pointer hover:shadow-md hover:border-border transition-all hover:-translate-y-1' : ''}`}
+      className={`bg-white rounded-[20px] p-4 sm:p-6 shadow-sm border border-border flex flex-col justify-between h-full ${onClick ? 'cursor-pointer hover:shadow-md hover:border-border transition-all hover:-translate-y-1' : ''}`}
     >
-      <div className="flex justify-between items-start mb-4">
+      <div className="flex justify-between items-start mb-2 sm:mb-4">
         <div>
-          <h3 className="text-[28px] font-bold text-foreground leading-none">{value}</h3>
-          <p className="text-xs font-medium text-muted-foreground mt-2">{label}</p>
+          <h3 className="text-xl sm:text-[28px] font-bold text-foreground leading-none">{value}</h3>
+          <p className="text-[10px] sm:text-xs font-medium text-muted-foreground mt-1.5 sm:mt-2">{label}</p>
         </div>
-        <div className={`w-10 h-10 rounded-[12px] flex items-center justify-center ${iconBg}`}>
-          <Icon className={`w-5 h-5 ${iconColor}`} />
+        <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-[10px] sm:rounded-[12px] flex items-center justify-center shrink-0 ${iconBg}`}>
+          <Icon className={`w-4 h-4 sm:w-5 sm:h-5 ${iconColor}`} />
         </div>
       </div>
-      <div className="flex items-center gap-2 mt-auto pt-2">
-        {bottomText && <span className="text-xs font-bold text-muted-foreground">{bottomText}</span>}
-        {bottomLabel && <span className="text-xs font-medium text-muted-foreground">{bottomLabel}</span>}
+      <div className="flex items-center gap-1 sm:gap-2 mt-auto pt-2 flex-wrap">
+        {bottomText && <span className="text-[10px] sm:text-xs font-bold text-muted-foreground">{bottomText}</span>}
+        {bottomLabel && <span className="text-[10px] sm:text-xs font-medium text-muted-foreground">{bottomLabel}</span>}
       </div>
     </div>
   );
@@ -189,7 +198,7 @@ export default function StudentDashboardPage() {
         {/* Supervisor Group (Mocks Overview) */}
         <div className="lg:col-span-5 flex flex-col gap-3">
           <h2 className="text-lg font-medium text-muted-foreground ml-1">Mocks Overview</h2>
-          <div className="grid grid-cols-2 gap-4 h-full">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 h-full">
             <MetricCard
               value={displayOverview.purchasedMocks} label="Total Purchased"
               icon={BookOpen} iconColor="text-success" iconBg="bg-success-light"
@@ -206,9 +215,9 @@ export default function StudentDashboardPage() {
         </div>
 
         {/* Student Overview Group (Performance) */}
-        <div className="lg:col-span-7 flex flex-col gap-3">
+        <div className="lg:col-span-7 hidden lg:flex flex-col gap-3">
           <h2 className="text-lg font-medium text-muted-foreground ml-1">Performance Overview</h2>
-          <div className="grid grid-cols-3 gap-4 h-full">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 h-full">
             <MetricCard
               value={displayOverview.averageScore} label="Average Score"
               icon={BookMarked} iconColor="text-success" iconBg="bg-success-light"
@@ -239,7 +248,7 @@ export default function StudentDashboardPage() {
           <div className="flex justify-between items-center mb-6 px-2">
             <h3 className="text-lg font-medium text-muted-foreground">Score Trend</h3>
 
-            {baseTrend.length > 10 && (
+            {baseTrend.length > itemsPerPage && (
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setPageIndex(p => p + 1)}
@@ -416,7 +425,7 @@ export default function StudentDashboardPage() {
             </div>
           </div>
 
-          <div className="flex justify-between items-center text-xs font-medium">
+          <div className="flex flex-wrap justify-between items-center gap-2 text-xs font-medium">
             <div className="flex items-center gap-1.5 text-muted-foreground"><span className="w-2 h-2 rounded-full bg-[#10b981]"></span> Correct <span className="font-bold text-foreground ml-0.5">{displayQuestions.correct}</span></div>
             <div className="flex items-center gap-1.5 text-muted-foreground"><span className="w-2 h-2 rounded-full bg-[#f59e0b]"></span> Wrong <span className="font-bold text-foreground ml-0.5">{displayQuestions.wrong}</span></div>
             <div className="flex items-center gap-1.5 text-muted-foreground"><span className="w-2 h-2 rounded-full bg-[#ef4444]"></span> Skipped <span className="font-bold text-foreground ml-0.5">{displayQuestions.skipped}</span></div>

@@ -83,7 +83,7 @@ export const NotificationDropdown = () => {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-4 w-80 sm:w-96 bg-white rounded-2xl shadow-lumina-hover border border-border overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
+        <div className="fixed right-4 top-[88px] sm:absolute sm:right-0 sm:top-auto sm:mt-4 w-[calc(100vw-32px)] max-w-[320px] sm:max-w-none sm:w-96 bg-white rounded-2xl shadow-lumina-hover border border-border overflow-hidden z-[60] animate-in fade-in slide-in-from-top-2">
           <div className="flex items-center justify-between p-4 border-b border-border">
             <h3 className="font-bold text-foreground">Notifications</h3>
             {unreadCount > 0 && (

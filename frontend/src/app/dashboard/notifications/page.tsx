@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import {
   Bell, Check, Trash2, Loader2, Info, CreditCard, Gift,
-  MonitorPlay, FileText, Search, Filter, ChevronLeft, ChevronRight
+  MonitorPlay, FileText, Search, Filter, ChevronLeft, ChevronRight, Settings
 } from 'lucide-react';
 import {
   useGetNotifications, useMarkAsRead, useMarkAllAsRead,
@@ -93,21 +93,7 @@ export default function NotificationsPage() {
             className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-full transition-colors"
             title="Settings"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-7 h-7">
-              <defs>
-                <mask id="gear-hole-sharp">
-                  <rect width="24" height="24" fill="white" />
-                  <circle cx="12" cy="12" r="4.5" fill="black" />
-                </mask>
-              </defs>
-              <g fill="currentColor" mask="url(#gear-hole-sharp)">
-                <circle cx="12" cy="12" r="8" />
-                <rect x="10" y="1.5" width="4" height="21" rx="0.5" />
-                <rect x="10" y="1.5" width="4" height="21" rx="0.5" transform="rotate(45 12 12)" />
-                <rect x="10" y="1.5" width="4" height="21" rx="0.5" transform="rotate(90 12 12)" />
-                <rect x="10" y="1.5" width="4" height="21" rx="0.5" transform="rotate(135 12 12)" />
-              </g>
-            </svg>
+            <Settings className="w-6 h-6" />
           </button>
         </div>
       </div>

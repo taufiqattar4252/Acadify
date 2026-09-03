@@ -11,7 +11,7 @@ export default async (req: any, res: any) => {
       await connectDB();
       isConnected = true;
     }
-    
+
     // Hand off to Express
     app(req, res);
   } catch (error: any) {
@@ -23,3 +23,5 @@ export default async (req: any, res: any) => {
     });
   }
 };
+
+

@@ -89,11 +89,19 @@ export const getMockTestDetails = catchAsync(async (req: Request, res: Response,
   };
   const purchase = await Purchase.findOne(purchaseQuery).lean();
 
+  // Check if current student has an active session for this test
+  const activeSession = await ExamSession.findOne({
+    user: req.user._id,
+    mockTest: test._id,
+    status: 'In Progress'
+  } as any).lean();
+
   res.status(200).json({
     success: true,
     data: {
       test,
-      isPurchased: !!purchase
+      isPurchased: !!purchase,
+      activeSessionId: activeSession ? activeSession._id : null
     },
   });
 });

@@ -84,7 +84,7 @@ export const useGetStudentMockTests = (
 
 // 2. Get Single Mock Test Details
 export const useGetStudentMockTest = (slug: string) => {
-  return useQuery<{ test: MockTest; isPurchased: boolean }>({
+  return useQuery<{ test: MockTest; isPurchased: boolean; activeSessionId: string | null }>({
     queryKey: ['studentMockTest', slug],
     queryFn: async () => {
       const { data } = await api.get(`/student/mock-tests/${slug}`);

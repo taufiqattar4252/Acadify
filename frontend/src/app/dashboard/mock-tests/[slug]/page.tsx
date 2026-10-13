@@ -41,6 +41,7 @@ export default function MockDetailsPage() {
   const addToCartMutation = useAddToCart();
   const [isProcessing, setIsProcessing] = useState(false);
   const [isStartingExam, setIsStartingExam] = useState(false);
+  const [isStartingNewExam, setIsStartingNewExam] = useState(false);
 
   const isInCart = cartData?.items?.some((item: any) => item.mockTest._id === data?.test?._id || item.mockTest === data?.test?._id);
 
@@ -117,20 +118,22 @@ export default function MockDetailsPage() {
     }
   };
 
-  const handleStartExam = async () => {
+  const handleStartExam = async (forceNew: boolean = false) => {
     if (!data?.test) return;
-    setIsStartingExam(true);
+    if (forceNew) setIsStartingNewExam(true);
+    else setIsStartingExam(true);
 
     try {
-      const response = await startExamMutation.mutateAsync(data.test._id);
+      const response = await startExamMutation.mutateAsync({ mockTestId: data.test._id, forceNew });
       // Navigate to the exam engine layout with the session ID in a new window
       const features = `popup=yes,toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=${window.screen.width},height=${window.screen.height}`;
       window.open(`/dashboard/exam/${response.session._id}`, '_blank', features);
-      setIsStartingExam(false);
     } catch (error: any) {
       console.error('Error starting exam', error);
       alert(error?.response?.data?.message || 'Failed to start exam session.');
+    } finally {
       setIsStartingExam(false);
+      setIsStartingNewExam(false);
     }
   };
 
@@ -198,17 +201,45 @@ export default function MockDetailsPage() {
 
               <div className="flex flex-col sm:flex-row items-center gap-4">
                 {isPurchased ? (
-                  <Button
-                    className="w-full sm:w-auto px-10 py-4 text-lg font-bold gap-2 bg-white !text-[#00BC7D] hover:!bg-muted focus:!ring-[#00BC7D] border-none shadow-lg rounded-lg"
-                    onClick={handleStartExam}
-                    disabled={isStartingExam}
-                  >
-                    {isStartingExam ? (
-                      <Spinner size="sm" className="text-white" />
-                    ) : (
-                      <><Play className="w-5 h-5" fill="currentColor" /> Start Exam</>
-                    )}
-                  </Button>
+                  data.activeSessionId ? (
+                    <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                      <Button
+                        className="w-full sm:w-auto px-8 py-4 text-lg font-bold gap-2 bg-white !text-[#00BC7D] hover:!bg-muted focus:!ring-[#00BC7D] border-none shadow-lg rounded-lg"
+                        onClick={() => handleStartExam(false)}
+                        disabled={isStartingExam || isStartingNewExam}
+                      >
+                        {isStartingExam ? (
+                          <><Spinner size="sm" className="text-[#00BC7D]" /> Resuming...</>
+                        ) : (
+                          <><Play className="w-5 h-5" fill="currentColor" /> Continue Attempt</>
+                        )}
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        className="w-full sm:w-auto px-8 py-4 text-lg font-bold gap-2 bg-transparent text-white border border-white hover:bg-white/10 hover:text-white rounded-lg shadow-sm"
+                        onClick={() => handleStartExam(true)}
+                        disabled={isStartingExam || isStartingNewExam}
+                      >
+                        {isStartingNewExam ? (
+                          <><Spinner size="sm" className="text-white" /> Starting...</>
+                        ) : (
+                          <><Play className="w-5 h-5" /> Start New Attempt</>
+                        )}
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      className="w-full sm:w-auto px-10 py-4 text-lg font-bold gap-2 bg-white !text-[#00BC7D] hover:!bg-muted focus:!ring-[#00BC7D] border-none shadow-lg rounded-lg"
+                      onClick={() => handleStartExam(false)}
+                      disabled={isStartingExam || isStartingNewExam}
+                    >
+                      {isStartingExam ? (
+                        <><Spinner size="sm" className="text-[#00BC7D]" /> Starting Exam...</>
+                      ) : (
+                        <><Play className="w-5 h-5" fill="currentColor" /> Start Exam</>
+                      )}
+                    </Button>
+                  )
                 ) : test.price === 0 ? (
                   <Button
                     className="w-full sm:w-auto px-10 py-4 text-lg font-bold gap-2 bg-white !text-[#00BC7D] hover:!bg-muted focus:!ring-[#00BC7D] border-none shadow-lg rounded-lg"
@@ -216,7 +247,7 @@ export default function MockDetailsPage() {
                     disabled={isProcessing}
                   >
                     {isProcessing ? (
-                      <Spinner size="sm" className="text-white" />
+                      <><Spinner size="sm" className="text-[#00BC7D]" /> Enrolling...</>
                     ) : (
                       <><Play className="w-5 h-5" fill="currentColor" /> Enroll for Free</>
                     )}
@@ -235,7 +266,7 @@ export default function MockDetailsPage() {
                     disabled={addToCartMutation.isPending}
                   >
                     {addToCartMutation.isPending ? (
-                      <Spinner size="sm" className="text-white" />
+                      <><Spinner size="sm" className="text-[#00BC7D]" /> Processing...</>
                     ) : (
                       <>Enroll Now <span className="mx-1">•</span> ₹{(test.price || 0).toFixed(2)}</>
                     )}

@@ -76,7 +76,7 @@ const sanitizeQuestions = (
 // @route   POST /api/student/exam/start
 // @access  Private (Student)
 export const startExam = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const { mockTestId } = req.body;
+  const { mockTestId, forceNew } = req.body;
 
   if (!mockTestId) {
     return next(new AppError('Mock Test ID is required', 400));
@@ -113,13 +113,18 @@ export const startExam = catchAsync(async (req: Request, res: Response, next: Ne
   const shuffleOptions = settings?.exam?.shuffleOptions ?? false;
 
   // 3. Prevent multiple active sessions for the same user and mock test
-  const existingActiveSession = await ExamSession.findOne({
+  let existingActiveSession = await ExamSession.findOne({
     user: req.user._id,
     mockTest: mockTest._id,
     status: ExamSessionStatus.IN_PROGRESS,
   });
 
   if (existingActiveSession) {
+    if (forceNew) {
+      existingActiveSession.status = ExamSessionStatus.EXPIRED; // or EXPIRED / ABANDONED
+      await existingActiveSession.save();
+      existingActiveSession = null;
+    } else {
     // Return existing session for refresh support and multiple session prevention
     const sanitizedQuestions = sanitizeQuestions(
       mockTest.questions, 
@@ -150,6 +155,7 @@ export const startExam = catchAsync(async (req: Request, res: Response, next: Ne
         questions: sanitizedQuestions,
       },
     });
+  }
   }
 
   // 4. Create new Exam Session

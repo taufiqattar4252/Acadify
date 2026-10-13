@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useGetAttemptDetails } from '@/services/resultApi';
 import { Spinner } from '@/components/ui/Spinner';
@@ -14,6 +14,9 @@ import {
    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
    PieChart, Pie, Cell, Legend
 } from 'recharts';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
+import api from '@/lib/axios';
 
 export default function AttemptDetailsPage() {
    const params = useParams();
@@ -26,8 +29,45 @@ export default function AttemptDetailsPage() {
    const [reviewPage, setReviewPage] = useState<number>(1);
    const [chapterPage, setChapterPage] = useState<number>(1);
    const [isTimeModalOpen, setIsTimeModalOpen] = useState(false);
+   const [isDownloading, setIsDownloading] = useState(false);
+   const pdfRef = useRef<HTMLDivElement>(null);
    const questionsPerPage = 5;
    const chaptersPerPage = 5;
+
+   const handleDownloadReport = async () => {
+      if (!pdfRef.current) return;
+      setIsDownloading(true);
+      try {
+         const element = pdfRef.current;
+         const headHtml = document.head.innerHTML;
+         let bodyHtml = element.outerHTML;
+         
+         // Remove 'hidden' class so the backend puppeteer renders it properly
+         bodyHtml = bodyHtml.replace('hidden print:block', 'block');
+
+         const response = await api.post('/student/generate-pdf', {
+            head: headHtml,
+            body: bodyHtml,
+            baseUrl: window.location.origin,
+         }, {
+            responseType: 'blob'
+         });
+
+         const blob = new Blob([response.data], { type: 'application/pdf' });
+         const url = window.URL.createObjectURL(blob);
+         const a = document.createElement('a');
+         a.href = url;
+         a.download = `Acadify_Report_${summary.mockTestTitle}.pdf`;
+         document.body.appendChild(a);
+         a.click();
+         a.remove();
+         window.URL.revokeObjectURL(url);
+      } catch (error) {
+         console.error('Error generating PDF', error);
+      } finally {
+         setIsDownloading(false);
+      }
+   };
 
    if (isLoading) {
       return (
@@ -105,8 +145,264 @@ export default function AttemptDetailsPage() {
    const subjects = ['All', ...Object.keys(analytics.subjects)];
 
    return (
-      <div className="space-y-6 pb-12 print-container max-w-[1400px] mx-auto">
+      <div className="w-full relative">
+         {/* Print Only Layout */}
+         <div ref={pdfRef} className="hidden print:block bg-white w-[1000px] text-slate-900 mx-auto">
+            <div className="max-w-[1000px] mx-auto bg-white shadow-none">
+               {/* Report Header */}
+               <div className="flex justify-between items-center border-b pb-6 mb-10">
+                  <div className="flex items-center gap-3">
+                     <img src="/icon.svg" alt="Acadify Logo" className="h-10 w-auto object-contain" />
+                     <h1 className="text-3xl font-bold text-slate-900">Acadify</h1>
+                  </div>
+                  <div className="text-right">
+                     <p className="text-sm font-semibold text-slate-500 uppercase tracking-wide">Student Performance Report</p>
+                     <p className="text-sm text-slate-400">Generated {new Date(summary.submittedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                  </div>
+               </div>
 
+               {/* Title Section */}
+               <div className="mb-10">
+                  <h2 className="text-4xl font-bold text-slate-900 mb-3">Mock Test Performance</h2>
+                  <p className="text-lg text-slate-500">A clear summary of your attempt, performance metrics, and areas to review.</p>
+               </div>
+
+               {/* Basic Info Table */}
+               <div className="border border-slate-200 rounded-lg overflow-hidden mb-12">
+                  <table className="w-full text-left">
+                     <tbody className="divide-y divide-slate-200">
+                        <tr className="bg-white">
+                           <td className="p-4 border-r border-slate-200 w-1/3">
+                              <p className="text-xs font-bold text-emerald-600 mb-1 uppercase tracking-wide">Test</p>
+                              <p className="font-bold text-slate-900">{summary.mockTestTitle}</p>
+                              <p className="text-sm text-slate-500">Full Syllabus</p>
+                           </td>
+                           <td className="p-4 border-r border-slate-200 w-1/3">
+                              <p className="text-xs font-bold text-emerald-600 mb-1 uppercase tracking-wide">Attempt Date</p>
+                              <p className="font-bold text-slate-900">{new Date(summary.submittedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+                              <p className="text-sm text-slate-500">Local time</p>
+                           </td>
+                           <td className="p-4 w-1/3">
+                              <p className="text-xs font-bold text-emerald-600 mb-1 uppercase tracking-wide">Attempt</p>
+                              <p className="font-bold text-slate-900">Attempt 1</p>
+                              <p className="text-sm text-slate-500">{totalQuestions} questions</p>
+                           </td>
+                        </tr>
+                        <tr className="bg-white">
+                           <td className="p-4 border-r border-slate-200">
+                              <p className="text-xs font-bold text-emerald-600 mb-2 uppercase tracking-wide">Max Marks</p>
+                              <p className="font-bold text-slate-900 text-lg">{summary.totalMarks}</p>
+                           </td>
+                           <td className="p-4 border-r border-slate-200">
+                              <p className="text-xs font-bold text-emerald-600 mb-2 uppercase tracking-wide">Test Duration</p>
+                              <p className="font-bold text-slate-900 text-lg">{formatTime(summary.totalDuration)}</p>
+                           </td>
+                           <td className="p-4">
+                              <p className="text-xs font-bold text-emerald-600 mb-2 uppercase tracking-wide">Time Taken</p>
+                              <p className="font-bold text-slate-900 text-lg">{formatTime(summary.timeTaken)}</p>
+                           </td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+
+               {/* Performance at a glance */}
+               <div className="mb-12">
+                  <h3 className="text-2xl font-bold text-slate-900 mb-6">Performance at a glance</h3>
+                  <div className="grid grid-cols-3 gap-4">
+                     {/* Score */}
+                     <div className="bg-[#eafaf1] p-6 rounded-lg flex flex-col justify-between h-32" style={{ backgroundColor: '#eafaf1' }}>
+                        <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Score</p>
+                        <p className="text-4xl font-bold text-[#16a34a]">{summary.score} / {summary.totalMarks}</p>
+                        <p className="text-sm text-slate-500">Marks earned</p>
+                     </div>
+                     
+                     {/* Percentage */}
+                     <div className="bg-[#ebf8ff] p-6 rounded-lg flex flex-col justify-between h-32" style={{ backgroundColor: '#ebf8ff' }}>
+                        <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Percentage</p>
+                        <p className="text-4xl font-bold text-[#3b82f6]">{summary.percentage.toFixed(2)}%</p>
+                        <p className="text-sm text-slate-500">Overall score percentage</p>
+                     </div>
+
+                     {/* Accuracy */}
+                     <div className="bg-[#faf5ff] p-6 rounded-lg flex flex-col justify-between h-32" style={{ backgroundColor: '#faf5ff' }}>
+                        <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Accuracy</p>
+                        <p className="text-4xl font-bold text-[#a855f7]">{summary.accuracy.toFixed(2)}%</p>
+                        <p className="text-sm text-slate-500">Correct / attempted</p>
+                     </div>
+
+                     {/* Percentile */}
+                     <div className="bg-[#fff5f5] p-6 rounded-lg flex flex-col justify-between h-32" style={{ backgroundColor: '#fff5f5' }}>
+                        <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Percentile</p>
+                        <p className="text-4xl font-bold text-[#ec4899]">{summary.percentile.toFixed(1)}</p>
+                        <p className="text-sm text-slate-500">Percentile reported by app</p>
+                     </div>
+
+                     {/* Rank */}
+                     <div className="bg-[#fffbeb] p-6 rounded-lg flex flex-col justify-between h-32" style={{ backgroundColor: '#fffbeb' }}>
+                        <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Rank</p>
+                        <p className="text-4xl font-bold text-[#f59e0b]">{summary.rank} / {summary.totalStudents}</p>
+                        <p className="text-sm text-slate-500">Current displayed rank</p>
+                     </div>
+
+                     {/* Time Taken */}
+                     <div className="bg-[#f3f4f6] p-6 rounded-lg flex flex-col justify-between h-32" style={{ backgroundColor: '#f3f4f6' }}>
+                        <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Time Taken</p>
+                        <p className="text-4xl font-bold text-slate-900">{formatTime(summary.timeTaken)}</p>
+                        <p className="text-sm text-slate-500">Out of {Math.round(summary.totalDuration / 60)} minutes</p>
+                     </div>
+                  </div>
+               </div>
+
+               {/* Question Performance */}
+               <div className="mb-12">
+                  <h3 className="text-2xl font-bold text-slate-900 mb-6">Question performance</h3>
+                  <div className="border border-slate-200 rounded-lg overflow-hidden">
+                     <table className="w-full text-left">
+                        <thead className="bg-slate-50">
+                           <tr className="border-b border-slate-200">
+                              <th className="p-4 text-xs font-bold text-slate-900 uppercase tracking-wide">Status</th>
+                              <th className="p-4 text-xs font-bold text-slate-900 uppercase tracking-wide border-l border-slate-200 w-1/3">Count</th>
+                              <th className="p-4 text-xs font-bold text-slate-900 uppercase tracking-wide border-l border-slate-200 w-1/2">What it means</th>
+                           </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-200">
+                           <tr>
+                              <td className="p-4 text-slate-900 font-medium">Correct</td>
+                              <td className="p-4 text-slate-900 border-l border-slate-200">{summary.correct}</td>
+                              <td className="p-4 text-slate-600 border-l border-slate-200">Questions answered correctly</td>
+                           </tr>
+                           <tr>
+                              <td className="p-4 text-slate-900 font-medium">Incorrect</td>
+                              <td className="p-4 text-slate-900 border-l border-slate-200">{summary.wrong}</td>
+                              <td className="p-4 text-slate-600 border-l border-slate-200">Questions answered incorrectly</td>
+                           </tr>
+                           <tr>
+                              <td className="p-4 text-slate-900 font-medium">Skipped / Unanswered</td>
+                              <td className="p-4 text-slate-900 border-l border-slate-200">{summary.skipped}</td>
+                              <td className="p-4 text-slate-600 border-l border-slate-200">Questions left unanswered</td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+                  
+                  <div className="mt-6 bg-[#f8fafc] border border-[#e2e8f0] p-6 rounded-lg" style={{ backgroundColor: '#f8fafc' }}>
+                     <h4 className="font-bold text-slate-900 mb-2">How to read this report</h4>
+                     <p className="text-sm text-slate-700 leading-relaxed">
+                        Score shows the marks earned. Accuracy should be calculated from attempted questions only. Percentile and rank 
+                        should be displayed only when enough comparable attempts are available. The current app screenshot does not 
+                        expose correct/wrong/skipped counts, so those values are intentionally not fabricated in this PDF design.
+                     </p>
+                  </div>
+               </div>
+
+               {/* Detailed Analysis (Page 2) */}
+               <div className="print-break-before pt-12">
+                  <div className="mb-10">
+                     <h2 className="text-4xl font-bold text-slate-900 mb-3">Detailed Analysis</h2>
+                     <p className="text-lg text-slate-500">Use this page for actionable insights, not just summary numbers.</p>
+                  </div>
+
+                  <div className="mb-12">
+                     <h3 className="text-2xl font-bold text-slate-900 mb-6">Subject-wise performance</h3>
+                     <div className="border border-slate-200 rounded-lg overflow-hidden mb-3">
+                        <table className="w-full text-left">
+                           <thead className="bg-slate-50 border-b border-slate-200">
+                              <tr>
+                                 <th className="p-4 text-xs font-bold text-slate-900 uppercase tracking-wide">Subject</th>
+                                 <th className="p-4 text-xs font-bold text-slate-900 uppercase tracking-wide border-l border-slate-200">Score</th>
+                                 <th className="p-4 text-xs font-bold text-slate-900 uppercase tracking-wide border-l border-slate-200">Accuracy</th>
+                                 <th className="p-4 text-xs font-bold text-slate-900 uppercase tracking-wide border-l border-slate-200">Correct</th>
+                                 <th className="p-4 text-xs font-bold text-slate-900 uppercase tracking-wide border-l border-slate-200">Wrong</th>
+                                 <th className="p-4 text-xs font-bold text-slate-900 uppercase tracking-wide border-l border-slate-200">Time</th>
+                              </tr>
+                           </thead>
+                           <tbody className="divide-y divide-slate-200">
+                              {Object.entries(analytics.subjects).map(([subject, data]: [string, any]) => (
+                                 <tr key={subject}>
+                                    <td className="p-4 text-slate-900 font-medium">{subject}</td>
+                                    <td className="p-4 text-slate-900 border-l border-slate-200">{data.score || "—"}</td>
+                                    <td className="p-4 text-slate-900 border-l border-slate-200">{data.accuracy ? data.accuracy.toFixed(1) + '%' : "—"}</td>
+                                    <td className="p-4 text-slate-900 border-l border-slate-200">{data.correct || "—"}</td>
+                                    <td className="p-4 text-slate-900 border-l border-slate-200">{data.wrong || "—"}</td>
+                                    <td className="p-4 text-slate-900 border-l border-slate-200">{data.total ? formatTime(data.total) : "—"}</td>
+                                 </tr>
+                              ))}
+                           </tbody>
+                        </table>
+                     </div>
+                     <p className="text-xs text-slate-500">Populate this section only when the test has subject-level question metadata.</p>
+                  </div>
+
+                  <div className="mb-12">
+                     <h3 className="text-2xl font-bold text-slate-900 mb-6">Time management</h3>
+                     <div className="border border-slate-200 rounded-lg overflow-hidden">
+                        <table className="w-full text-left">
+                           <thead className="bg-slate-50 border-b border-slate-200">
+                              <tr>
+                                 <th className="p-4 text-xs font-bold text-slate-900 uppercase tracking-wide w-1/4">Metric</th>
+                                 <th className="p-4 text-xs font-bold text-slate-900 uppercase tracking-wide border-l border-slate-200 w-1/4">Result</th>
+                                 <th className="p-4 text-xs font-bold text-slate-900 uppercase tracking-wide border-l border-slate-200">Interpretation</th>
+                              </tr>
+                           </thead>
+                           <tbody className="divide-y divide-slate-200">
+                              <tr>
+                                 <td className="p-4 text-slate-900 font-medium">Total time taken</td>
+                                 <td className="p-4 text-slate-900 border-l border-slate-200">{formatTime(summary.timeTaken)}</td>
+                                 <td className="p-4 text-sm text-slate-600 border-l border-slate-200">Time recorded for this attempt</td>
+                              </tr>
+                              <tr>
+                                 <td className="p-4 text-slate-900 font-medium">Average time per question</td>
+                                 <td className="p-4 text-slate-900 border-l border-slate-200">{formatTime(Math.round(avgTimePerQuestion))}</td>
+                                 <td className="p-4 text-sm text-slate-600 border-l border-slate-200">Calculate using questions presented/attempted, as defined by the product</td>
+                              </tr>
+                              <tr>
+                                 <td className="p-4 text-slate-900 font-medium">Time by subject</td>
+                                 <td className="p-4 text-slate-900 border-l border-slate-200">—</td>
+                                 <td className="p-4 text-sm text-slate-600 border-l border-slate-200">Show when per-question timing is available</td>
+                              </tr>
+                           </tbody>
+                        </table>
+                     </div>
+                  </div>
+
+                  <div>
+                     <h3 className="text-2xl font-bold text-slate-900 mb-6">Recommended next steps</h3>
+                     <div className="space-y-4">
+                        <div className="flex border border-slate-200 rounded-lg p-6">
+                           <div className="text-xl font-bold text-emerald-600 mr-6">01</div>
+                           <div>
+                              <h4 className="font-bold text-slate-900 mb-1">Review every incorrect or unanswered question</h4>
+                              <p className="text-sm text-slate-600">Open the question review section to see the student's selected answer, correct answer, and explanation.</p>
+                           </div>
+                        </div>
+                        <div className="flex border border-slate-200 rounded-lg p-6">
+                           <div className="text-xl font-bold text-emerald-600 mr-6">02</div>
+                           <div>
+                              <h4 className="font-bold text-slate-900 mb-1">Practice weak chapters</h4>
+                              <p className="text-sm text-slate-600">Identify weak chapters from multiple attempts rather than drawing conclusions from a single test.</p>
+                           </div>
+                        </div>
+                        <div className="flex border border-slate-200 rounded-lg p-6">
+                           <div className="text-xl font-bold text-emerald-600 mr-6">03</div>
+                           <div>
+                              <h4 className="font-bold text-slate-900 mb-1">Compare performance over time</h4>
+                              <p className="text-sm text-slate-600">Use the performance history page to see whether score, accuracy, and time management improve.</p>
+                           </div>
+                        </div>
+                     </div>
+                     
+                     <p className="mt-8 text-xs text-slate-400 leading-relaxed border-t border-slate-100 pt-6">
+                        Product note: This is a proposed PDF layout based on the current report screenshot. Dashes indicate data not visible in the uploaded report and 
+                        should be replaced with real values from the attempt record.
+                     </p>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+         {/* Original Web UI */}
+         <div className="space-y-6 pb-12 max-w-[1400px] mx-auto print:hidden">
          {/* Top Header */}
          <div className="flex items-center justify-between print-hide">
             <div className="flex items-center gap-4">
@@ -118,8 +414,9 @@ export default function AttemptDetailsPage() {
                   <p className="text-muted-foreground text-sm">Detailed analysis of your performance in this test.</p>
                </div>
             </div>
-            <Button onClick={() => window.print()} variant="secondary" className="gap-2 font-medium bg-white text-primary border-indigo-200 hover:bg-primary-light">
-               <Printer className="w-4 h-4" /> Download Report
+            <Button onClick={handleDownloadReport} disabled={isDownloading} variant="secondary" className="gap-2 font-medium bg-white text-primary border-indigo-200 hover:bg-primary-light">
+               {isDownloading ? <Spinner size="sm" /> : <Printer className="w-4 h-4" />} 
+               {isDownloading ? 'Generating...' : 'Download Report'}
             </Button>
          </div>
 
@@ -306,8 +603,8 @@ export default function AttemptDetailsPage() {
                <div className="flex items-center justify-between mb-4">
                   <h3 className="font-bold text-foreground">Chapter-wise Analysis <span className="text-muted-foreground font-normal">({Object.keys(analytics.subjects)[0] || 'Physics'})</span></h3>
                   <div className="flex items-center gap-2">
-                     <button 
-                        onClick={() => setChapterPage(p => Math.max(1, p - 1))} 
+                     <button
+                        onClick={() => setChapterPage(p => Math.max(1, p - 1))}
                         disabled={chapterPage === 1}
                         className="text-[#00BC7D] hover:bg-[#00BC7D]/10 p-1 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                      >
@@ -316,8 +613,8 @@ export default function AttemptDetailsPage() {
                      <span className="text-xs text-muted-foreground font-medium px-1">
                         {chapterPage} / {Math.max(1, Math.ceil(Object.keys(analytics.chapters).length / chaptersPerPage))}
                      </span>
-                     <button 
-                        onClick={() => setChapterPage(p => Math.min(Math.ceil(Object.keys(analytics.chapters).length / chaptersPerPage), p + 1))} 
+                     <button
+                        onClick={() => setChapterPage(p => Math.min(Math.ceil(Object.keys(analytics.chapters).length / chaptersPerPage), p + 1))}
                         disabled={chapterPage >= Math.ceil(Object.keys(analytics.chapters).length / chaptersPerPage)}
                         className="text-[#00BC7D] hover:bg-[#00BC7D]/10 p-1 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                      >
@@ -686,7 +983,7 @@ export default function AttemptDetailsPage() {
          <style dangerouslySetInnerHTML={{
             __html: `
         @media print {
-          body { background: white; }
+          body { background: white !important; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
           .print-hide { display: none !important; }
           .print-break-before { page-break-before: always; }
           .print-container { padding: 0; margin: 0; max-width: 100%; }
@@ -719,6 +1016,7 @@ export default function AttemptDetailsPage() {
                </div>
             </div>
          )}
+         </div>
       </div>
    );
 }

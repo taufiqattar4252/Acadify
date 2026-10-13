@@ -4,6 +4,7 @@ import Question, { QuestionDifficulty, IQuestion } from '../models/Question';
 import AppError from '../utils/AppError';
 import catchAsync from '../utils/catchAsync';
 import mongoose from 'mongoose';
+import puppeteer from 'puppeteer';
 
 // @desc    Get all attempts for the logged-in student
 // @route   GET /api/student/results
@@ -313,4 +314,74 @@ export const getAllAttempts = catchAsync(async (req: Request, res: Response, nex
       totalPages: Math.ceil(total / limit),
     },
   });
+});
+
+// @desc    Generate PDF from provided HTML string
+// @route   POST /api/student/generate-pdf
+// @access  Private (Student)
+export const generatePdfFromHtml = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const { head, body, baseUrl } = req.body;
+
+  if (!body) {
+    return next(new AppError('No HTML body provided', 400));
+  }
+
+  const fullHtml = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <base href="${baseUrl || 'http://localhost:3000'}/">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+          body { font-family: 'Inter', sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .print-break-before { page-break-before: always; }
+        </style>
+        ${head || ''}
+      </head>
+      <body class="print:block bg-white text-slate-900 m-0 p-0">
+        ${body}
+      </body>
+    </html>
+  `;
+
+  let browser;
+  try {
+    browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--font-render-hinting=none'],
+    });
+    const page = await browser.newPage();
+    
+    // Intercept and allow requests to the base URL (frontend server) so CSS loads
+    await page.setContent(fullHtml, { waitUntil: 'load' });
+    
+    // Give Tailwind CDN a moment to compile classes
+    await new Promise(r => setTimeout(r, 1500));
+
+    const pdfBuffer = await page.pdf({
+      format: 'A4',
+      printBackground: true,
+      margin: { top: '40px', right: '40px', bottom: '60px', left: '40px' },
+      displayHeaderFooter: true,
+      headerTemplate: '<div></div>',
+      footerTemplate: `
+        <div style="width: 100%; font-size: 10px; font-family: 'Inter', sans-serif; padding: 0 40px; display: flex; justify-content: space-between; color: #64748b; font-weight: 500;">
+          <span>ACADIFY &bull; MOCK TEST PERFORMANCE REPORT</span>
+          <span>Page <span class="pageNumber"></span></span>
+        </div>
+      `,
+    });
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename=report.pdf');
+    res.send(pdfBuffer);
+  } catch (error) {
+    console.error('Puppeteer Error:', error);
+    return next(new AppError('Failed to generate PDF', 500));
+  } finally {
+    if (browser) {
+      await browser.close();
+    }
+  }
 });

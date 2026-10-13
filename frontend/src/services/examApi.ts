@@ -34,8 +34,8 @@ export interface IExamData {
 
 export const useStartExam = () => {
   return useMutation({
-    mutationFn: async (mockTestId: string) => {
-      const { data } = await axiosInstance.post<{ success: boolean; data: IExamData }>('/student/exam/start', { mockTestId });
+    mutationFn: async ({ mockTestId, forceNew }: { mockTestId: string; forceNew?: boolean }) => {
+      const { data } = await axiosInstance.post<{ success: boolean; data: IExamData }>('/student/exam/start', { mockTestId, forceNew });
       return data.data;
     },
   });

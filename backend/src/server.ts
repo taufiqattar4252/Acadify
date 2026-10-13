@@ -11,7 +11,7 @@ process.on('uncaughtException', (err: any) => {
   process.exit(1);
 });
 
-// Connect to Database
+// Connect to Database 
 connectDB();
 
 import { processScheduledNotifications } from './services/notificationService';
@@ -19,7 +19,7 @@ import { processScheduledNotifications } from './services/notificationService';
 const port = process.env.PORT || 5000;
 const server = app.listen(port, () => {
   logger.info(`App running on port ${port}...`);
-  
+
   // Start polling for scheduled notifications every minute
   setInterval(() => {
     processScheduledNotifications().catch((err) => logger.error({ event: 'scheduled_notification_failed', err }, 'Scheduled notification failed'));

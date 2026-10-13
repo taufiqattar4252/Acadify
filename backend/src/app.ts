@@ -28,6 +28,7 @@ import adminStudentRoutes from './routes/adminStudentRoutes';
 import adminPartnerRoutes from './routes/adminPartnerRoutes';
 import partnerRoutes from './routes/partnerRoutes';
 
+import connectDB from './config/db';
 import requestLogger from './middleware/requestLogger';
 
 const app = express();
@@ -75,9 +76,25 @@ app.use(cookieParser());
 // Compress all responses
 app.use(compression());
 
-
+// Database connection middleware (ensures Mongoose is ready before any route executes)
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
 
 // 2) ROUTES
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: 'success',
+    message: 'Acadify API is running smoothly',
+    timestamp: new Date().toISOString()
+  });
+});
+
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'success', message: 'API is running smoothly' });
 });

@@ -34,39 +34,8 @@ export default function AttemptDetailsPage() {
    const questionsPerPage = 5;
    const chaptersPerPage = 5;
 
-   const handleDownloadReport = async () => {
-      if (!pdfRef.current) return;
-      setIsDownloading(true);
-      try {
-         const element = pdfRef.current;
-         const headHtml = document.head.innerHTML;
-         let bodyHtml = element.outerHTML;
-         
-         // Remove 'hidden' class so the backend puppeteer renders it properly
-         bodyHtml = bodyHtml.replace('hidden print:block', 'block');
-
-         const response = await api.post('/student/generate-pdf', {
-            head: headHtml,
-            body: bodyHtml,
-            baseUrl: window.location.origin,
-         }, {
-            responseType: 'blob'
-         });
-
-         const blob = new Blob([response.data], { type: 'application/pdf' });
-         const url = window.URL.createObjectURL(blob);
-         const a = document.createElement('a');
-         a.href = url;
-         a.download = `Acadify_Report_${summary.mockTestTitle}.pdf`;
-         document.body.appendChild(a);
-         a.click();
-         a.remove();
-         window.URL.revokeObjectURL(url);
-      } catch (error) {
-         console.error('Error generating PDF', error);
-      } finally {
-         setIsDownloading(false);
-      }
+   const handleDownloadReport = () => {
+      window.print();
    };
 
    if (isLoading) {

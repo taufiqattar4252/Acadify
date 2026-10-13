@@ -17,8 +17,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${font.variable} font-sans antialiased bg-[#f4f7f6] text-foreground`}>
+    <html lang="en" suppressHydrationWarning>
+      <body suppressHydrationWarning className={`${font.variable} font-sans antialiased bg-[#f4f7f6] text-foreground`}>
         <QueryProvider>
           {children}
           <ToastProvider />
